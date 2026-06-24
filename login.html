@@ -16,7 +16,7 @@
         theme: {
           extend: {
             colors: {
-              primary: "#4F46E5" /* Indigo khas Neokademi */,
+              primary: "#4F46E5",
               primaryHover: "#4338CA",
             },
             fontFamily: {
@@ -38,10 +38,8 @@
       };
     </script>
     <style>
-      /* Import Font Inter & Outfit */
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@800&display=swap");
 
-      /* Cegah Horizontal Scroll secara paksa */
       html,
       body {
         font-family: "Inter", sans-serif;
@@ -49,13 +47,11 @@
         width: 100%;
       }
 
-      /* Font khusus logo */
       .brand-font {
         font-family: "Outfit", sans-serif;
         letter-spacing: -0.5px;
       }
 
-      /* --- ANIMASI LOGIN CARD --- */
       @keyframes fadeSlideUp {
         0% {
           opacity: 0;
@@ -69,7 +65,7 @@
 
       .animate-card {
         animation: fadeSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0; /* Mulai dari transparan agar animasinya mulus */
+        opacity: 0; 
       }
     </style>
   </head>
@@ -243,7 +239,6 @@
 
       // === 2. CEK SESSION (LOCAL STORAGE) SAAT HALAMAN DIMUAT ===
       document.addEventListener("DOMContentLoaded", () => {
-        // Jika user sudah login (memiliki ID SaaS), langsung redirect ke Dashboard
         if (
           localStorage.getItem("saas_admin_id") &&
           localStorage.getItem("saas_tenant_id")
@@ -252,14 +247,14 @@
         }
       });
 
-      // === 3. LOGIKA FETCH LOGIN KE GOOGLE APPS SCRIPT ===
-      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
-";
+      // === 3. LOGIKA FETCH LOGIN ===
+      // PERBAIKAN: Jeda baris dihapus
+      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec";
 
       document
         .getElementById("loginForm")
         .addEventListener("submit", async function (e) {
-          e.preventDefault(); // Cegah reload halaman
+          e.preventDefault(); 
 
           const email = document.getElementById("email").value;
           const password = document.getElementById("pass").value;
@@ -267,61 +262,60 @@
           const errorBox = document.getElementById("errorMessage");
           const errorText = document.getElementById("errorText");
 
-          // Reset tampilan error
           errorBox.classList.add("hidden");
           errorText.textContent = "";
 
-          // Loading state tombol
           const originalBtnText = submitBtn.innerHTML;
-          submitBtn.innerHTML =
-            '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memeriksa...';
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memeriksa...';
           submitBtn.disabled = true;
 
           try {
-            // Safety check jika URL belum diisi
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
-              throw new Error(
-                "Sistem belum terhubung ke database. Harap setel URL Google Apps Script.",
-              );
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI" || GAS_API_URL === "") {
+              throw new Error("Sistem belum terhubung ke database.");
             }
 
-            // Kirim request ke Backend GAS
             const payload = {
               action: "login",
               email: email,
               password: password,
             };
 
+            // PERBAIKAN: Penambahan mode CORS & headers text/plain
             const response = await fetch(GAS_API_URL, {
               method: "POST",
+              mode: "cors",
+              headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+              },
               body: JSON.stringify(payload),
+              redirect: "follow"
             });
+
+            if (!response.ok) {
+              throw new Error("Koneksi ke server gagal. Status: " + response.status);
+            }
 
             const result = await response.json();
 
             if (result.status === "success") {
-              // Simpan data "session" ke Local Storage browser
-              localStorage.setItem("saas_admin_id", result.data.admin_id);
-              localStorage.setItem("saas_tenant_id", result.data.tenant_id);
-              localStorage.setItem("saas_nama", result.data.nama);
-              localStorage.setItem("saas_nama_toko", result.data.nama_toko);
-              localStorage.setItem("saas_domain_slug", result.data.domain_slug);
-              localStorage.setItem(
-                "saas_status_berlangganan",
-                result.data.status_berlangganan,
-              );
+              // PERBAIKAN: Menyesuaikan struktur JSON kembalian dari auth.gs (result.admin)
+              localStorage.setItem("saas_admin_id", result.admin.id);
+              localStorage.setItem("saas_tenant_id", result.admin.tenant_id);
+              localStorage.setItem("saas_nama", result.admin.nama);
+              localStorage.setItem("saas_nama_toko", result.admin.nama_toko);
+              localStorage.setItem("saas_domain_slug", result.admin.slug);
+              
+              // Status langganan tidak dikirim oleh fungsi login di auth.gs, jadi diset default/abaikan
+              localStorage.setItem("saas_status_berlangganan", "Aktif");
 
-              // Arahkan ke dashboard SaaS
               window.location.href = "dashboard_saas/index.html";
             } else {
               throw new Error(result.message || "Email atau password salah.");
             }
           } catch (error) {
-            // Tampilkan pesan error
             errorText.textContent = error.message;
             errorBox.classList.remove("hidden");
           } finally {
-            // Kembalikan tombol ke semula jika gagal
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
           }
