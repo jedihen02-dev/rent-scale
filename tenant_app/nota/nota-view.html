@@ -218,7 +218,8 @@
       // === 1. FETCH DATA API ===
       async function fetchInvoiceData(id) {
         try {
-          const gasApiUrl = localStorage.getItem("gas_api_url") || "";
+          const gasApiUrl = localStorage.getItem("https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+") || "";
           if (!gasApiUrl || gasApiUrl === "") {
             renderInvoice(getMockInvoiceData(id));
             triggerPdfDownload(id);
