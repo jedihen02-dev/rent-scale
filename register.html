@@ -445,10 +445,10 @@
               throw new Error("Sistem belum terhubung ke database. Harap setel URL Google Apps Script.");
             }
 
-            const payload = {
-              action: "register",
-              paket_id: isTrial ? "trial" : paketId,
-              nama: document.getElementById("reg-nama").value,
+           const payload = {
+  action: "register_tenant", // SUDAH DISAMAKAN DENGAN BACKEND
+  paket_id: isTrial ? "trial" : paketId,
+  nama: document.getElementById("reg-nama").value,
               email: document.getElementById("reg-email").value,
               nama_toko: document.getElementById("reg-toko").value,
               subdomain: document.getElementById("reg-subdomain").value,
