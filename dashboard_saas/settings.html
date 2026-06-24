@@ -430,12 +430,14 @@
       }
 
       // === 3. INTEGRASI GOOGLE APPS SCRIPT (GAS) ===
-      const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+";
 
       // FETCH DATA AWAL
       async function fetchSettingsData(adminId) {
         try {
-          if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+          if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+") {
             // MOCK DATA UI
             fillFormFields({
               nama_toko: localStorage.getItem("saas_nama_toko"),
@@ -508,7 +510,8 @@
           };
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
               throw new Error("API Belum Disetel.");
 
             const response = await fetch(GAS_API_URL, {
@@ -554,7 +557,8 @@
           };
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
               throw new Error("API Belum Disetel.");
 
             const response = await fetch(GAS_API_URL, {
@@ -610,7 +614,8 @@
           };
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
               throw new Error("API Belum Disetel.");
 
             const response = await fetch(GAS_API_URL, {
