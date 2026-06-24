@@ -1,0 +1,82 @@
+TENDA-CAMP-FRONTEND/
+│
+├── assets/                     # Aset global untuk seluruh halaman web
+│   ├── css/
+│   │   ├── style.css           # Styling utama web & dashboard
+│   │   └── nota-style.css      # Styling khusus untuk nota/struk
+│   ├── js/
+│   │   ├── api.js✅              # Kumpulan fungsi fetch() ke endpoint Google Apps Script
+│   │   ├── auth.js✅             # Mengatur login, register, logout, dan cek token/session (localStorage)
+│   │   ├── components.js✅       # Script untuk memuat komponen berulang (header/sidebar/footer)
+│   │   └── utils.js✅            # Fungsi bantuan (format Rupiah, tanggal, notifikasi, dll)
+│   └── img/                    # Aset gambar statis (logo, ikon)
+│
+├── components/✅                 # Pengganti folder tenant_app/inc/ (dirender via JavaScript)
+│   ├── header.html✅
+│   ├── footer.html✅
+│   └── sidebar.html✅
+│
+├── dashboard_saas/✅             # Pengganti folder saas_core/ (Panel Super Admin)
+│   ├── index.html✅              # dashboard.php
+│   ├── billing.html✅            # billing.php
+│   ├── checkout.html✅           # checkout.php
+│   └── settings.html✅           # settings.php
+│
+├── tenant_app/                 # Pengganti folder tenant_app/ (Aplikasi Penyewa/Tenant)
+│   ├── index.html✅              # Dashboard Tenant (index.php)
+│   │
+│   ├── inventory/              # Pengelompokan fitur barang & kategori
+│   │   ├── kategori.html✅       # kategori.php
+│   │   ├── detail-kategori.html✅# detail-kategori.php
+│   │   ├── input-item.html✅     # input-item.php
+│   │   ├── input-rusak.html✅    # input-rusak.php
+│   │   └── item-keluar.html✅    # item-keluar.php
+│   │
+│   ├── transaksi/              # Pengelompokan fitur order
+│   │   ├── input-nota.html✅     # input-nota.php
+│   │   ├── edit-order.html✅     # edit-order.php
+│   │   └── progress.html✅       # progress.php
+│   │
+│   ├── denda/                  # Pengelompokan fitur denda
+│   │   ├── denda.html✅          # denda.php
+│   │   └── laporan-denda.html✅  # laporan-denda.php
+│   │
+│   ├── laporan/                # Pengelompokan fitur report/shift
+│   │   ├── report.html✅         # report.php
+│   │   ├── shift-report.html✅   # shift-report.php
+│   │   └── detail-shift.html✅   # detail-shift.php
+│   │
+│   ├── admin_users/            # Pengelompokan fitur manajemen user
+│   │   ├── user.html✅           # user.php
+│   │   ├── user-history.html✅   # user-history.php
+│   │   └── input-admin.html✅    # Gabungan input-admin.php & input-admin-gui.php
+│   │
+│   └── nota/                   # Tampilan struk dan nota (tenant_app/nota/)
+│       ├── nota.html✅           # nota.php
+│       ├── nota-view.html✅      # nota-view.php & cek-nota.php
+│       ├── nota-riwayat.html✅   # nota-riwayat.php
+│       ├── struk.html✅          # struk.html & preview-struk.php
+│       ├── struk-denda.html✅    # preview-struk-denda.php
+│       └── print-shift.html✅    # print-shift.php
+│
+├── index.html✅                  # Landing page web utama
+├── login.html✅                  # login.php (Login global/tenant)
+├── register.html✅               # register.php (Pendaftaran Tenant baru)
+├── pricing.html✅                # pricing.php (Harga layanan SaaS)
+├── reset-password.html✅         # reset-password.php
+└── README.md                   # Dokumentasi cara setup dan deploy frontend
+
+
+
+BackEnd
+BACKEND-GAS/
+│
+├── Code.gs             # File router utama yang berisi fungsi doPost(e) dan doGet(e)
+├── Auth.gs             # Logika verifikasi login, registrasi, pembuatan token, reset password
+├── Tenant.gs           # Logika CRUD profil tenant, billing, dan setting SaaS
+├── Inventory.gs        # Logika CRUD barang, kategori, barang rusak/keluar
+├── Transaction.gs      # Logika pembuatan nota, update status order/pengembalian, denda
+├── Report.gs           # Logika penarikan data rekapitulasi harian/shift
+├── DriveUtils.gs       # Logika upload gambar/bukti bayar format Base64 ke Google Drive
+└── appsscript.json     # Konfigurasi manifest Apps Script
+

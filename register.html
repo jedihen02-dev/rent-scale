@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SewaTendaku — Pendaftaran Akun</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", primaryHover: "#4338CA" },
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@800&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f0f4f8;
+      }
+      .brand-font {
+        font-family: "Outfit", sans-serif;
+        letter-spacing: -0.5px;
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body
+    class="text-gray-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden"
+  >
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+      <div
+        class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/10 blur-3xl"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-400/10 blur-3xl"
+      ></div>
+    </div>
+
+    <!-- Navbar -->
+    <nav
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <a href="index.html" class="flex items-center cursor-pointer">
+            <span class="brand-font text-xl md:text-2xl text-gray-900"
+              >SewaTendaku</span
+            >
+          </a>
+          <div
+            class="text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 font-medium"
+          >
+            <i class="fa-solid fa-shield-halved text-primary"></i> Aman &
+            Terenkripsi
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center px-4 pt-8 pb-12 w-full">
+      <!-- Progress Bar -->
+      <div
+        class="flex items-center justify-center gap-2 sm:gap-4 mb-8 text-xs sm:text-base w-full max-w-xl"
+      >
+        <div class="flex items-center text-primary font-semibold shrink-0">
+          <div
+            class="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-primary text-white flex items-center justify-center mr-1.5 sm:mr-2 font-bold text-[10px] sm:text-sm"
+          >
+            1
+          </div>
+          Data & Akun
+        </div>
+        <div class="w-6 sm:w-12 h-px bg-gray-300 shrink-0"></div>
+        <div class="flex items-center text-gray-500 font-medium shrink-0">
+          <div
+            class="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mr-1.5 sm:mr-2 text-[10px] sm:text-sm"
+          >
+            2
+          </div>
+          Konfirmasi
+        </div>
+        <div class="w-6 sm:w-12 h-px bg-gray-300 shrink-0"></div>
+        <div class="flex items-center text-gray-500 font-medium shrink-0">
+          <div
+            class="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mr-1.5 sm:mr-2 text-[10px] sm:text-sm"
+          >
+            3
+          </div>
+          Selesai
+        </div>
+      </div>
+
+      <div
+        class="bg-white w-full max-w-2xl rounded-2xl shadow-xl shadow-primary/5 border border-gray-100 overflow-hidden relative"
+      >
+        <!-- Banner Paket Dinamis -->
+        <div
+          class="bg-primary text-white px-6 sm:px-8 py-7 relative overflow-hidden"
+        >
+          <div
+            class="absolute top-0 right-0 opacity-10 transform translate-x-1/4 -translate-y-1/4"
+          >
+            <i class="fa-solid fa-certificate text-9xl"></i>
+          </div>
+          <div
+            class="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+          >
+            <div>
+              <div
+                class="text-[10px] font-bold text-yellow-300 tracking-wider mb-2 uppercase flex items-center gap-1.5"
+              >
+                <i class="fa-solid fa-bolt"></i>
+                <span id="ui-label-promo">Memuat...</span>
+              </div>
+              <h2 id="ui-nama-paket" class="text-2xl font-bold mb-1">
+                Memuat Paket...
+              </h2>
+              <p class="text-blue-100 text-sm mb-4">Akses penuh semua fitur</p>
+
+              <div class="flex flex-wrap gap-2 text-[10px] font-medium">
+                <span
+                  class="bg-white/10 border border-white/20 px-2.5 py-1 rounded-full"
+                  ><i class="fa-solid fa-check mr-1 text-blue-300"></i>Order tak
+                  terbatas</span
+                >
+                <span
+                  class="bg-white/10 border border-white/20 px-2.5 py-1 rounded-full"
+                  ><i class="fa-solid fa-check mr-1 text-blue-300"></i>Custom
+                  Domain</span
+                >
+              </div>
+            </div>
+            <div class="text-left sm:text-right">
+              <div
+                id="ui-harga-tampil"
+                class="text-3xl font-extrabold tracking-tight"
+              >
+                Rp -
+              </div>
+              <div
+                id="ui-harga-coret"
+                class="text-xs text-blue-200 line-through mt-0.5"
+              ></div>
+              <div id="ui-note-tambahan"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8">
+          <div class="mb-6">
+            <h3 class="font-bold text-gray-900 text-lg">
+              Isi data kamu untuk melanjutkan
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Email & password ini akan dipakai untuk login ke SewaTendaku.
+            </p>
+          </div>
+
+          <!-- Alert Error -->
+          <div
+            id="errorMessage"
+            class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-start text-sm font-medium"
+          >
+            <i class="fa-solid fa-circle-exclamation mt-0.5 mr-2"></i>
+            <span id="errorText"></span>
+          </div>
+
+          <form id="registerForm" class="space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                >Nama Lengkap <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="reg-nama"
+                required
+                class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder-gray-300"
+                placeholder="Contoh: Budi Santoso"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                >Email (Untuk Login) <span class="text-red-500">*</span></label
+              >
+              <input
+                type="email"
+                id="reg-email"
+                required
+                class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder-gray-300"
+                placeholder="email@kamu.com"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                  >Nama Toko <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="reg-toko"
+                  required
+                  class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder-gray-300"
+                  placeholder="Tenda Jaya"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                  >Subdomain Link Toko
+                  <span class="text-red-500">*</span></label
+                >
+                <div
+                  class="flex rounded-xl shadow-sm border border-gray-200 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary"
+                >
+                  <input
+                    type="text"
+                    id="reg-subdomain"
+                    required
+                    class="w-full px-4 py-3 bg-white text-gray-900 text-sm outline-none placeholder-gray-300 border-none"
+                    placeholder="tendajaya"
+                  />
+                  <div
+                    class="bg-gray-50 text-gray-500 text-xs px-3 flex items-center border-l border-gray-200 font-medium"
+                  >
+                    .sewatendaku.com
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-4 pb-1">
+              <div
+                class="text-[10px] font-bold text-gray-400 uppercase tracking-wider flex items-center gap-2"
+              >
+                <i class="fa-solid fa-key text-yellow-500"></i> Buat Password
+                Akun
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                >Password <span class="text-red-500">*</span></label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="pass"
+                  minlength="6"
+                  required
+                  class="w-full pl-4 pr-10 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder-gray-300"
+                  placeholder="Min. 6 karakter"
+                />
+                <button
+                  type="button"
+                  onclick="togglePass('pass')"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-6">
+              <label class="block text-xs font-semibold text-gray-700 mb-1.5"
+                >Konfirmasi Password <span class="text-red-500">*</span></label
+              >
+              <div class="relative">
+                <input
+                  type="password"
+                  id="pass_conf"
+                  required
+                  class="w-full pl-4 pr-10 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all placeholder-gray-300"
+                  placeholder="Ulangi password"
+                />
+                <button
+                  type="button"
+                  onclick="togglePass('pass_conf')"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                id="submitBtn"
+                class="w-full flex justify-center items-center gap-2 py-3.5 px-4 border border-transparent rounded-xl shadow-md shadow-primary/30 text-sm font-bold text-white bg-primary hover:bg-primaryHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all hover:-translate-y-0.5"
+              >
+                <span id="btnText">Daftar Sekarang</span>
+                <i class="fa-solid fa-arrow-right text-xs mt-0.5"></i>
+              </button>
+            </div>
+          </form>
+
+          <div
+            class="flex justify-center gap-4 sm:gap-6 mt-6 pt-6 border-t border-gray-100 text-[10px] sm:text-xs font-medium text-gray-500"
+          >
+            <span class="flex items-center gap-1.5"
+              ><i class="fa-solid fa-lock text-yellow-500"></i> Data aman</span
+            >
+            <span class="flex items-center gap-1.5"
+              ><i class="fa-solid fa-headset text-blue-400"></i> Respon
+              cepat</span
+            >
+            <span class="flex items-center gap-1.5"
+              ><i class="fa-solid fa-square-check text-primary"></i> Bayar
+              sekali</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="mt-8 text-center text-xs sm:text-sm text-gray-500 font-medium"
+      >
+        Bergabung bersama
+        <span class="text-primary font-bold">500+ pengusaha rental</span> yang
+        sudah pakai SewaTendaku
+        <br />
+        <div class="mt-2 text-xs font-normal">
+          Sudah punya akun?
+          <a href="login.html" class="text-primary font-bold hover:underline"
+            >Masuk disini</a
+          >
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // === 1. FITUR MATA PASSWORD ===
+      function togglePass(id) {
+        var x = document.getElementById(id);
+        var icon = x.nextElementSibling.querySelector("i");
+        if (x.type === "password") {
+          x.type = "text";
+          icon.classList.remove("fa-eye");
+          icon.classList.add("fa-eye-slash");
+        } else {
+          x.type = "password";
+          icon.classList.remove("fa-eye-slash");
+          icon.classList.add("fa-eye");
+        }
+      }
+
+      // === 2. CEK SESI (LOCAL STORAGE) ===
+      // Jika sudah login, lempar ke dashboard
+      if (
+        localStorage.getItem("saas_admin_id") &&
+        localStorage.getItem("saas_tenant_id")
+      ) {
+        window.location.href = "dashboard_saas/index.html";
+      }
+
+      // === 3. LOGIKA RENDER UI BERDASARKAN PARAMETER URL ===
+      const urlParams = new URLSearchParams(window.location.search);
+      const isTrial = urlParams.get("paket") === "trial";
+      const paketId = urlParams.get("paket_id");
+      let isPaidMode = false;
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Default UI untuk Trial
+        let namaPaket = "Free Trial 3 Hari";
+        let hargaTampil = "Rp 0";
+        let hargaCoret = "Rp 50.000";
+        let labelPromo = "Coba Gratis";
+        let noteTambahan =
+          '<div class="text-[11px] text-green-300 font-bold mt-1">Tanpa Kartu Kredit</div>';
+        let teksTombol = "Daftar & Masuk Dashboard";
+
+        // Jika Paket 1 (Basic)
+        if (!isTrial && paketId === "1") {
+          namaPaket = "Paket Basic";
+          hargaTampil = "Rp 50.000";
+          hargaCoret = "";
+          labelPromo = "Pilihan Tepat";
+          noteTambahan =
+            '<div class="text-[11px] text-blue-200 font-bold mt-1">/ 30 Hari</div>';
+          teksTombol = "Daftar & Bayar Sekarang";
+          isPaidMode = true;
+        }
+        // Jika Paket 2 (Pro)
+        else if (!isTrial && paketId === "2") {
+          namaPaket = "Paket Pro";
+          hargaTampil = "Rp 135.000";
+          hargaCoret = "";
+          labelPromo = "Paling Laris";
+          noteTambahan =
+            '<div class="text-[11px] text-blue-200 font-bold mt-1">/ 90 Hari</div>';
+          teksTombol = "Daftar & Bayar Sekarang";
+          isPaidMode = true;
+        }
+
+        // Terapkan ke DOM
+        document.getElementById("ui-nama-paket").textContent = namaPaket;
+        document.getElementById("ui-harga-tampil").textContent = hargaTampil;
+        document.getElementById("ui-harga-coret").textContent = hargaCoret;
+        document.getElementById("ui-label-promo").textContent = labelPromo;
+        document.getElementById("ui-note-tambahan").innerHTML = noteTambahan;
+        document.getElementById("btnText").textContent = teksTombol;
+      });
+
+      // Formating otomatis slug subdomain (Hanya huruf kecil dan angka)
+      document
+        .getElementById("reg-subdomain")
+        .addEventListener("input", function (e) {
+          this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, "");
+        });
+
+      // === 4. LOGIKA FETCH SUBMIT GOOGLE APPS SCRIPT ===
+      const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const pass = document.getElementById("pass").value;
+          const passConf = document.getElementById("pass_conf").value;
+          const errorBox = document.getElementById("errorMessage");
+          const errorText = document.getElementById("errorText");
+          const submitBtn = document.getElementById("submitBtn");
+
+          // Reset error
+          errorBox.classList.add("hidden");
+          errorText.textContent = "";
+
+          // 1. Validasi Password
+          if (pass !== passConf) {
+            errorText.textContent =
+              "Password dan Konfirmasi Password tidak cocok!";
+            errorBox.classList.remove("hidden");
+            return;
+          }
+
+          // Loading state
+          const originalBtnText = submitBtn.innerHTML;
+          submitBtn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memproses...';
+          submitBtn.disabled = true;
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+              throw new Error(
+                "Sistem belum terhubung ke database. Harap setel URL Google Apps Script.",
+              );
+            }
+
+            // 2. Siapkan Payload
+            const payload = {
+              action: "register",
+              paket_id: isTrial ? "trial" : paketId,
+              nama: document.getElementById("reg-nama").value,
+              email: document.getElementById("reg-email").value,
+              nama_toko: document.getElementById("reg-toko").value,
+              subdomain: document.getElementById("reg-subdomain").value,
+              password: pass,
+            };
+
+            // 3. Tembak ke API
+            const response = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+              // Simpan data login otomatis ke Local Storage
+              localStorage.setItem("saas_admin_id", result.data.admin_id);
+              localStorage.setItem("saas_tenant_id", result.data.tenant_id);
+              localStorage.setItem("saas_nama", result.data.nama);
+              localStorage.setItem("saas_nama_toko", result.data.nama_toko);
+              localStorage.setItem("saas_domain_slug", result.data.domain_slug);
+              localStorage.setItem(
+                "saas_status_berlangganan",
+                result.data.status_berlangganan,
+              );
+
+              // Arahkan berdasarkan mode pembayaran
+              if (isPaidMode) {
+                window.location.href = "dashboard_saas/checkout.html";
+              } else {
+                window.location.href = "dashboard_saas/index.html";
+              }
+            } else {
+              throw new Error(
+                result.message || "Gagal mendaftar. Silakan coba lagi.",
+              );
+            }
+          } catch (error) {
+            errorText.textContent = error.message;
+            errorBox.classList.remove("hidden");
+          } finally {
+            // Kembalikan tombol
+            submitBtn.innerHTML = originalBtnText;
+            submitBtn.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>

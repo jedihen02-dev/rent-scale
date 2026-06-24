@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pilih Paket - SewaTendaku SaaS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5" /* Indigo khas Neokademi */,
+              primaryHover: "#4338CA",
+            },
+            fontFamily: {
+              sans: [
+                "Inter",
+                "ui-sans-serif",
+                "system-ui",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Roboto",
+                "Helvetica Neue",
+                "Arial",
+                "sans-serif",
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@800&display=swap");
+      html {
+        scroll-behavior: smooth;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        overflow-x: hidden;
+      }
+      .brand-font {
+        font-family: "Outfit", sans-serif;
+        letter-spacing: -0.5px;
+      }
+
+      /* Hilangkan Scrollbar untuk efek swipe yang elegan */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col">
+    <nav
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100 shadow-sm"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <a href="index.html" class="flex items-center cursor-pointer">
+            <span class="brand-font text-xl md:text-2xl text-gray-900"
+              >SewaTendaku</span
+            >
+          </a>
+
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <a
+              href="login.html"
+              class="px-5 py-2 text-sm sm:text-base rounded-xl text-gray-700 font-bold border border-gray-300 hover:bg-gray-100 transition-colors hidden sm:block"
+            >
+              Masuk
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main
+      class="flex-grow flex flex-col justify-center py-12 md:py-16 relative overflow-hidden"
+    >
+      <div
+        class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/5 blur-3xl -z-10"
+      ></div>
+      <div
+        class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-400/10 blur-3xl -z-10"
+      ></div>
+
+      <section id="harga" class="w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            class="flex items-center justify-center gap-2 sm:gap-4 mb-10 text-xs sm:text-base w-full max-w-xl mx-auto"
+            data-aos="fade-down"
+          >
+            <div class="flex items-center text-primary font-semibold shrink-0">
+              <div
+                class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary text-white flex items-center justify-center mr-1.5 sm:mr-2 font-bold text-[10px] sm:text-sm shadow-md shadow-primary/30"
+              >
+                1
+              </div>
+              Pilih Paket
+            </div>
+            <div class="w-8 sm:w-16 h-px bg-gray-300 shrink-0"></div>
+
+            <div class="flex items-center text-gray-400 font-medium shrink-0">
+              <div
+                class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mr-1.5 sm:mr-2 text-[10px] sm:text-sm"
+              >
+                2
+              </div>
+              Data Akun
+            </div>
+            <div class="w-8 sm:w-16 h-px bg-gray-300 shrink-0"></div>
+
+            <div class="flex items-center text-gray-400 font-medium shrink-0">
+              <div
+                class="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mr-1.5 sm:mr-2 text-[10px] sm:text-sm"
+              >
+                3
+              </div>
+              Selesai
+            </div>
+          </div>
+
+          <div class="text-center mb-10" data-aos="fade-up">
+            <h2
+              class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight"
+            >
+              Pilih Paket Langganan
+            </h2>
+            <p class="text-gray-600">
+              Geser untuk melihat semua pilihan paket. Semua fitur terbuka penuh
+              tanpa batasan transaksi.
+            </p>
+          </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto w-full">
+          <div
+            class="flex overflow-x-auto lg:overflow-visible lg:justify-center items-stretch gap-5 md:gap-6 snap-x snap-mandatory no-scrollbar pb-12 pt-4 px-4 sm:px-6 lg:px-8"
+          >
+            <div
+              data-aos="fade-up"
+              data-aos-delay="50"
+              class="shrink-0 w-[85vw] sm:w-[280px] xl:w-[300px] snap-center bg-white rounded-3xl border border-gray-200 p-6 xl:p-8 flex flex-col hover:shadow-xl transition-all relative"
+            >
+              <div
+                class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Free Trial
+              </div>
+
+              <div class="mb-6 flex flex-col justify-end h-16">
+                <div class="flex items-end">
+                  <span
+                    class="text-4xl font-extrabold text-gray-900 whitespace-nowrap"
+                    >Rp 0</span
+                  >
+                  <span
+                    class="text-gray-500 ml-1 font-medium mb-1 whitespace-nowrap text-sm"
+                    >/ 3 hari</span
+                  >
+                </div>
+              </div>
+
+              <p
+                class="text-gray-500 text-xs mb-6 pb-6 border-b border-gray-200"
+              >
+                Coba gratis semua layanan tanpa dipungut biaya operasional
+                apapun.
+              </p>
+
+              <ul class="space-y-4 mb-8 flex-grow">
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-gray-600 text-sm">Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-gray-600 text-sm">Trial Dashboard</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-gray-600 text-sm"
+                    >Testing Input Transaksi</span
+                  >
+                </li>
+              </ul>
+              <a
+                href="register.html?paket=trial"
+                class="mt-auto w-full py-3.5 px-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl text-center hover:border-gray-300 transition-colors"
+                >Coba Gratis</a
+              >
+            </div>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="150"
+              class="shrink-0 w-[85vw] sm:w-[280px] xl:w-[300px] snap-center bg-white rounded-3xl border border-gray-200 p-6 xl:p-8 flex flex-col hover:shadow-xl transition-all relative"
+            >
+              <div
+                class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Basic
+              </div>
+
+              <div class="mb-6 flex flex-col justify-end h-16">
+                <div class="flex items-end text-gray-900">
+                  <span class="text-4xl font-extrabold whitespace-nowrap"
+                    >Rp 50.000</span
+                  >
+                  <span
+                    class="text-gray-500 ml-1 font-medium mb-1 whitespace-nowrap text-sm"
+                    >/ 1 bln</span
+                  >
+                </div>
+              </div>
+
+              <p
+                class="text-gray-600 text-xs mb-6 pb-6 border-b border-gray-200"
+              >
+                Sempurna untuk memulai digitalisasi pembukuan sewa tenda Anda.
+              </p>
+
+              <ul class="space-y-4 mb-8 flex-grow text-gray-600">
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Unlimited Transaksi</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Support Custom Link</span>
+                </li>
+              </ul>
+
+              <a
+                href="register.html?paket_id=1"
+                class="mt-auto w-full py-3.5 px-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl text-center hover:border-gray-300 transition-colors"
+                >Pilih Paket</a
+              >
+            </div>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="250"
+              class="shrink-0 w-[85vw] sm:w-[280px] xl:w-[300px] snap-center bg-primary rounded-3xl border-2 border-primary p-6 xl:p-8 flex flex-col shadow-2xl shadow-primary/40 transform lg:-translate-y-3 relative"
+            >
+              <div
+                class="absolute top-0 right-8 transform -translate-y-1/2 bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm"
+              >
+                🔥 Paling Laris
+              </div>
+
+              <div
+                class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Pro
+              </div>
+
+              <div class="mb-6 flex flex-col justify-end h-16">
+                <div class="flex items-end text-white">
+                  <span class="text-4xl font-extrabold whitespace-nowrap"
+                    >Rp 135.000</span
+                  >
+                  <span
+                    class="text-blue-200 ml-1 font-medium mb-1 whitespace-nowrap text-sm"
+                    >/ 3 bln</span
+                  >
+                </div>
+              </div>
+
+              <p
+                class="text-white/90 text-xs mb-6 pb-6 border-b border-primaryHover"
+              >
+                Lebih hemat untuk operasional jangka panjang bisnis sewa tenda.
+              </p>
+
+              <ul class="space-y-4 mb-8 flex-grow text-white">
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-white mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-white mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Unlimited Transaksi</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-white mt-1 mr-3 shrink-0"
+                  ></i>
+                  <span class="text-sm">Prioritas Bantuan CS</span>
+                </li>
+              </ul>
+
+              <a
+                href="register.html?paket_id=2"
+                class="mt-auto w-full py-3.5 px-4 bg-white text-primary font-bold rounded-xl text-center hover:bg-gray-100 transition-colors shadow-lg"
+                >Pilih Paket</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-white pt-8 pb-8 border-t border-gray-100 mt-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-center gap-4"
+        >
+          <div class="flex items-center">
+            <span class="brand-font text-xl text-gray-900">SewaTendaku</span>
+          </div>
+          <div class="text-sm text-gray-500 text-center md:text-left">
+            &copy; <span id="year"></span> SewaTendaku SaaS. All rights
+            reserved.
+          </div>
+          <div class="flex space-x-4">
+            <a
+              href="#"
+              class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors"
+              ><i class="fa-brands fa-instagram text-sm"></i
+            ></a>
+            <a
+              href="#"
+              class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors"
+              ><i class="fa-brands fa-facebook-f text-sm"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // Inisiasi Animasi
+      AOS.init({ once: true, offset: 20, duration: 800 });
+
+      // Auto-update tahun pada footer
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>

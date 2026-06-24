@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Laporan Shift Harian | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --day-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        --night-gradient: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        --card-bg: #ffffff;
+        --bg-color: #f3f4f6;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader & Skeletons */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Header Section */
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .report-title h1 {
+        font-weight: 800;
+        color: var(--text-dark);
+        font-size: 1.75rem;
+        margin: 0;
+      }
+      .report-date {
+        display: inline-flex;
+        align-items: center;
+        background: #e5e7eb;
+        color: var(--text-dark);
+        padding: 0.4rem 1rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+      .action-buttons .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+      }
+      .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Hero Card (Total Income) */
+      .hero-card {
+        background: var(--card-bg);
+        border-radius: 1.5rem;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin-bottom: 2rem;
+        position: relative;
+      }
+      .hero-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: var(--primary-gradient);
+      }
+      .hero-body {
+        padding: 2rem;
+      }
+      .hero-label {
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 700;
+      }
+      .hero-value {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #059669;
+        line-height: 1.2;
+        margin: 0.5rem 0 1.5rem 0;
+      }
+      .hero-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px dashed #e5e7eb;
+      }
+      .stat-item h6 {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+      }
+      .stat-item p {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin: 0;
+      }
+      .icon-bg-hero {
+        position: absolute;
+        right: -20px;
+        top: 20px;
+        font-size: 10rem;
+        color: rgba(16, 185, 129, 0.05);
+        transform: rotate(-15deg);
+      }
+
+      /* Shift Cards */
+      .shift-card {
+        background: #fff;
+        border-radius: 1.25rem;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        overflow: hidden;
+        height: 100%;
+        text-decoration: none !important;
+        display: block;
+        color: inherit;
+        position: relative;
+      }
+      .shift-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        color: inherit;
+      }
+
+      /* Shift Themes */
+      .day-theme .shift-header {
+        background: var(--day-gradient);
+      }
+      .day-theme .shift-icon {
+        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.1);
+      }
+      .day-theme .shift-value {
+        color: #2563eb;
+      }
+      .night-theme .shift-header {
+        background: var(--night-gradient);
+      }
+      .night-theme .shift-icon {
+        color: #6366f1;
+        background: rgba(99, 102, 241, 0.1);
+      }
+      .night-theme .shift-value {
+        color: #4338ca;
+      }
+
+      .shift-header {
+        padding: 1rem 1.5rem;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .shift-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin: 0;
+      }
+      .shift-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+      }
+      .shift-body {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .shift-info-label {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.2rem;
+      }
+      .shift-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+      }
+      .shift-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+      }
+
+      /* Utilities */
+      @media (max-width: 768px) {
+        .hero-value {
+          font-size: 2.25rem;
+        }
+        .hero-stats {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .report-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .action-buttons {
+          width: 100%;
+          display: flex;
+          gap: 0.5rem;
+        }
+        .action-buttons .btn {
+          flex: 1;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Laporan Shift...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-3">
+            <div class="report-header">
+              <div class="report-title">
+                <h1>Laporan Shift Harian</h1>
+                <div class="report-date">
+                  <i class="far fa-calendar-alt mr-2"></i>
+                  <span
+                    id="ui-filter-date"
+                    class="skeleton w-32 h-4 inline-block rounded"
+                  ></span>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button
+                  class="btn btn-white bg-white"
+                  data-toggle="modal"
+                  data-target="#modalFilterTanggal"
+                >
+                  <i class="fas fa-filter text-primary"></i> Filter
+                </button>
+                <a
+                  href="#"
+                  id="btnCetak"
+                  target="_blank"
+                  class="btn btn-white bg-white"
+                >
+                  <i class="fas fa-print text-danger"></i> Cetak
+                </a>
+                <a
+                  href="#"
+                  id="btnShareWA"
+                  target="_blank"
+                  class="btn btn-success text-white"
+                >
+                  <i class="fab fa-whatsapp"></i> Share
+                </a>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+                <div class="hero-card">
+                  <i class="fas fa-coins icon-bg-hero"></i>
+                  <div class="hero-body">
+                    <div class="hero-label">Total Uang Masuk Hari Ini</div>
+                    <div class="hero-value" id="ui-total-masuk">
+                      <span
+                        class="skeleton w-48 h-10 inline-block rounded"
+                      ></span>
+                    </div>
+
+                    <div class="hero-stats">
+                      <div class="stat-item">
+                        <h6>Total Transaksi</h6>
+                        <p id="ui-total-nota">
+                          <i class="fas fa-receipt mr-1 text-muted"></i>
+                          <span
+                            class="skeleton w-10 h-4 inline-block rounded"
+                          ></span>
+                          Nota
+                        </p>
+                      </div>
+                      <div class="stat-item border-left pl-md-4 pl-0">
+                        <h6>DP, Pelunasan, Lunas</h6>
+                        <p class="text-primary" id="ui-sub-trx">
+                          <span
+                            class="skeleton w-24 h-4 inline-block rounded"
+                          ></span>
+                        </p>
+                      </div>
+                      <div class="stat-item border-left pl-md-4 pl-0">
+                        <h6>Pembayaran Denda</h6>
+                        <p class="text-danger" id="ui-sub-denda">
+                          <span
+                            class="skeleton w-24 h-4 inline-block rounded"
+                          ></span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 mb-3">
+                <h5 class="font-weight-bold text-dark ml-1">
+                  Rincian Per Shift
+                </h5>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <a href="#" id="link-shift-1" class="shift-card day-theme">
+                  <div class="shift-header">
+                    <span class="shift-title" id="s1-name">Shift 1</span>
+                    <span class="shift-badge" id="s1-time"
+                      ><span
+                        class="skeleton w-24 h-3 inline-block rounded"
+                      ></span
+                    ></span>
+                  </div>
+                  <div class="shift-body">
+                    <div>
+                      <div class="shift-info-label">Total Pendapatan Shift</div>
+                      <div class="shift-value" id="s1-value">
+                        <span
+                          class="skeleton w-32 h-6 inline-block rounded"
+                        ></span>
+                      </div>
+                      <div class="text-muted small" id="s1-trx">
+                        <i class="fas fa-exchange-alt mr-1"></i>
+                        <span
+                          class="skeleton w-10 h-3 inline-block rounded"
+                        ></span>
+                        Transaksi
+                      </div>
+                    </div>
+                    <div class="shift-icon">
+                      <i class="fas fa-sun"></i>
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div class="col-md-6 mb-4">
+                <a href="#" id="link-shift-2" class="shift-card night-theme">
+                  <div class="shift-header">
+                    <span class="shift-title" id="s2-name">Shift 2</span>
+                    <span class="shift-badge" id="s2-time"
+                      ><span
+                        class="skeleton w-24 h-3 inline-block rounded"
+                      ></span
+                    ></span>
+                  </div>
+                  <div class="shift-body">
+                    <div>
+                      <div class="shift-info-label">Total Pendapatan Shift</div>
+                      <div class="shift-value" id="s2-value">
+                        <span
+                          class="skeleton w-32 h-6 inline-block rounded"
+                        ></span>
+                      </div>
+                      <div class="text-muted small" id="s2-trx">
+                        <i class="fas fa-exchange-alt mr-1"></i>
+                        <span
+                          class="skeleton w-10 h-3 inline-block rounded"
+                        ></span>
+                        Transaksi
+                      </div>
+                    </div>
+                    <div class="shift-icon">
+                      <i class="fas fa-moon"></i>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalFilterTanggal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <form
+          id="formFilter"
+          method="GET"
+          action="shift-report.html"
+          class="modal-content shadow-2xl rounded-2xl border-0 overflow-hidden"
+        >
+          <div class="modal-header bg-gray-50 border-0 p-4">
+            <h5 class="modal-title font-bold text-gray-800">Pilih Tanggal</h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body p-4 bg-white">
+            <div class="form-group mb-0">
+              <label
+                class="text-xs font-bold text-gray-500 uppercase tracking-wide"
+                >Tanggal</label
+              >
+              <input
+                type="date"
+                name="date"
+                id="filterDateInput"
+                class="form-control rounded-xl bg-gray-50 border-gray-200 py-2.5"
+              />
+            </div>
+          </div>
+          <div class="modal-footer p-4 bg-gray-50 border-t border-gray-100">
+            <button
+              type="button"
+              class="btn btn-light rounded-xl font-bold flex-1"
+              data-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary rounded-xl font-bold flex-1 shadow-sm border-0 bg-indigo-600"
+            >
+              Tampilkan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedDate =
+          urlParams.get("date") || new Date().toISOString().split("T")[0];
+        document.getElementById("filterDateInput").value = selectedDate;
+
+        // Set tombol aksi (Print & WA)
+        document.getElementById("btnCetak").href =
+          `print-shift.html?date=${encodeURIComponent(selectedDate)}`;
+        document.getElementById("btnShareWA").href =
+          `bagikan-wa.html?date=${encodeURIComponent(selectedDate)}`;
+
+        // Set tautan ke detail-shift
+        document.getElementById("link-shift-1").href =
+          `detail-shift.html?date=${encodeURIComponent(selectedDate)}&shift_type=Shift 1`;
+        document.getElementById("link-shift-2").href =
+          `detail-shift.html?date=${encodeURIComponent(selectedDate)}&shift_type=Shift 2`;
+
+        fetchShiftData(selectedDate);
+      });
+
+      async function fetchShiftData(date) {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderUI(getMockData(date));
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const payload = new URLSearchParams({
+            action: "get_shift_report",
+            admin_id: adminId,
+            date: date,
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderUI(result.data);
+          } else {
+            console.error(result.message);
+            renderUI(null);
+          }
+        } catch (err) {
+          console.error("Fetch API error:", err);
+          renderUI(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      function renderUI(data) {
+        if (!data) return;
+
+        document.getElementById("ui-filter-date").textContent =
+          data.summary.filter_text;
+        document
+          .getElementById("ui-filter-date")
+          .classList.remove("skeleton", "w-32", "h-4", "rounded");
+
+        document.getElementById("ui-total-masuk").textContent =
+          FORMATTER.format(data.summary.total_uang_masuk);
+        document.getElementById("ui-total-masuk").classList.remove("skeleton");
+
+        document.getElementById("ui-total-nota").innerHTML =
+          `<i class="fas fa-receipt mr-1 text-muted"></i> ${new Intl.NumberFormat("id-ID").format(data.summary.total_transaksi_nota_unik)} Nota`;
+        document.getElementById("ui-sub-trx").textContent = FORMATTER.format(
+          data.summary.total_uang_masuk_transaksi,
+        );
+        document.getElementById("ui-sub-denda").textContent = FORMATTER.format(
+          data.summary.total_denda_masuk,
+        );
+
+        if (data.shifts["Shift 1"]) {
+          const s1 = data.shifts["Shift 1"];
+          document.getElementById("s1-time").textContent = s1.shift_time_label;
+          document.getElementById("s1-value").textContent = FORMATTER.format(
+            s1.total_penghasilan,
+          );
+          document.getElementById("s1-trx").innerHTML =
+            `<i class="fas fa-exchange-alt mr-1"></i> ${new Intl.NumberFormat("id-ID").format(s1.total_transaksi)} Transaksi`;
+        }
+
+        if (data.shifts["Shift 2"]) {
+          const s2 = data.shifts["Shift 2"];
+          document.getElementById("s2-time").textContent = s2.shift_time_label;
+          document.getElementById("s2-value").textContent = FORMATTER.format(
+            s2.total_penghasilan,
+          );
+          document.getElementById("s2-trx").innerHTML =
+            `<i class="fas fa-exchange-alt mr-1"></i> ${new Intl.NumberFormat("id-ID").format(s2.total_transaksi)} Transaksi`;
+        }
+      }
+
+      function getMockData(date) {
+        const d = new Date(date).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        });
+        return {
+          summary: {
+            filter_text: d,
+            total_uang_masuk: 650000,
+            total_transaksi_nota_unik: 8,
+            total_uang_masuk_transaksi: 500000,
+            total_denda_masuk: 150000,
+          },
+          shifts: {
+            "Shift 1": {
+              shift_time_label: "06:00 - 15:59 WIB",
+              total_penghasilan: 400000,
+              total_transaksi: 5,
+            },
+            "Shift 2": {
+              shift_time_label: "16:00 - 23:59 WIB",
+              total_penghasilan: 250000,
+              total_transaksi: 3,
+            },
+          },
+        };
+      }
+    </script>
+  </body>
+</html>

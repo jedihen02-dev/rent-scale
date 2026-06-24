@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ringkasan Dashboard | SewaTendaku</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5" /* Indigo */,
+              primaryHover: "#4338CA",
+            },
+            fontFamily: {
+              sans: [
+                "Inter",
+                "ui-sans-serif",
+                "system-ui",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Roboto",
+                "Helvetica Neue",
+                "Arial",
+                "sans-serif",
+              ],
+              outfit: ["Outfit", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@700;800&display=swap");
+      body {
+        background-color: #f8fafc;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Animasi Skeleton Loading */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="text-gray-800 antialiased h-screen overflow-hidden flex flex-col md:flex-row"
+  >
+    <div
+      id="sidebarOverlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-gray-900/50 z-40 hidden md:hidden transition-opacity"
+    ></div>
+
+    <aside
+      id="sidebar"
+      class="bg-white border-r border-gray-200 w-64 flex-shrink-0 flex flex-col fixed md:static inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-2xl md:shadow-none"
+    >
+      <div
+        class="h-16 flex items-center px-6 border-b border-gray-100 shrink-0"
+      >
+        <span
+          class="font-outfit text-2xl text-gray-900 font-extrabold tracking-tight"
+          >SewaTendaku</span
+        >
+      </div>
+
+      <div class="px-6 py-4 border-b border-gray-50">
+        <div
+          class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2"
+        >
+          Toko Anda
+        </div>
+        <div
+          class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-200"
+        >
+          <div
+            id="ui-inisial-toko"
+            class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-sm skeleton"
+          >
+            S
+          </div>
+          <div class="overflow-hidden w-full">
+            <div
+              id="ui-nama-toko-sidebar"
+              class="font-bold text-gray-900 text-sm truncate skeleton"
+            >
+              Memuat...
+            </div>
+            <div
+              id="ui-tenant-id"
+              class="text-[10px] text-gray-500 truncate skeleton"
+            >
+              ID: TENANT-000
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-1.5">
+        <a
+          href="index.html"
+          class="flex items-center gap-3 px-3 py-2.5 bg-indigo-50 text-primary rounded-xl font-semibold transition-colors"
+        >
+          <i class="fa-solid fa-chart-pie w-5 text-center"></i> Ringkasan
+        </a>
+        <a
+          href="billing.html"
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors"
+        >
+          <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
+          Tagihan & Paket
+        </a>
+        <a
+          href="settings.html"
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors"
+        >
+          <i class="fa-solid fa-gear w-5 text-center"></i> Pengaturan Toko
+        </a>
+      </nav>
+
+      <div class="p-4 border-t border-gray-100 shrink-0">
+        <button
+          onclick="handleLogout()"
+          class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 text-sm font-bold rounded-xl transition-colors"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      <header
+        class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 shrink-0 relative z-30"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            onclick="toggleSidebar()"
+            class="md:hidden text-gray-500 hover:text-gray-800 focus:outline-none p-1 bg-gray-50 rounded-lg"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="text-xl font-bold text-gray-800 hidden sm:block">
+            Ringkasan Dashboard
+          </h1>
+        </div>
+
+        <div class="flex items-center" id="ui-btn-kasir-container">
+          <!-- Tombol Buka Kasir akan dirender via JS -->
+          <button
+            disabled
+            class="inline-flex justify-center items-center gap-2 px-5 py-2.5 bg-gray-200 text-gray-500 text-sm font-bold rounded-xl cursor-wait border border-gray-300"
+          >
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span class="hidden sm:inline">Memuat...</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative z-10">
+        <div class="max-w-5xl mx-auto">
+          <!-- Container Alert untuk Pesan Notifikasi -->
+          <div id="alert-container"></div>
+
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">
+              Selamat Datang, Owner!
+            </h2>
+            <p class="text-sm text-gray-500">
+              Kelola pengaturan langganan dan akses link toko kasir Anda dari
+              sini.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+            <!-- KARTU: STATUS LANGGANAN -->
+            <div
+              class="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col relative overflow-hidden"
+            >
+              <div
+                class="absolute right-0 top-0 w-32 h-32 bg-primary/5 rounded-bl-full pointer-events-none"
+              ></div>
+
+              <h3
+                class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 relative z-10"
+              >
+                <i class="fa-solid fa-crown text-primary"></i> Status Langganan
+              </h3>
+
+              <div class="space-y-4 mb-8 flex-grow relative z-10">
+                <div
+                  class="flex justify-between items-center py-3 border-b border-gray-100"
+                >
+                  <span class="text-sm font-medium text-gray-500"
+                    >Status Akses</span
+                  >
+                  <div id="ui-badge-status" class="skeleton w-20 h-6"></div>
+                </div>
+                <div
+                  class="flex justify-between items-center py-3 border-b border-gray-100"
+                >
+                  <span class="text-sm font-medium text-gray-500"
+                    >Paket Saat Ini</span
+                  >
+                  <span
+                    id="ui-nama-paket"
+                    class="text-sm font-bold text-gray-900 skeleton"
+                    >Paket Memuat</span
+                  >
+                </div>
+                <div
+                  class="flex justify-between items-center py-3 border-b border-gray-100"
+                >
+                  <span class="text-sm font-medium text-gray-500"
+                    >Batas Waktu</span
+                  >
+                  <span
+                    id="ui-batas-waktu"
+                    class="text-sm font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md skeleton"
+                  >
+                    00 Memuat 0000
+                  </span>
+                </div>
+              </div>
+
+              <div
+                class="text-center bg-gray-50 rounded-2xl p-6 border border-gray-100 relative z-10"
+              >
+                <p
+                  class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2"
+                >
+                  Sisa Masa Aktif
+                </p>
+                <div
+                  id="ui-sisa-hari-container"
+                  class="text-5xl font-extrabold mb-1 text-gray-800 skeleton"
+                >
+                  0 <span class="text-lg font-medium text-gray-400">Hari</span>
+                </div>
+                <a
+                  href="checkout.html"
+                  class="mt-6 w-full inline-flex justify-center items-center gap-2 px-4 py-3 border border-gray-300 shadow-sm text-sm font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-100 transition-colors"
+                >
+                  <i class="fa-regular fa-credit-card"></i> Perpanjang / Upgrade
+                  Paket
+                </a>
+              </div>
+            </div>
+
+            <!-- KARTU: PENGATURAN LINK TOKO -->
+            <div
+              class="bg-white rounded-3xl shadow-sm border border-gray-200 p-6 sm:p-8 flex flex-col relative overflow-hidden"
+            >
+              <h3
+                class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2 relative z-10"
+              >
+                <i class="fa-solid fa-link text-gray-700"></i> Pengaturan Link
+                Toko
+              </h3>
+
+              <p class="text-sm text-gray-500 mb-6 relative z-10">
+                Tentukan alamat URL yang akan digunakan oleh kasir atau
+                pelanggan Anda untuk mengakses aplikasi SewaTendaku.
+              </p>
+
+              <form
+                id="updateDomainForm"
+                class="flex-grow flex flex-col relative z-10"
+              >
+                <div
+                  class="p-5 bg-indigo-50/50 rounded-2xl border border-indigo-100 flex-grow flex flex-col"
+                >
+                  <label
+                    class="block text-xs font-bold text-primary uppercase tracking-wider mb-2"
+                    >Ubah Domain (Subdomain)</label
+                  >
+
+                  <div
+                    class="flex rounded-xl shadow-sm border border-gray-300 overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary bg-white mb-4"
+                  >
+                    <div
+                      class="bg-gray-50 text-gray-500 text-sm px-3 py-3 border-r border-gray-200 flex items-center"
+                    >
+                      <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <input
+                      type="text"
+                      id="domain_slug_input"
+                      required
+                      class="w-full px-3 py-3 text-gray-900 text-sm font-bold outline-none placeholder-gray-300 skeleton"
+                      value=""
+                      placeholder="namatoko"
+                    />
+                    <div
+                      class="bg-gray-50 text-gray-500 text-sm px-3 py-3 border-l border-gray-200 font-medium"
+                    >
+                      .sewatendaku.com
+                    </div>
+                  </div>
+
+                  <div
+                    class="bg-yellow-50 text-yellow-800 text-xs p-3 rounded-xl border border-yellow-200 mb-6 flex items-start gap-2"
+                  >
+                    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+                    <span
+                      >Mengubah nama link (subdomain) akan membuat link lama
+                      Anda tidak bisa diakses lagi.</span
+                    >
+                  </div>
+
+                  <button
+                    type="submit"
+                    id="btnUpdateDomain"
+                    class="mt-auto w-full inline-flex justify-center items-center gap-2 px-4 py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold rounded-xl shadow-md transition-colors"
+                  >
+                    <i class="fa-solid fa-save"></i> Simpan Link Baru
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="h-10"></div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      // === 1. MANAJEMEN UI & SIDEBAR ===
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+
+      function toggleSidebar() {
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+
+      // Format otomatis input domain agar hanya huruf kecil dan angka
+      document
+        .getElementById("domain_slug_input")
+        .addEventListener("input", function (e) {
+          this.value = this.value.toLowerCase().replace(/[^a-z0-9]/g, "");
+        });
+
+      // Tampilkan pesan alert
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        if (type === "success") {
+          container.innerHTML = `<div class='bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl mb-6 flex items-start text-sm font-medium shadow-sm'><i class='fa-solid fa-circle-check mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        } else {
+          container.innerHTML = `<div class='bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 flex items-start text-sm font-medium shadow-sm'><i class='fa-solid fa-circle-exclamation mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        }
+      }
+
+      // === 2. OTENTIKASI & LOGOUT ===
+      document.addEventListener("DOMContentLoaded", () => {
+        // Cek Session LocalStorage
+        const tenantId = localStorage.getItem("saas_tenant_id");
+        const adminId = localStorage.getItem("saas_admin_id");
+
+        if (!tenantId || !adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        // Tampilkan data dasar dengan cepat dari LocalStorage sambil fetch data lengkap
+        populateBasicInfo();
+
+        // Ambil data detail (Paket, Tanggal Expired) dari Backend GAS
+        fetchDashboardData(tenantId);
+      });
+
+      function handleLogout() {
+        localStorage.clear();
+        window.location.href = "../index.html";
+      }
+
+      function populateBasicInfo() {
+        const namaToko = localStorage.getItem("saas_nama_toko") || "Toko Saya";
+        const tenantId = localStorage.getItem("saas_tenant_id") || "0";
+        const domainSlug = localStorage.getItem("saas_domain_slug") || "";
+
+        // Hapus class skeleton dan isi data
+        const elInisial = document.getElementById("ui-inisial-toko");
+        elInisial.classList.remove("skeleton");
+        elInisial.textContent = namaToko.charAt(0).toUpperCase();
+
+        const elNama = document.getElementById("ui-nama-toko-sidebar");
+        elNama.classList.remove("skeleton");
+        elNama.textContent = namaToko;
+
+        const elId = document.getElementById("ui-tenant-id");
+        elId.classList.remove("skeleton");
+        elId.textContent = `ID: TENANT-${tenantId}`;
+
+        const elDomain = document.getElementById("domain_slug_input");
+        elDomain.classList.remove("skeleton");
+        elDomain.value = domainSlug;
+
+        // Update Title Page
+        document.title = `Ringkasan Dashboard | ${namaToko}`;
+      }
+
+      // === 3. INTEGRASI GOOGLE APPS SCRIPT ===
+      const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+
+      // FETCH DATA DASHBOARD
+      async function fetchDashboardData(tenantId) {
+        try {
+          if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+            // MOCK DATA JIKA GAS BELUM DI-SETUP (Hanya untuk preview UI)
+            renderDashboard({
+              status_berlangganan:
+                localStorage.getItem("saas_status_berlangganan") || "Trial",
+              nama_paket: "Trial 3 Hari",
+              tanggal_berakhir_langganan: new Date(
+                Date.now() + 3 * 24 * 60 * 60 * 1000,
+              ).toISOString(),
+              domain_slug:
+                localStorage.getItem("saas_domain_slug") || "demotoko",
+            });
+            return;
+          }
+
+          const response = await fetch(
+            `${GAS_API_URL}?action=get_dashboard_summary&tenant_id=${tenantId}`,
+          );
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderDashboard(result.data);
+          } else {
+            showAlert("error", "Gagal memuat data dari server.");
+          }
+        } catch (error) {
+          console.error("Error fetching dashboard:", error);
+        }
+      }
+
+      // LOGIKA RENDER DATA KE UI (Menggantikan kalkulasi PHP)
+      function renderDashboard(data) {
+        // Kalkulasi Sisa Hari
+        const tglBerlaku = new Date(data.tanggal_berakhir_langganan).getTime();
+        const waktuSekarang = new Date().getTime();
+        let sisaHari = Math.floor(
+          (tglBerlaku - waktuSekarang) / (1000 * 60 * 60 * 24),
+        );
+        if (sisaHari < 0) sisaHari = 0;
+
+        const isActive =
+          (data.status_berlangganan === "Aktif" ||
+            data.status_berlangganan === "Trial") &&
+          sisaHari > 0;
+
+        // Render Badge Status
+        const badgeEl = document.getElementById("ui-badge-status");
+        badgeEl.classList.remove("skeleton");
+        if (data.status_berlangganan === "Banned" || sisaHari === 0) {
+          badgeEl.innerHTML =
+            '<span class="bg-red-100 text-red-700 border border-red-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Expired</span>';
+        } else if (data.status_berlangganan === "Trial") {
+          badgeEl.innerHTML =
+            '<span class="bg-blue-100 text-blue-700 border border-blue-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Free Trial</span>';
+        } else {
+          badgeEl.innerHTML =
+            '<span class="bg-green-100 text-green-700 border border-green-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Aktif</span>';
+        }
+
+        // Render Nama Paket
+        const paketEl = document.getElementById("ui-nama-paket");
+        paketEl.classList.remove("skeleton");
+        paketEl.textContent = `Paket ${data.nama_paket || "Free Trial"}`;
+
+        // Render Tanggal Expired
+        const batasWaktuEl = document.getElementById("ui-batas-waktu");
+        batasWaktuEl.classList.remove("skeleton");
+        const optionsDate = { day: "numeric", month: "short", year: "numeric" };
+        batasWaktuEl.textContent = new Date(
+          data.tanggal_berakhir_langganan,
+        ).toLocaleDateString("id-ID", optionsDate);
+
+        // Render Sisa Hari
+        const sisaHariEl = document.getElementById("ui-sisa-hari-container");
+        sisaHariEl.classList.remove("skeleton", "text-gray-800");
+        sisaHariEl.classList.add(
+          sisaHari <= 3 ? "text-red-500" : "text-green-600",
+        );
+        sisaHariEl.innerHTML = `${sisaHari} <span class="text-lg font-medium text-gray-400">Hari</span>`;
+
+        // Render Tombol Kasir (Link Lintas Folder Tenant App)
+        const kasirContainer = document.getElementById(
+          "ui-btn-kasir-container",
+        );
+        if (isActive) {
+          const urlToko = `../tenant_app/login.html?toko=${encodeURIComponent(data.domain_slug)}`;
+          kasirContainer.innerHTML = `
+                    <a href="${urlToko}" target="_blank" class="inline-flex justify-center items-center gap-2 px-5 py-2.5 bg-[#10B981] hover:bg-[#059669] text-white text-sm font-bold rounded-xl shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-store"></i> <span class="hidden sm:inline">Buka Kasir</span> Toko
+                    </a>
+                `;
+        } else {
+          kasirContainer.innerHTML = `
+                    <button disabled class="inline-flex justify-center items-center gap-2 px-5 py-2.5 bg-gray-200 text-gray-500 text-sm font-bold rounded-xl cursor-not-allowed border border-gray-300">
+                        <i class="fa-solid fa-lock"></i> <span class="hidden sm:inline">Toko</span> Terkunci
+                    </button>
+                `;
+        }
+      }
+
+      // UPDATE DOMAIN SLUG FORM
+      document
+        .getElementById("updateDomainForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const newSlug = document.getElementById("domain_slug_input").value;
+          const tenantId = localStorage.getItem("saas_tenant_id");
+          const btn = document.getElementById("btnUpdateDomain");
+
+          // Loading state
+          const oldBtnText = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+          btn.disabled = true;
+          document.getElementById("alert-container").innerHTML = ""; // Clear alert
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+              throw new Error("Sistem backend (GAS) belum terhubung.");
+            }
+
+            const payload = {
+              action: "update_domain",
+              tenant_id: tenantId,
+              domain_slug: newSlug,
+            };
+
+            const response = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (result.status === "success") {
+              // Update session lokal
+              localStorage.setItem("saas_domain_slug", newSlug);
+              showAlert("success", "Alamat Link Toko berhasil diperbarui!");
+              // Render ulang tombol kasir agar href terupdate
+              fetchDashboardData(tenantId);
+            } else {
+              showAlert(
+                "error",
+                result.message ||
+                  `Maaf, link toko <b>${newSlug}</b> sudah digunakan.`,
+              );
+            }
+          } catch (error) {
+            showAlert("error", error.message);
+          } finally {
+            btn.innerHTML = oldBtnText;
+            btn.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>

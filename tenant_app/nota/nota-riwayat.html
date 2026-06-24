@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Riwayat Nota Transaksi - Tenda Camp</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+  </head>
+  <body>
+    <div id="sidebar-container"></div>
+
+    <div id="main-wrapper" class="d-flex flex-column min-vh-100">
+      <div id="header-container"></div>
+
+      <div class="container py-4 flex-grow-1">
+        <h2 class="mb-4">Riwayat Nota Transaksi</h2>
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>Telepon</th>
+                    <th>Periode</th>
+                    <th>Total</th>
+                    <th>DP</th>
+                    <th>Sisa</th>
+                    <th>Waktu</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="riwayat-table-body">
+                  <tr>
+                    <td colspan="9" class="text-center py-4">
+                      <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                      <p class="mt-2 mb-0">Memuat data riwayat...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/api.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        // 1. Cek Autentikasi (Diarahkan ke login.html jika belum login)
+        if (!checkAuth()) {
+          window.location.href = "../../login.html";
+          return;
+        }
+
+        // 2. Load Komponen UI (Header, Sidebar, Footer)
+        await loadComponents({
+          header: "../../components/header.html",
+          sidebar: "../../components/sidebar.html",
+          footer: "../../components/footer.html",
+        });
+
+        // 3. Ambil dan Tampilkan Data
+        loadRiwayatNota();
+      });
+
+      async function loadRiwayatNota() {
+        const tableBody = document.getElementById("riwayat-table-body");
+
+        try {
+          // Memanggil endpoint dari api.js (sesuaikan dengan nama fungsi di api.js Anda)
+          // Contoh: getRiwayatTransaksi() memanggil Google Apps Script dengan action=get_riwayat
+          const response = await api.get("get_riwayat_transaksi");
+
+          if (response.success && response.data.length > 0) {
+            tableBody.innerHTML = ""; // Bersihkan loading spinner
+
+            response.data.forEach((row, index) => {
+              const tr = document.createElement("tr");
+
+              // Memanfaatkan fungsi dari utils.js untuk format (formatRupiah, formatDate)
+              tr.innerHTML = `
+                            <td>${index + 1}</td>
+                            <td>${escapeHTML(row.nama)}</td>
+                            <td>${escapeHTML(row.phone)}</td>
+                            <td>${row.tanggal_from} s/d ${row.tanggal_to}</td>
+                            <td>${formatRupiah(row.total)}</td>
+                            <td>${formatRupiah(row.dp)}</td>
+                            <td>${formatRupiah(row.sisa)}</td>
+                            <td>${formatDateTime(row.created_at)}</td>
+                            <td>
+                                <a href="nota-view.html?id=${row.id}" target="_blank" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> Lihat Nota
+                                </a>
+                            </td>
+                        `;
+              tableBody.appendChild(tr);
+            });
+          } else {
+            tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-muted py-3">Belum ada riwayat transaksi.</td></tr>`;
+          }
+        } catch (error) {
+          console.error("Gagal memuat data riwayat:", error);
+          tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger py-3">Terjadi kesalahan saat memuat data. Silakan coba lagi.</td></tr>`;
+        }
+      }
+    </script>
+  </body>
+</html>

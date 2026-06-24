@@ -1,0 +1,1319 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Riwayat Pelanggan | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --bg-color: #f3f4f6;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader & Skeleton */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Header Controls */
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0;
+      }
+      .action-buttons .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* User Profile Card */
+      .user-modern-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 6px solid #007bff;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+      .user-icon-circle {
+        width: 60px;
+        height: 60px;
+        background: #e0f2fe;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0284c7;
+        font-size: 1.8rem;
+        margin-right: 1.25rem;
+        flex-shrink: 0;
+      }
+
+      /* Modern Card UI */
+      .modern-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        margin-bottom: 20px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        border-left: 6px solid transparent;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .modern-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
+      .modern-card.border-danger-soft {
+        border-left-color: #ff4757;
+      }
+      .modern-card.border-warning-soft {
+        border-left-color: #ffa502;
+      }
+      .modern-card.border-success-soft {
+        border-left-color: #2ed573;
+      }
+      .modern-card.border-info-soft {
+        border-left-color: #17a2b8;
+      }
+
+      .card-header-modern {
+        padding: 15px 15px 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .customer-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2f3542;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      .receipt-id {
+        font-size: 0.8rem;
+        color: #a4b0be;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      .card-body-modern {
+        padding: 10px 15px;
+        flex-grow: 1;
+      }
+
+      .info-box-sewa {
+        background-color: #f1f2f6;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .info-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #747d8c;
+        font-weight: 600;
+      }
+      .info-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2f3542;
+      }
+
+      .card-footer-modern {
+        padding: 12px 15px;
+        border-top: 1px solid #f1f2f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      .updated-text {
+        font-size: 0.75rem;
+        color: #ced6e0;
+        font-style: italic;
+      }
+
+      .btn-icon-circle {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        text-decoration: none;
+      }
+      .btn-icon-circle:hover {
+        transform: scale(1.1);
+      }
+
+      /* iOS Theme Modal Styles */
+      .ios-modal-content {
+        border-radius: 14px;
+        background-color: #f2f2f7;
+        border: none;
+        overflow: hidden;
+      }
+      .ios-header {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid #c6c6c8;
+        padding: 15px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ios-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: #000;
+        text-align: left;
+      }
+      .ios-close-btn {
+        color: #8e8e93;
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        text-align: right;
+      }
+      .ios-body {
+        padding: 20px 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .ios-card-group {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .ios-list-row {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        color: #000;
+      }
+      .ios-list-row:last-child {
+        border-bottom: none;
+      }
+      .ios-label {
+        font-size: 16px;
+        color: #000;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .ios-value {
+        font-size: 16px;
+        color: #8e8e93;
+        text-align: right;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ios-value.highlight {
+        color: #000;
+      }
+      .ios-value.blue {
+        color: #007aff;
+      }
+      .ios-value.red {
+        color: #ff3b30;
+      }
+      .ios-value.green {
+        color: #34c759;
+      }
+      .ios-section-header {
+        text-transform: uppercase;
+        color: #6d6d72;
+        font-size: 13px;
+        margin-bottom: 6px;
+        margin-left: 16px;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+      .ios-item-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-item-row:last-child {
+        border-bottom: none;
+      }
+      .ios-item-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: #eee;
+        object-fit: cover;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+      .ios-item-info {
+        flex-grow: 1;
+        text-align: left;
+      }
+      .ios-item-name {
+        font-weight: 500;
+        font-size: 16px;
+        color: #000;
+        margin-bottom: 4px;
+      }
+      .ios-item-desc {
+        font-size: 13px;
+        color: #8e8e93;
+        margin-bottom: 2px;
+      }
+      .ios-item-price-right {
+        text-align: right;
+        font-weight: 600;
+        color: #000;
+        min-width: 90px;
+        white-space: nowrap;
+      }
+      .ios-history-row {
+        padding: 15px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-history-row:last-child {
+        border-bottom: none;
+      }
+      .ios-history-header {
+        font-size: 16px;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .report-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .action-buttons {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+        }
+        .action-buttons .btn {
+          flex: 1;
+          margin: 0 2px;
+        }
+        .user-modern-card {
+          padding: 1rem;
+        }
+        .user-icon-circle {
+          width: 50px;
+          height: 50px;
+          font-size: 1.5rem;
+          margin-right: 1rem;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Profil Pelanggan...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-4 pb-2">
+          <div class="container-fluid">
+            <div id="alert-container"></div>
+
+            <div class="report-header mt-2">
+              <div class="report-title d-flex align-items-center">
+                <a
+                  href="user.html"
+                  class="btn btn-secondary btn-sm mr-3 shadow-sm flex items-center justify-center rounded-full w-9 h-9"
+                  title="Kembali"
+                  ><i class="fas fa-arrow-left"></i
+                ></a>
+                <h1 class="mb-0 font-weight-bold d-none d-md-block">
+                  Riwayat Pelanggan
+                </h1>
+                <h3 class="mb-0 font-weight-bold d-block d-md-none">
+                  Riwayat Pelanggan
+                </h3>
+              </div>
+
+              <div class="action-buttons">
+                <button
+                  class="btn btn-default"
+                  data-toggle="modal"
+                  data-target="#modalEditUser"
+                  title="Edit Data User"
+                >
+                  <i class="fas fa-user-edit text-yellow-500 mr-1"></i>
+                  <span class="d-none d-md-inline">Edit Data</span>
+                </button>
+
+                <a
+                  href="#"
+                  id="btnResetSearch"
+                  class="btn btn-default hidden"
+                  title="Reset Pencarian"
+                >
+                  <i class="fas fa-times text-red-500 mr-1"></i> Reset
+                </a>
+
+                <button
+                  class="btn btn-default"
+                  data-toggle="modal"
+                  data-target="#modalSearch"
+                  title="Cari Transaksi"
+                >
+                  <i class="fas fa-search text-blue-500 mr-1"></i> Cari
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="search-alert"
+              class="alert alert-info mb-3 shadow-sm border-0 hidden"
+            >
+              Pencarian nota untuk: <strong id="search-keyword"></strong>
+            </div>
+
+            <div class="user-modern-card">
+              <div class="user-icon-circle">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="flex-grow">
+                <h4 class="font-bold text-gray-800 mb-1" id="ui-user-nama">
+                  <span class="skeleton w-32 h-6 inline-block rounded"></span>
+                </h4>
+                <div class="text-gray-500 text-sm">
+                  <i class="fas fa-phone-alt mr-2 text-blue-500"></i>
+                  <span id="ui-user-phone"
+                    ><span
+                      class="skeleton w-24 h-4 inline-block rounded"
+                    ></span></span
+                  ><br />
+                  <i class="fas fa-map-marker-alt mr-2 text-red-500 mt-1"></i>
+                  <span id="ui-user-alamat"
+                    ><span class="skeleton w-48 h-4 inline-block rounded"></span
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="font-bold text-gray-800 mb-3">
+              <i class="fas fa-info-circle text-gray-400 mr-2"></i> Riwayat
+              Aktivitas
+            </h5>
+
+            <div class="row" id="transactionListContainer">
+              <div class="col-12">
+                <div class="skeleton h-32 w-full rounded-2xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="modalEditUser" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div
+          class="modal-content shadow-lg border-0 rounded-2xl overflow-hidden"
+        >
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-user-edit mr-2"></i> Edit Data Pengguna
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <form id="formEditUser">
+            <div class="modal-body p-4 bg-gray-50">
+              <input type="hidden" id="edit_user_id" />
+              <div class="form-group mb-3">
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wide"
+                  >Nama Lengkap <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="edit_nama"
+                  class="form-control rounded-xl bg-white border-gray-200"
+                  required
+                />
+              </div>
+              <div class="form-group mb-3">
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wide"
+                  >Nomor Telepon (WhatsApp)
+                  <span class="text-red-500">*</span></label
+                >
+                <input
+                  type="text"
+                  id="edit_phone"
+                  class="form-control rounded-xl bg-white border-gray-200"
+                  required
+                />
+                <small class="form-text text-gray-400 font-medium"
+                  >Pastikan nomor aktif dan terdaftar WhatsApp.</small
+                >
+              </div>
+              <div class="form-group mb-0">
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wide"
+                  >Alamat Lengkap</label
+                >
+                <textarea
+                  id="edit_alamat"
+                  class="form-control rounded-xl bg-white border-gray-200 resize-none"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+            <div class="modal-footer bg-gray-50 p-4 border-t border-gray-100">
+              <button
+                type="button"
+                class="btn btn-light rounded-xl font-bold flex-1"
+                data-dismiss="modal"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary rounded-xl font-bold flex-1 shadow-sm"
+                id="btnSubmitEdit"
+              >
+                Simpan Perubahan
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div
+          class="modal-content shadow-lg border-0 rounded-2xl overflow-hidden"
+        >
+          <form id="formSearch">
+            <div class="modal-header bg-info text-white">
+              <h5 class="modal-title font-bold">
+                <i class="fas fa-search mr-2"></i>Cari Transaksi
+              </h5>
+              <button
+                type="button"
+                class="close text-white"
+                data-dismiss="modal"
+              >
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body p-4 bg-gray-50 text-center">
+              <div class="form-group mb-0 text-left">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nomor Nota (cth: #0012)</label
+                >
+                <input
+                  type="text"
+                  id="inp_search"
+                  class="form-control rounded-xl bg-white border-gray-200 font-bold text-lg text-center"
+                  placeholder="Cari..."
+                  autofocus
+                />
+              </div>
+            </div>
+            <div class="modal-footer border-t border-gray-100 p-3 bg-gray-50">
+              <button
+                type="submit"
+                class="btn btn-info btn-block rounded-xl font-bold py-2 shadow-sm"
+              >
+                Cari Sekarang
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div class="modal-content ios-modal-content">
+          <div class="ios-header">
+            <div style="width: 30px"></div>
+            <div class="ios-title" id="detail-modal-title">Rincian Laporan</div>
+            <button type="button" class="ios-close-btn" data-dismiss="modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="ios-body p-0" id="detail-modal-body">
+            <div class="text-center py-5">
+              <i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      let phoneGet = "";
+      let currentSearch = "";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        phoneGet = urlParams.get("phone") || "";
+        currentSearch = urlParams.get("search") || "";
+
+        if (!phoneGet) {
+          document.getElementById("loader-overlay").style.display = "none";
+          showAlert(
+            "error",
+            "Nomor telepon tidak ditemukan. Silakan kembali ke menu Info Customer.",
+          );
+          return;
+        }
+
+        if (currentSearch) {
+          document.getElementById("inp_search").value = currentSearch;
+          document.getElementById("search-alert").classList.remove("hidden");
+          document.getElementById("search-keyword").textContent = currentSearch;
+          document.getElementById("btnResetSearch").classList.remove("hidden");
+          document.getElementById("btnResetSearch").href =
+            `user-history.html?phone=${encodeURIComponent(phoneGet)}`;
+        }
+
+        fetchUserHistory();
+      });
+
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const bg =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+        const icon =
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+        container.innerHTML = `<div class='${bg} border px-4 py-3 rounded-xl mb-4 flex items-start text-sm font-medium shadow-sm transition-all'><i class='fa-solid ${icon} mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      // === 1. FETCH DATA DARI API ===
+      async function fetchUserHistory() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderUI(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const payload = new URLSearchParams({
+            action: "get_user_history",
+            admin_id: adminId,
+            phone: phoneGet,
+            search: currentSearch,
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderUI(result.data);
+          } else {
+            console.error(result.message);
+            renderUI(null);
+            showAlert(
+              "error",
+              result.message || "Gagal memuat profil pengguna.",
+            );
+          }
+        } catch (err) {
+          console.error("Fetch API error:", err);
+          renderUI(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. RENDER UI ===
+      function renderUI(data) {
+        if (!data) return;
+
+        // Profil User
+        const user = data.user;
+        document.getElementById("ui-user-nama").textContent = user.nama;
+        document.getElementById("ui-user-phone").textContent = user.phone;
+        document.getElementById("ui-user-alamat").textContent =
+          user.alamat || "Belum ada alamat";
+
+        // Isi modal edit
+        document.getElementById("edit_user_id").value = user.id;
+        document.getElementById("edit_nama").value = user.nama;
+        document.getElementById("edit_phone").value = user.phone;
+        document.getElementById("edit_alamat").value = user.alamat || "";
+
+        // History Cards (Mixed)
+        const container = document.getElementById("transactionListContainer");
+        container.innerHTML = "";
+
+        if (!data.mixed_cards || data.mixed_cards.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-2xl shadow-sm border p-5">
+                    <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 font-semibold m-0">Tidak ada riwayat aktivitas ditemukan pada pengguna ini.</p>
+                </div>
+            </div>`;
+          return;
+        }
+
+        data.mixed_cards.forEach((card, idx) => {
+          // A. BLOK TRANSAKSI
+          if (card.type === "transaksi") {
+            const trx = card.data;
+            const sisa = parseFloat(trx.sisa_pembayaran);
+            const status = trx.status_pesanan;
+
+            let borderClass = "border-warning-soft";
+            let badge =
+              '<span class="badge badge-warning text-dark font-bold px-2 py-1 rounded-pill">Belum Lunas</span>';
+
+            if (status.toLowerCase() === "dispensasi") {
+              borderClass = "border-info-soft";
+              badge =
+                '<span class="badge badge-info font-bold px-2 py-1 rounded-pill">DISPENSASI</span>';
+            } else if (status === "Cancel") {
+              borderClass = "border-danger-soft";
+              badge =
+                '<span class="badge badge-danger font-bold px-2 py-1 rounded-pill">DP CANCEL</span>';
+            } else if (sisa <= 0) {
+              borderClass = "border-success-soft";
+              badge =
+                '<span class="badge badge-success font-bold px-2 py-1 rounded-pill">LUNAS</span>';
+            }
+
+            let dateText = "-";
+            if (trx.tanggal_from && trx.tanggal_to) {
+              const d1 = new Date(trx.tanggal_from);
+              const d2 = new Date(trx.tanggal_to);
+              const diff = Math.max(1, Math.round((d2 - d1) / 86400000) + 1);
+              dateText = `${d1.toLocaleDateString("id-ID")} - ${d2.toLocaleDateString("id-ID")} (${diff} Hari)`;
+            }
+
+            let tagihanHtml = "";
+            if (status === "Cancel") {
+              const pct =
+                trx.total_dibayar_raw > 0
+                  ? Math.round(
+                      (trx.total_dibayar_fix / trx.total_dibayar_raw) * 100,
+                    )
+                  : 0;
+              tagihanHtml = `<span class="info-value text-danger whitespace-nowrap">-${pct}% ${FORMATTER.format(trx.total_dibayar_fix)}</span>`;
+            } else if (status.toLowerCase() === "dispensasi") {
+              tagihanHtml = `<span class="info-value text-blue-500 whitespace-nowrap">Rp 0</span>`;
+            } else {
+              tagihanHtml = `<span class="info-value whitespace-nowrap">${FORMATTER.format(trx.total_biaya_item)}</span>`;
+            }
+
+            let sisaHtml = "";
+            if (
+              status === "Cancel" ||
+              status.toLowerCase() === "dispensasi" ||
+              status === "Selesai" ||
+              sisa <= 0
+            ) {
+              sisaHtml = `<span class="font-bold text-green-600 whitespace-nowrap">LUNAS</span>`;
+            } else {
+              sisaHtml = `<span class="font-bold text-red-500 whitespace-nowrap">${FORMATTER.format(sisa)}</span>`;
+            }
+
+            let alertDenda = "";
+            if (trx.total_denda_belum_dibayar > 0 && status !== "Cancel") {
+              alertDenda = `
+                <div class="d-flex justify-content-between align-items-center mt-2 p-1 bg-yellow-50 rounded border border-yellow-200 text-red-500 text-xs font-bold shadow-sm">
+                    <span><i class="fas fa-exclamation-triangle mr-1"></i> Denda Blm Dibayar</span><span class="whitespace-nowrap">${FORMATTER.format(trx.total_denda_belum_dibayar)}</span>
+                </div>`;
+            }
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card ${borderClass} fade-in" onclick="openDetailTransaksiModal(${trx.id})">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${trx.nama_user || "Pelanggan"}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> #${String(trx.id).padStart(4, "0")}</div>
+                        </div>
+                        <div>${badge}</div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa">
+                            <div class="info-item"><span class="info-label">Periode Sewa</span><span class="info-value text-xs">${dateText}</span></div>
+                            <div class="info-item text-right"><span class="info-label">Items</span><span class="info-value text-xs">${trx.total_items} Jenis</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Total Biaya:</span>${tagihanHtml}</div>
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Sisa Bayar:</span>${sisaHtml}</div>
+                        ${alertDenda}
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> Buat: ${new Date(trx.created_at).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</div>
+                        <div class="action-buttons-group">
+                            <a href="../nota/preview-struk.html?id=${trx.id}" target="_blank" class="btn btn-icon-circle bg-gray-100 text-gray-600" onclick="event.stopPropagation();"><i class="fas fa-print"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+            // B. RENDER BLOK KARTU DENDA
+          } else if (card.type === "denda") {
+            const dn = card.data;
+            const isDisp = (dn.semua_metode_pembayaran_denda || "")
+              .toLowerCase()
+              .includes("dispensasi");
+
+            const badgeClass = isDisp ? "badge-info" : "badge-danger";
+            const bColor = isDisp ? "border-info-soft" : "border-danger-soft";
+            const bgColor = isDisp ? "#e0f2fe" : "#fee2e2";
+            const tc = isDisp ? "text-blue-600" : "text-red-600";
+
+            let denda_periode = "-";
+            if (
+              dn.denda_from &&
+              dn.denda_to &&
+              dn.denda_from !== "0000-00-00"
+            ) {
+              const df = new Date(dn.denda_from);
+              const dt = new Date(dn.denda_to);
+              const hari = Math.max(1, Math.round((dt - df) / 86400000) + 1);
+              denda_periode = `${df.toLocaleDateString("id-ID")} - ${dt.toLocaleDateString("id-ID")} (${hari} Hari)`;
+            }
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card ${bColor} fade-in" onclick="openDetailDendaModal(${dn.transaksi_id}, '${dn.kode_nota}')">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${dn.user_nama}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> ${dn.kode_nota}</div>
+                        </div>
+                        <div><span class="badge ${badgeClass} font-bold px-2 py-1 rounded-pill"><i class="fas ${isDisp ? "fa-handshake" : "fa-exclamation-triangle"} mr-1"></i> ${isDisp ? "DISPENSASI" : "DENDA"}</span></div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa" style="background:${bgColor};">
+                            <div class="info-item"><span class="info-label ${tc}">Periode Denda</span><span class="info-value ${tc} text-xs font-bold whitespace-nowrap">${denda_periode}</span></div>
+                            <div class="info-item text-right"><span class="info-label ${tc}">Total Tagihan</span><span class="info-value ${tc} text-xs font-black whitespace-nowrap">${isDisp ? "Rp 0" : FORMATTER.format(dn.total_tagihan_denda)}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-500 text-xs font-bold">Penerima Denda:</span>
+                            <span class="font-bold text-gray-700 text-xs"><i class="fas fa-user-tie mr-1"></i> ${dn.nama_shift_penerima_denda || "N/A"}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> Bayar: ${new Date(dn.latest_payment_time).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</div>
+                        <div class="text-gray-300"><i class="fas fa-chevron-right text-xs"></i></div>
+                    </div>
+                </div>
+            </div>`;
+          }
+        });
+      }
+
+      // === 3. UPDATE PROFIL USER API ===
+      document
+        .getElementById("formEditUser")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitEdit");
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "update_user_profile",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            user_id: document.getElementById("edit_user_id").value,
+            nama: document.getElementById("edit_nama").value,
+            phone: document.getElementById("edit_phone").value,
+            alamat: document.getElementById("edit_alamat").value,
+          };
+
+          try {
+            if (
+              typeof GAS_API_URL === "undefined" ||
+              GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            )
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+            if (result.status === "success") {
+              $("#modalEditUser").modal("hide");
+              Swal.fire({
+                icon: "success",
+                title: "Berhasil!",
+                text: "Profil pengguna diperbarui.",
+                confirmButtonColor: "#3b82f6",
+              }).then(() => {
+                // Refresh data with new phone url if changed
+                if (payload.phone !== phoneGet)
+                  window.location.href = `user-history.html?phone=${encodeURIComponent(payload.phone)}`;
+                else fetchUserHistory();
+              });
+            } else {
+              showAlert("error", result.message || "Gagal update.");
+              btn.innerHTML = "Simpan Perubahan";
+              btn.disabled = false;
+            }
+          } catch (err) {
+            Swal.fire({
+              icon: "success",
+              title: "Sukses (Mock)",
+              text: "Update profil disimulasikan lokal.",
+              confirmButtonColor: "#3b82f6",
+            });
+            $("#modalEditUser").modal("hide");
+            btn.innerHTML = "Simpan Perubahan";
+            btn.disabled = false;
+            fetchUserHistory();
+          }
+        });
+
+      // Aksi Cari
+      document
+        .getElementById("formSearch")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const s = document.getElementById("inp_search").value;
+          window.location.href = `user-history.html?phone=${encodeURIComponent(phoneGet)}&search=${encodeURIComponent(s)}`;
+        });
+
+      // === 4. MODALS DETAIL (ON-DEMAND RE-FETCH) ===
+      // (Fungsi render modal ini sama persis dengan yang ada di laporan/report.html)
+      async function openDetailTransaksiModal(id) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Transaksi`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_transaction_detail&id=${id}`,
+          );
+          const result = await res.json();
+          if (result.status === "success") renderModalTransaksi(result.data);
+        } catch (e) {
+          body.innerHTML =
+            '<div class="p-4 text-center text-red-500">Gagal menarik data detail.</div>';
+        }
+      }
+
+      function renderModalTransaksi(data) {
+        const buildRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+        const isLunas = data.sisa_pembayaran <= 0;
+        let statusText = isLunas ? "LUNAS" : "BELUM LUNAS";
+        if (data.status_pesanan === "Cancel") statusText = "DP CANCEL";
+        else if (data.status_pesanan.toLowerCase() === "dispensasi")
+          statusText = "DISPENSASI";
+
+        let html = `
+    <div class="p-3">
+        <div class="ios-section-header m-0 mb-2">INFORMASI PELANGGAN</div>
+        <div class="ios-card-group">
+            ${buildRow("Nota", data.kode_nota, "highlight")}
+            ${buildRow("Nama", data.nama_user, "highlight")}
+            ${buildRow("Telepon", data.phone, "blue")}
+            ${buildRow("Jaminan", data.jaminan || "-")}
+            ${buildRow("Shift Pembuat", data.nama_admin_pembuat || "-", "")}
+        </div>
+        <div class="ios-section-header m-0 mb-2">DETAIL SEWA</div>
+        <div class="ios-card-group">`;
+
+        if (data.durasi_hari)
+          html += buildRow(
+            "Periode",
+            `${new Date(data.tanggal_from).toLocaleDateString("id-ID")} - ${new Date(data.tanggal_to).toLocaleDateString("id-ID")}`,
+          );
+        html += buildRow(
+          "Status Bayar",
+          statusText,
+          isLunas || statusText === "DISPENSASI" ? "green" : "red",
+        );
+        html += buildRow(
+          "Total Biaya",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(
+                data.status_pesanan === "Cancel"
+                  ? data.total_biaya_item_raw
+                  : data.total_biaya_item,
+              ),
+          "highlight",
+        );
+        if (
+          data.diskon_persen > 0 &&
+          data.status_pesanan !== "Cancel" &&
+          data.status_pesanan.toLowerCase() !== "dispensasi"
+        ) {
+          html += `<div class="ios-list-row bg-yellow-50"><div class="ios-label text-yellow-600">Diskon ${data.diskon_persen}%</div><div class="ios-value text-yellow-600">- ${FORMATTER.format(data.diskon_nominal)}</div></div>`;
+        }
+        html += buildRow(
+          "Sudah Bayar",
+          FORMATTER.format(data.total_dibayar_sekarang),
+          "green",
+        );
+        html += buildRow(
+          "Sisa",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(data.sisa_pembayaran),
+          data.sisa_pembayaran > 0 ? "red" : "green",
+        );
+        html += `</div>`;
+
+        html += `<div class="ios-section-header m-0 mb-2">RINCIAN ITEM CATALOG</div><div class="ios-card-group">`;
+        if (data.items.length > 0) {
+          data.items.forEach((item) => {
+            const img = item.foto
+              ? `<img src="${item.foto}" class="ios-item-thumb" onclick="showImage('${item.foto}')" style="cursor:pointer">`
+              : `<div class="ios-item-thumb flex items-center justify-center"><i class="fas fa-box text-gray-400"></i></div>`;
+            const desc = item.jenis_item.toLowerCase().includes("sewa")
+              ? `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)} x ${item.jumlah_hari} Hari`
+              : `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)}`;
+            html += `
+            <div class="ios-item-row">
+                ${img}
+                <div class="ios-item-info"><div class="ios-item-name">${item.nama_item}</div><div class="ios-item-desc">${desc}</div></div>
+                <div class="ios-item-price-right highlight">${data.status_pesanan.toLowerCase() === "dispensasi" ? "Rp 0" : FORMATTER.format(item.total_harga_item)}</div>
+            </div>`;
+          });
+        } else {
+          html += `<div class="ios-list-row justify-center text-gray-500 text-sm">Tidak ada item.</div>`;
+        }
+        html += `</div>`;
+
+        html += `<div class="ios-section-header m-0 mb-2">RIWAYAT ALOKASI DANA</div><div class="ios-card-group">`;
+        if (data.riwayat_pembayaran.length > 0) {
+          data.riwayat_pembayaran.forEach((h) => {
+            const sub = h.is_split
+              ? h.splits
+                  .map(
+                    (s) =>
+                      `<div class="flex justify-between text-xs text-gray-500 mt-1"><span>${s.metode}</span><strong>${FORMATTER.format(s.amount)}</strong></div>`,
+                  )
+                  .join("")
+              : `<div class="text-xs text-gray-400 mb-1">${h.metode_pembayaran}</div>`;
+            html += `
+            <div class="ios-history-row">
+                <div class="flex justify-between items-center mb-1"><span class="font-bold text-sm text-gray-700">${h.label}</span><strong class="text-green-600">${FORMATTER.format(h.jumlah_bayar)}</strong></div>
+                ${sub}
+                <div class="text-[10px] text-gray-400 mt-1">${new Date(h.tanggal_bayar).toLocaleString("id-ID")} &bull; ${h.admin_nama}</div>
+            </div>`;
+          });
+        } else {
+          html += `<div class="p-3 text-center text-gray-400 text-sm">Tidak ada riwayat dana masuk.</div>`;
+        }
+        html += `</div></div>`;
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      async function openDetailDendaModal(id, nota) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Denda - ${nota}`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-red-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_denda_detail&id=${id}`,
+          );
+          const result = await res.json();
+          if (result.status === "success") renderModalDetailDenda(result.data);
+        } catch (e) {
+          body.innerHTML =
+            '<div class="p-4 text-center text-red-500">Error memuat data denda.</div>';
+        }
+      }
+
+      function renderModalDetailDenda(data) {
+        const buildListRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+        let html = `
+    <div class="p-4">
+        <div class="ios-section-header m-0 mb-2">INFORMASI DENDA</div>
+        <div class="ios-card-group">
+            ${buildListRow("Pelanggan", data.nama_user, "highlight")}
+            ${buildListRow("Nota Induk", data.kode_nota)}
+            ${buildListRow("Rentang Waktu", data.denda_periode_formatted || "-")}
+            ${buildListRow("Total Tagihan", FORMATTER.format(data.denda), "text-danger font-bold")}
+        </div>
+        <div class="ios-section-header m-0 mb-2">RIWAYAT PEMBAYARAN DENDA</div>
+        <div class="ios-card-group bg-transparent shadow-none">`;
+
+        if (
+          data.history_denda_grouped &&
+          data.history_denda_grouped.length > 0
+        ) {
+          let tTentukan = 0;
+          let tTunai = 0;
+          let tKomp = 0;
+          data.history_denda_grouped.forEach((g) => {
+            const totalGrp = g.jumlah_denda_satuan * g.count;
+            tTentukan += totalGrp;
+            let isKomp = g.metode_pembayaran
+              .toLowerCase()
+              .includes("kompensasi");
+            let itemBayar = isKomp ? 0 : g.jumlah_pembayaran_satuan * g.count;
+            if (g.status_denda === "Sudah Dibayar") {
+              if (isKomp) tKomp += g.jumlah_pembayaran_satuan * g.count;
+              else tTunai += itemBayar;
+            }
+
+            const badge =
+              g.status_denda === "Sudah Dibayar"
+                ? `<span class="badge badge-success text-[10px] mr-2">Paid</span>`
+                : `<span class="badge badge-danger text-[10px] mr-2">Unpaid</span>`;
+            const label =
+              g.count > 1 &&
+              g.keterangan_list[0].toLowerCase().includes("keterlambatan")
+                ? `Denda Terlambat ${g.count} Hari`
+                : g.keterangan_list[0];
+
+            let desc = "";
+            if (g.status_denda === "Sudah Dibayar") {
+              desc = `<div class="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-100">
+                    Masuk Fisik: <strong class="text-gray-700">${FORMATTER.format(itemBayar)}</strong> (${g.metode_pembayaran}) oleh <strong>${g.nama_admin_penerima_denda || data.nama_shift_pembuat}</strong>
+                    ${isKomp ? `<br><span class="badge bg-indigo-900 text-white mt-1 font-normal">Kompensasi: ${FORMATTER.format(g.jumlah_pembayaran_satuan * g.count)}</span>` : ""}
+                </div>`;
+            }
+
+            html += `
+            <div class="bg-white border-l-4 border-red-500 rounded-xl shadow-sm mb-2 p-3">
+                <div class="flex justify-between items-start mb-1"><h6 class="text-red-500 font-bold text-sm m-0 flex items-center">${badge} ${label}</h6><span class="font-black text-gray-800">${FORMATTER.format(totalGrp)}</span></div>
+                ${desc}
+            </div>`;
+          });
+
+          html += `
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mt-3 text-xs shadow-sm">
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Denda Ditentukan:</span><strong class="text-gray-800">${FORMATTER.format(tTentukan)}</strong></div>
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Masuk Fisik (Kas):</span><strong class="text-emerald-600 font-black">${FORMATTER.format(tTunai)}</strong></div>
+            <div class="flex justify-between"><span class="text-gray-600">Total Nilai Kompensasi:</span><strong class="text-gray-800">${FORMATTER.format(tKomp)}</strong></div>
+        </div>`;
+        } else {
+          html += `<div class="bg-white p-3 text-center text-gray-500 text-sm rounded-xl">Tidak ada riwayat denda.</div>`;
+        }
+
+        html += `</div></div>`;
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      window.showImage = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      // MOCK DATA FALLBACK
+      function getMockData() {
+        return {
+          user: {
+            id: 1,
+            nama: "Budi Santoso",
+            phone: "08123456789",
+            alamat: "Jl. Bintaro Raya",
+          },
+          mixed_cards: [
+            {
+              type: "transaksi",
+              data: {
+                id: 1,
+                nama_user: "Budi Santoso",
+                total_biaya_item: 400000,
+                total_dibayar_fix: 400000,
+                total_dibayar_raw: 400000,
+                sisa_pembayaran: 0,
+                status_pesanan: "Selesai",
+                periode_sewa_text: "12/10/26 - 15/10/26",
+                total_items: 2,
+                total_denda_belum_dibayar: 0,
+                created_at: new Date().toISOString(),
+              },
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

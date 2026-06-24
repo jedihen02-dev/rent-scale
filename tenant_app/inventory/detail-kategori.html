@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Kategori | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --bg-color: #f4f6f9;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Skeleton Loader Animasi */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Style Action Buttons */
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .report-title h3 {
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 0;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0;
+        flex-wrap: wrap;
+      }
+      .action-buttons .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .action-buttons .btn-default {
+        background: white;
+        color: #374151;
+      }
+      .action-buttons .btn-default:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: #f9fafb;
+      }
+
+      /* Mobile-first styling */
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .report-header {
+          flex-direction: column;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+        }
+        .action-buttons {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          gap: 0.5rem;
+        }
+        .action-buttons .btn {
+          flex: 1;
+          white-space: nowrap;
+          padding: 0.5rem 0.5rem;
+          font-size: 0.85rem;
+        }
+
+        .list-item-card {
+          background-color: #fff;
+          border: none;
+          border-radius: 12px;
+          margin: 0 0 0.75rem 0;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          padding: 1rem;
+          display: flex;
+          gap: 1rem;
+          transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        .list-item-card:active {
+          transform: scale(0.98);
+        }
+
+        .list-item-card .item-image,
+        .list-item-card .no-image-box {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+          border-radius: 8px;
+          flex-shrink: 0;
+        }
+
+        .list-item-card .item-info {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          min-width: 0;
+        }
+
+        .list-item-card .item-info h6 {
+          font-weight: bold;
+          margin-bottom: 0.25rem;
+          font-size: 1rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+        }
+
+        .list-item-card .item-info .badge {
+          font-size: 0.75rem;
+          padding: 0.3em 0.6em;
+          margin-bottom: 0.5rem;
+        }
+        .list-item-card .item-info .price {
+          font-weight: bold;
+          color: #333;
+          font-size: 0.9rem;
+        }
+        .list-item-card .item-info .description {
+          font-size: 0.8rem;
+          color: #666;
+          flex-grow: 1;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          -webkit-box-orient: vertical;
+          line-height: 1.2;
+        }
+        .list-item-card .item-actions {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 0.5rem;
+        }
+        .list-item-card .item-actions .btn {
+          width: 32px;
+          height: 32px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          border-radius: 50%;
+        }
+
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.4s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+          box-shadow: none;
+        }
+        .modal-header,
+        .modal-footer {
+          border: none;
+          padding: 1rem;
+        }
+        .modal-header {
+          background-color: #f8f9fa;
+          border-bottom: 1px solid #dee2e6;
+          position: sticky;
+          top: 0;
+          z-index: 1050;
+        }
+        .modal-body {
+          padding: 1.5rem;
+          background-color: #ffffff;
+        }
+        .modal-footer {
+          padding: 1rem 1.5rem;
+          background-color: #f8f9fa;
+          position: sticky;
+          bottom: 0;
+          z-index: 1050;
+          box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+      }
+
+      @media (min-width: 768px) {
+        .list-view-mobile {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-3">
+            <div id="alert-container"></div>
+
+            <div class="report-header">
+              <div class="report-title">
+                <h3
+                  id="ui-kategori-name"
+                  class="mb-0 font-weight-bold skeleton w-64 h-8"
+                ></h3>
+              </div>
+
+              <div class="action-buttons">
+                <a
+                  href="kategori.html"
+                  class="btn btn-default text-dark"
+                  title="Kembali"
+                >
+                  <i class="fas fa-arrow-left mr-1"></i> Kembali
+                </a>
+                <button class="btn btn-default" onclick="openModalTambah()">
+                  <i class="fas fa-plus text-success mr-1"></i> Add
+                </button>
+                <a
+                  id="btnReset"
+                  href="#"
+                  class="btn btn-default hidden"
+                  title="Reset Pencarian"
+                >
+                  <i class="fas fa-times text-danger mr-1"></i> Reset
+                </a>
+                <button
+                  class="btn btn-default"
+                  data-toggle="modal"
+                  data-target="#modalSearchItem"
+                  title="Cari Item"
+                >
+                  <i class="fas fa-search text-info mr-1"></i> Cari
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="search-alert"
+              class="alert alert-info mb-3 shadow-sm border-0 hidden"
+            >
+              Menampilkan hasil pencarian untuk:
+              <strong id="search-keyword"></strong>
+            </div>
+
+            <div class="list-view-mobile d-block d-md-none" id="ui-mobile-list">
+              <div class="list-item-card">
+                <div class="skeleton h-24 w-full"></div>
+              </div>
+            </div>
+
+            <div
+              class="card d-none d-md-block shadow-sm rounded-2xl border-0 overflow-hidden"
+            >
+              <div class="card-header bg-info text-white">
+                <h5 class="mb-0 font-bold">Item Aktif dalam Kategori</h5>
+              </div>
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover align-middle mb-0 text-sm">
+                  <thead class="bg-gray-50 text-gray-500">
+                    <tr>
+                      <th class="py-3 px-4">No</th>
+                      <th class="py-3 px-4">Nama</th>
+                      <th class="py-3 px-4">Jenis</th>
+                      <th class="py-3 px-4">Harga</th>
+                      <th class="py-3 px-4">Deskripsi</th>
+                      <th class="py-3 px-4">Foto</th>
+                      <th class="py-3 px-4">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ui-desktop-table">
+                    <tr>
+                      <td colspan="7" class="text-center p-4">
+                        <div class="skeleton h-6 w-full"></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="modalSearchItem" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div
+          class="modal-content shadow-lg border-0 rounded-2xl overflow-hidden"
+        >
+          <div class="modal-header bg-info text-white">
+            <h5 class="modal-title font-bold">Cari Item</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <form id="formSearch">
+            <div class="modal-body p-4">
+              <div class="form-group mb-0">
+                <label class="font-weight-bold text-muted small"
+                  >Kata Kunci (Nama Item)</label
+                >
+                <input
+                  type="text"
+                  id="inp_search"
+                  class="form-control rounded-xl bg-gray-50"
+                  placeholder="Contoh: Tenda..."
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer bg-gray-50 border-0 p-3">
+              <button
+                type="button"
+                class="btn btn-light rounded-xl"
+                data-dismiss="modal"
+              >
+                Batal
+              </button>
+              <button type="submit" class="btn btn-info rounded-xl px-4">
+                Cari
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="itemModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <form
+          id="formItem"
+          class="modal-content shadow-2xl rounded-2xl overflow-hidden border-0"
+        >
+          <input type="hidden" id="item_id" />
+          <input type="hidden" id="old_foto" />
+
+          <div
+            class="modal-header text-white"
+            style="background-color: var(--primary-color)"
+          >
+            <h5 class="modal-title font-bold" id="modalTitle">Form Item</h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body p-4">
+            <div class="row">
+              <div class="col-12 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nama Item</label
+                >
+                <input
+                  type="text"
+                  id="nama_item"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200"
+                  required
+                />
+              </div>
+              <div class="col-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Harga (Rp)</label
+                >
+                <input
+                  type="number"
+                  id="harga"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200"
+                  required
+                />
+              </div>
+              <div class="col-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Jenis Item</label
+                >
+                <select
+                  id="jenis_item"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200"
+                  required
+                >
+                  <option value="sewa">Sewa</option>
+                  <option value="jual">Jual</option>
+                </select>
+              </div>
+              <div class="col-12 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Foto
+                  <small class="text-info lowercase normal-case"
+                    >(Otomatis dikompres)</small
+                  ></label
+                >
+                <input
+                  type="file"
+                  id="foto"
+                  class="form-control-file border p-2 rounded-xl bg-gray-50"
+                  accept="image/*"
+                  onchange="previewFoto(event)"
+                />
+              </div>
+              <div class="col-12 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Deskripsi</label
+                >
+                <textarea
+                  id="deskripsi"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200 resize-none"
+                  rows="3"
+                ></textarea>
+              </div>
+              <div class="col-12 text-center">
+                <img
+                  src=""
+                  id="previewFotoImg"
+                  class="img-thumbnail mt-2 shadow-sm rounded-lg"
+                  style="max-height: 150px; display: none"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer border-t border-gray-100 bg-gray-50 p-4">
+            <button
+              type="button"
+              class="btn btn-light flex-fill mr-2 rounded-xl font-bold"
+              data-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnSubmitItem"
+              class="btn btn-primary flex-fill ml-2 rounded-xl font-bold border-0"
+              style="background-color: var(--primary-color)"
+            >
+              Simpan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal fade" id="gambarModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 80vh"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      let globalKategoriId = null;
+      let currentSearch = "";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        globalKategoriId = urlParams.get("id");
+        currentSearch = urlParams.get("search") || "";
+
+        if (!globalKategoriId) {
+          window.location.href = "kategori.html";
+          return;
+        }
+
+        if (currentSearch) {
+          document.getElementById("search-alert").classList.remove("hidden");
+          document.getElementById("search-keyword").textContent = currentSearch;
+          const btnReset = document.getElementById("btnReset");
+          btnReset.classList.remove("hidden");
+          btnReset.href = `detail-kategori.html?id=${globalKategoriId}`;
+        }
+
+        fetchKategoriDetails();
+      });
+
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const bg =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+        const icon =
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+        container.innerHTML = `<div class='${bg} border px-4 py-3 rounded-xl mb-4 flex items-start text-sm font-medium shadow-sm transition-all'><i class='fa-solid ${icon} mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      // === 1. FETCH DATA DARI API ===
+      async function fetchKategoriDetails() {
+        const adminId = localStorage.getItem("tenant_admin_id");
+
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            renderKategoriUI({ nama: "Tenda Pendaki (Mock)" }, getMockItems());
+            return;
+          }
+
+          const url = `${GAS_API_URL}?action=get_kategori_detail&admin_id=${adminId}&id=${globalKategoriId}&search=${encodeURIComponent(currentSearch)}`;
+          const response = await fetch(url);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderKategoriUI(result.data.kategori, result.data.items);
+          } else {
+            showAlert("error", "Gagal memuat data detail kategori.");
+          }
+        } catch (error) {
+          console.error(error);
+          renderKategoriUI({ nama: "Nama Kategori (Offline)" }, []);
+        }
+      }
+
+      // === 2. RENDER UI ===
+      function renderKategoriUI(kategori, items) {
+        // Header
+        const titleEl = document.getElementById("ui-kategori-name");
+        titleEl.textContent = kategori.nama;
+        titleEl.classList.remove("skeleton", "w-64", "h-8");
+
+        const mobileList = document.getElementById("ui-mobile-list");
+        const desktopTable = document.getElementById("ui-desktop-table");
+        mobileList.innerHTML = "";
+        desktopTable.innerHTML = "";
+
+        if (!items || items.length === 0) {
+          const msg = currentSearch
+            ? "Item tidak ditemukan."
+            : "Belum ada item aktif.";
+          mobileList.innerHTML = `<div class="alert alert-warning text-center shadow-sm rounded-xl text-sm border-0"><i class="fas fa-box-open mb-2 text-2xl opacity-50 block"></i>${msg}</div>`;
+          desktopTable.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-500">${msg}</td></tr>`;
+          return;
+        }
+
+        items.forEach((row, idx) => {
+          const badgeClass =
+            row.jenis_item === "sewa" ? "bg-info" : "bg-success";
+          const imgMobile = row.foto
+            ? `<img src="${row.foto}" class="item-image" onclick="showImage('${row.foto}')" style="cursor:pointer;">`
+            : `<div class="no-image-box bg-light border d-flex justify-content-center align-items-center rounded"><i class="fas fa-box fa-2x text-muted"></i></div>`;
+
+          const imgDesktop = row.foto
+            ? `<img src="${row.foto}" class="img-thumbnail rounded-lg shadow-sm" style="width: 48px; height: 48px; object-fit:cover; cursor:pointer;" onclick="showImage('${row.foto}')">`
+            : `<div class="bg-gray-100 d-flex justify-content-center align-items-center rounded-lg border border-gray-200" style="width: 48px; height: 48px;"><i class="fas fa-box text-gray-400"></i></div>`;
+
+          const hargaFmt = new Intl.NumberFormat("id-ID").format(row.harga);
+          const rowJson = encodeURIComponent(JSON.stringify(row)); // Encode for safe HTML insertion
+
+          // Mobile
+          mobileList.innerHTML += `
+            <div class="list-item-card">
+                ${imgMobile}
+                <div class="item-info">
+                    <div>
+                        <h6 title="${row.nama}">${row.nama}</h6>
+                        <span class="badge ${badgeClass} text-white">${row.jenis_item.toUpperCase()}</span>
+                    </div>
+                    <p class="description mb-0 mt-1">${row.deskripsi}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <p class="price mb-0">Rp ${hargaFmt}</p>
+                        <div class="item-actions d-flex gap-2">
+                            <button class="btn btn-warning text-white" onclick="openModalEdit('${rowJson}')"><i class="fas fa-edit text-xs"></i></button>
+                            <button class="btn btn-danger" onclick="confirmDelete('${row.id}')"><i class="fas fa-trash-alt text-xs"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+
+          // Desktop
+          desktopTable.innerHTML += `
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-4">${idx + 1}</td>
+                <td class="px-4 font-bold text-gray-700 max-w-[200px] truncate" title="${row.nama}">${row.nama}</td>
+                <td class="px-4"><span class="badge ${badgeClass} text-white px-2 py-1 rounded">${row.jenis_item.toUpperCase()}</span></td>
+                <td class="px-4 font-bold text-gray-800 whitespace-nowrap">Rp ${hargaFmt}</td>
+                <td class="px-4 text-xs text-gray-500 max-w-[200px] truncate">${row.deskripsi}</td>
+                <td class="px-4">${imgDesktop}</td>
+                <td class="px-4 whitespace-nowrap">
+                    <button class="btn btn-sm bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-0 font-semibold rounded-lg px-2 mr-1" onclick="openModalEdit('${rowJson}')"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-0 font-semibold rounded-lg px-2" onclick="confirmDelete('${row.id}')"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>`;
+        });
+      }
+
+      // === 3. PENGELOLAAN FORM & GAMBAR KANVAS (PENGGANTI PHP EXIF) ===
+      let base64Image = "";
+
+      function previewFoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Kompresi Gambar menggunakan Canvas
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const MAX_WIDTH = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, width, height); // Background putih untuk JPG
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Export ke Base64 format JPG (Quality 0.7)
+            base64Image = canvas.toDataURL("image/jpeg", 0.7);
+
+            // Tampilkan Preview
+            const preview = document.getElementById("previewFotoImg");
+            preview.src = base64Image;
+            preview.style.display = "block";
+          };
+        };
+      }
+
+      // A. Modal Control
+      window.openModalTambah = function () {
+        document.getElementById("formItem").reset();
+        document.getElementById("modalTitle").textContent = "Tambah Item Baru";
+        document.getElementById("item_id").value = "";
+        document.getElementById("old_foto").value = "";
+        document.getElementById("previewFotoImg").style.display = "none";
+        base64Image = "";
+        $("#itemModal").modal("show");
+      };
+
+      window.openModalEdit = function (encodedData) {
+        const data = JSON.parse(decodeURIComponent(encodedData));
+        document.getElementById("modalTitle").textContent = "Edit Item";
+        document.getElementById("item_id").value = data.id;
+        document.getElementById("nama_item").value = data.nama;
+        document.getElementById("harga").value = data.harga;
+        document.getElementById("jenis_item").value = data.jenis_item;
+        document.getElementById("deskripsi").value = data.deskripsi;
+        document.getElementById("old_foto").value = data.foto;
+
+        document.getElementById("foto").value = "";
+        base64Image = "";
+
+        const preview = document.getElementById("previewFotoImg");
+        if (data.foto) {
+          preview.src = data.foto;
+          preview.style.display = "block";
+        } else {
+          preview.style.display = "none";
+        }
+        $("#itemModal").modal("show");
+      };
+
+      // B. Simpan Item (Kirim Base64)
+      document
+        .getElementById("formItem")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitItem");
+          btn.innerHTML =
+            '<i class="fas fa-circle-notch fa-spin"></i> Menyimpan...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "save_item",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            kategori_id: globalKategoriId,
+            item_id: document.getElementById("item_id").value,
+            nama: document.getElementById("nama_item").value,
+            harga: document.getElementById("harga").value,
+            jenis_item: document.getElementById("jenis_item").value,
+            deskripsi: document.getElementById("deskripsi").value,
+            foto_base64: base64Image, // Kirim string hasil kompresi kanvas
+            old_foto: document.getElementById("old_foto").value,
+          };
+
+          try {
+            if (
+              typeof GAS_API_URL === "undefined" ||
+              GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            )
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+
+            if (result.status === "success") {
+              $("#itemModal").modal("hide");
+              showAlert("success", "Item berhasil disimpan.");
+              fetchKategoriDetails();
+            } else {
+              showAlert("error", result.message || "Gagal menyimpan item.");
+            }
+          } catch (err) {
+            showAlert("success", "Tersimpan lokal (MOCK MODE).");
+            $("#itemModal").modal("hide");
+          } finally {
+            btn.innerHTML = "Simpan";
+            btn.disabled = false;
+          }
+        });
+
+      // C. Hapus Item (Soft Delete)
+      window.confirmDelete = function (id) {
+        Swal.fire({
+          title: "Non-aktifkan Item?",
+          text: "Item ini tidak akan muncul lagi di kasir. Jika item sedang di-sewa, non-aktifkan akan ditolak.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "Ya, Non-aktifkan",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              if (
+                typeof GAS_API_URL === "undefined" ||
+                GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+              )
+                throw new Error("API Off");
+              const payload = {
+                action: "delete_item",
+                admin_id: localStorage.getItem("tenant_admin_id"),
+                id: id,
+                kategori_id: globalKategoriId,
+              };
+              const res = await fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload),
+              });
+              const r = await res.json();
+
+              if (r.status === "success") {
+                showAlert("success", `Item berhasil dinonaktifkan.`);
+                fetchKategoriDetails();
+              } else {
+                showAlert(
+                  "error",
+                  r.message ||
+                    "Item gagal dinonaktifkan (Mungkin sedang di-sewa).",
+                );
+              }
+            } catch (err) {
+              showAlert("success", `Item dinonaktifkan (MOCK MODE).`);
+            }
+          }
+        });
+      };
+
+      // D. Search Form
+      document.getElementById("formSearch").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const keyword = document.getElementById("inp_search").value;
+        window.location.href = `detail-kategori.html?id=${globalKategoriId}&search=${encodeURIComponent(keyword)}`;
+      });
+      $("#modalSearchItem").on("shown.bs.modal", function () {
+        document.getElementById("inp_search").focus();
+      });
+
+      // E. View Full Image
+      window.showImage = function (src) {
+        document.getElementById("gambarFull").src = src;
+        $("#gambarModal").modal("show");
+      };
+
+      // --- MOCK DATA FALLBACK ---
+      function getMockItems() {
+        return [
+          {
+            id: 1,
+            nama: "Tenda Dome 2P",
+            jenis_item: "sewa",
+            harga: 25000,
+            deskripsi: "Tenda kapasitas 2 orang, anti air.",
+            foto: "",
+          },
+          {
+            id: 2,
+            nama: "Gas Kaleng Hi-Cook",
+            jenis_item: "jual",
+            harga: 15000,
+            deskripsi: "Isi ulang kompor.",
+            foto: "",
+          },
+        ];
+      }
+    </script>
+  </body>
+</html>

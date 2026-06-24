@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Info Customer | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --ios-blue: #007aff;
+        --ios-gray: #8e8e93;
+        --wa-color: #25d366;
+        --bg-color: #f4f6f9;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader & Skeletons */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .page-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1f2937;
+        margin: 0;
+      }
+
+      /* Search Box Responsive */
+      .ios-search-box {
+        background-color: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+      }
+      .ios-search-box:focus-within {
+        border-color: var(--ios-blue);
+        box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+      }
+      .ios-search-box i.fa-search {
+        color: var(--ios-gray);
+        margin-right: 10px;
+      }
+      .ios-search-box input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        font-size: 16px;
+        outline: none;
+        color: #1f2937;
+      }
+      .btn-reset {
+        color: #ef4444;
+        font-size: 16px;
+        padding-left: 10px;
+        cursor: pointer;
+      }
+
+      /* Contact Card Modern Grid */
+      .contact-card {
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 12px 15px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        border: 1px solid #f1f5f9;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        height: 100%;
+        gap: 12px;
+      }
+      .contact-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.06);
+      }
+      .contact-info-link {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+        text-decoration: none !important;
+        color: inherit !important;
+        min-width: 0;
+        gap: 12px;
+        cursor: pointer;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-size: 16px;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2);
+      }
+      .info-group {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .user-name {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .user-phone {
+        font-size: 13px;
+        color: var(--ios-blue);
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .user-address {
+        font-size: 12px;
+        color: var(--ios-gray);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+      .btn-wa-action {
+        width: 38px;
+        height: 38px;
+        background-color: #f0fdf4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--wa-color);
+        font-size: 18px;
+        flex-shrink: 0;
+        transition: 0.2s;
+        text-decoration: none !important;
+        border: 1px solid #dcfce7;
+      }
+      .btn-wa-action:hover {
+        background-color: var(--wa-color);
+        color: white;
+        transform: scale(1.1);
+      }
+
+      /* Pagination Styles */
+      .pagination {
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+      .page-item.active .page-link {
+        background-color: var(--ios-blue);
+        border-color: var(--ios-blue);
+      }
+
+      @media (max-width: 576px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Data Customer...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-4 pb-2">
+          <div class="container-fluid">
+            <div class="row align-items-center mb-3">
+              <div class="col-sm-6">
+                <h1 class="page-title">Info Customer</h1>
+                <span
+                  class="badge badge-info mt-2 px-3 py-1 text-sm font-medium"
+                  id="ui-total-user"
+                >
+                  Total:
+                  <span class="skeleton w-10 h-3 inline-block"></span> Orang
+                </span>
+              </div>
+              <div class="col-sm-6 mt-3 mt-sm-0">
+                <form id="formSearch">
+                  <div class="ios-search-box">
+                    <i class="fas fa-search"></i>
+                    <input
+                      type="text"
+                      id="inp_search"
+                      placeholder="Cari nama atau telepon..."
+                      autocomplete="off"
+                    />
+                    <i
+                      class="fas fa-times-circle btn-reset hidden"
+                      id="btnResetSearch"
+                      onclick="resetSearch()"
+                    ></i>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="content pb-5">
+          <div class="container-fluid">
+            <div id="search-alert" class="mb-4 hidden">
+              <span class="text-muted"
+                ><i class="fas fa-info-circle mr-1"></i> Hasil pencarian untuk:
+                <strong id="search-keyword"></strong
+              ></span>
+            </div>
+
+            <div class="row" id="userListContainer">
+              <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
+                <div class="skeleton h-20 w-full rounded-xl"></div>
+              </div>
+              <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
+                <div class="skeleton h-20 w-full rounded-xl"></div>
+              </div>
+              <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
+                <div class="skeleton h-20 w-full rounded-xl"></div>
+              </div>
+              <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3">
+                <div class="skeleton h-20 w-full rounded-xl"></div>
+              </div>
+            </div>
+
+            <nav aria-label="Page navigation">
+              <ul class="pagination" id="pagination-nav"></ul>
+            </nav>
+          </div>
+        </section>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      let currentPage = 1;
+      let currentSearch = "";
+      const limitPerPage = 48; // Sesuai file PHP asli
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        currentPage = parseInt(urlParams.get("page")) || 1;
+        currentSearch = urlParams.get("search") || "";
+
+        if (currentSearch) {
+          document.getElementById("inp_search").value = currentSearch;
+          document.getElementById("btnResetSearch").classList.remove("hidden");
+          document.getElementById("search-alert").classList.remove("hidden");
+          document.getElementById("search-keyword").textContent = currentSearch;
+        }
+
+        fetchCustomers();
+      });
+
+      // Aksi Cari & Reset
+      document.getElementById("formSearch").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const searchVal = document.getElementById("inp_search").value.trim();
+        window.location.href = `user.html?page=1&search=${encodeURIComponent(searchVal)}`;
+      });
+
+      function resetSearch() {
+        window.location.href = "user.html";
+      }
+
+      // === 1. FETCH DATA API ===
+      async function fetchCustomers() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderUI(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const payload = new URLSearchParams({
+            action: "get_customers",
+            admin_id: adminId,
+            page: currentPage,
+            limit: limitPerPage,
+            search: currentSearch,
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderUI(result.data);
+          } else {
+            console.error(result.message);
+            renderUI(null);
+          }
+        } catch (err) {
+          console.error("API Error:", err);
+          renderUI(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. HELPER FUNCTIONS ===
+      function getInitials(name) {
+        let words = name
+          .trim()
+          .split(" ")
+          .filter((w) => w.length > 0);
+        if (words.length >= 2)
+          return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+        return name.substring(0, 2).toUpperCase();
+      }
+
+      function getWaLink(phone, nama) {
+        let num = phone.replace(/[^0-9]/g, "");
+        if (num.startsWith("0")) num = "62" + num.substring(1);
+        return `https://wa.me/${num}?text=Halo%20Kak%20${encodeURIComponent(nama)}...`;
+      }
+
+      // === 3. RENDER UI ===
+      function renderUI(data) {
+        const container = document.getElementById("userListContainer");
+        container.innerHTML = "";
+
+        if (!data) {
+          container.innerHTML =
+            '<div class="col-12 text-center py-5 text-red-500 font-bold">Gagal memuat data pelanggan.</div>';
+          return;
+        }
+
+        // Update Total Badge
+        document.getElementById("ui-total-user").innerHTML =
+          `Total: ${new Intl.NumberFormat("id-ID").format(data.total_data)} Orang`;
+
+        // Render List
+        if (data.users.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-user-slash fa-4x text-muted mb-3" style="opacity: 0.3;"></i>
+                <h5 class="text-muted">Tidak ada pengguna ditemukan.</h5>
+                ${currentSearch ? `<button onclick="resetSearch()" class="btn btn-outline-primary mt-2">Bersihkan Pencarian</button>` : ""}
+            </div>`;
+          document.getElementById("pagination-nav").innerHTML = "";
+          return;
+        }
+
+        data.users.forEach((user, idx) => {
+          const initials = getInitials(user.nama);
+          const waLink = getWaLink(user.phone, user.nama);
+          const detailLink = `user-history.html?phone=${encodeURIComponent(user.phone)}`;
+
+          container.innerHTML += `
+        <div class="col-12 col-sm-6 col-lg-4 col-xl-3 mb-3" style="animation: fadeInUp 0.3s ease forwards; opacity: 0; animation-delay: ${idx * 0.03}s;">
+            <div class="contact-card">
+                <a href="${detailLink}" class="contact-info-link">
+                    <div class="avatar">${initials}</div>
+                    <div class="info-group">
+                        <div class="user-name" title="${user.nama}">${user.nama}</div>
+                        <div class="user-phone"><i class="fas fa-mobile-alt mr-1"></i>${user.phone}</div>
+                        <div class="user-address" title="${user.alamat || "Tidak ada alamat"}">${user.alamat || "Tidak ada alamat"}</div>
+                    </div>
+                </a>
+                <a href="${waLink}" target="_blank" class="btn-wa-action" title="Chat WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+        </div>`;
+        });
+
+        renderPagination(data.total_pages, data.current_page);
+      }
+
+      // === 4. RENDER PAGINASI ===
+      function renderPagination(totalPages, currPage) {
+        const nav = document.getElementById("pagination-nav");
+        nav.innerHTML = "";
+
+        if (totalPages <= 1) return;
+
+        const searchParam = currentSearch
+          ? `&search=${encodeURIComponent(currentSearch)}`
+          : "";
+
+        // Prev Button
+        nav.innerHTML += `
+        <li class="page-item ${currPage <= 1 ? "disabled" : ""}">
+            <a class="page-link" href="?page=${currPage - 1}${searchParam}">Sebelumnya</a>
+        </li>`;
+
+        const startPage = Math.max(1, currPage - 2);
+        const endPage = Math.min(totalPages, currPage + 2);
+
+        if (startPage > 1) {
+          nav.innerHTML += `<li class="page-item"><a class="page-link" href="?page=1${searchParam}">1</a></li>`;
+          if (startPage > 2)
+            nav.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          nav.innerHTML += `
+            <li class="page-item ${currPage === i ? "active" : ""}">
+                <a class="page-link" href="?page=${i}${searchParam}">${i}</a>
+            </li>`;
+        }
+
+        if (endPage < totalPages) {
+          if (endPage < totalPages - 1)
+            nav.innerHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+          nav.innerHTML += `<li class="page-item"><a class="page-link" href="?page=${totalPages}${searchParam}">${totalPages}</a></li>`;
+        }
+
+        // Next Button
+        nav.innerHTML += `
+        <li class="page-item ${currPage >= totalPages ? "disabled" : ""}">
+            <a class="page-link" href="?page=${currPage + 1}${searchParam}">Selanjutnya</a>
+        </li>`;
+      }
+
+      // === MOCK DATA ===
+      function getMockData() {
+        let mockUsers = [];
+        for (let i = 1; i <= 12; i++) {
+          mockUsers.push({
+            id: i,
+            nama: `Pelanggan Dummy ${i}`,
+            phone: `08123456789${i}`,
+            email: `user${i}@gmail.com`,
+            alamat: `Jl. Bintaro Raya No. ${i}`,
+          });
+        }
+        return {
+          total_data: 12,
+          total_pages: 1,
+          current_page: 1,
+          users: mockUsers,
+        };
+      }
+    </script>
+  </body>
+</html>

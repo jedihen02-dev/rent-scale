@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Struk Harian | SewaTendaku</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+      /* --- STYLING KHUSUS PRINTER THERMAL 58MM --- */
+      @page {
+        margin: 0 !important;
+        size: 58mm auto !important;
+      }
+      html {
+        background-color: #f0f0f0;
+      }
+      body {
+        width: 58mm !important;
+        margin: 10px auto !important;
+        padding: 2mm 0 !important;
+        background-color: #fff;
+        font-family: "monospace";
+        font-size: 9pt;
+        color: #000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        box-sizing: border-box !important;
+      }
+
+      /* Loading Overlay */
+      #loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.95);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+
+      /* Floating Buttons */
+      #print-btn-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font-family: sans-serif;
+      }
+      .float-btn {
+        padding: 12px 20px;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+      .float-btn:hover {
+        transform: translateY(-3px);
+      }
+      .btn-print {
+        background: #3b82f6;
+      }
+      .btn-wa {
+        background: #25d366;
+      }
+
+      /* Struk Layout */
+      .struk-header,
+      .struk-footer {
+        text-align: center;
+        margin-bottom: 5px;
+        padding: 0 4px;
+      }
+      .struk-header h1 {
+        margin: 0;
+        font-size: 14pt;
+      }
+      .struk-header p {
+        margin: 0;
+        font-size: 9pt;
+      }
+
+      .section-header,
+      .shift-header {
+        background: #000;
+        color: #fff;
+        text-align: center;
+        font-weight: bold;
+        padding: 2px 0;
+        margin: 5px 0;
+      }
+
+      .summary-box {
+        width: 100%;
+        padding: 2px 4px;
+        border-bottom: 1px dotted #000;
+      }
+
+      .trans-card {
+        width: 100%;
+        border: 1px solid #000;
+        padding: 4px;
+        margin-top: 5px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 1px 0;
+      }
+      .row.total {
+        font-weight: bold;
+        font-size: 10pt;
+      }
+
+      .discount-box {
+        border: 1px dashed #000;
+        padding: 4px;
+        margin: 4px 0;
+        background: #f9f9f9;
+        font-size: 8pt;
+      }
+
+      .badge {
+        border: 1px solid #000;
+        padding: 0 2px;
+        font-size: 8pt;
+        display: inline-block;
+      }
+
+      .divider {
+        border-top: 1px dashed #000;
+        margin: 3px 0;
+      }
+
+      .text-right {
+        text-align: right;
+      }
+      .text-danger {
+        color: #cc0000;
+      }
+
+      @media print {
+        * {
+          box-sizing: border-box !important;
+        }
+        html,
+        body {
+          background-color: #fff !important;
+          box-shadow: none !important;
+        }
+        body {
+          width: 100% !important;
+          margin: 0 !important;
+          padding: 1mm 0 !important;
+        }
+        #print-btn-container,
+        #loader-overlay {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading -->
+    <div id="loader-overlay">
+      <i
+        class="fas fa-spinner fa-spin fa-3x mb-3"
+        style="color: #3b82f6; margin-bottom: 10px"
+      ></i>
+      <strong>Memuat Data Shift...</strong>
+    </div>
+
+    <!-- Floating Buttons -->
+    <div id="print-btn-container">
+      <button onclick="window.print()" class="float-btn btn-print">
+        <i class="fas fa-print"></i> CETAK FULL
+      </button>
+      <button onclick="shareWAPDF()" class="float-btn btn-wa">
+        <i class="fab fa-whatsapp"></i> BAGIKAN PDF
+      </button>
+    </div>
+
+    <!-- Container Utama Struk -->
+    <div id="struk-container">
+      <!-- Konten akan dirender oleh JavaScript -->
+    </div>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      let currentSelectedDate = "";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          alert("Akses ditolak. Silakan login.");
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        currentSelectedDate =
+          urlParams.get("date") || new Date().toISOString().split("T")[0];
+
+        fetchPrintShiftData(currentSelectedDate);
+      });
+
+      // === 1. FETCH DATA API ===
+      async function fetchPrintShiftData(date) {
+        try {
+          const gasApiUrl = localStorage.getItem("gas_api_url");
+          if (!gasApiUrl) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderStruk(getMockData(date));
+            return;
+          }
+
+          const payload = new URLSearchParams({
+            action: "get_print_shift",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            date: date,
+          });
+
+          const res = await fetch(`${gasApiUrl}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderStruk(result.data);
+          } else {
+            alert("Gagal memuat data: " + result.message);
+          }
+        } catch (error) {
+          console.error("Error API:", error);
+          renderStruk(getMockData(date));
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. FUNGSI FORMATTING ===
+      function rp(angka) {
+        return FORMATTER.format(angka).replace("Rp", "Rp ").split(",")[0];
+      }
+
+      function formatDateDisplay(dateStr) {
+        const d = new Date(dateStr);
+        return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+      }
+
+      function formatTime(isoString) {
+        if (!isoString) return "-";
+        const d = new Date(isoString);
+        return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+      }
+
+      function formatPeriod(start, end, isDenda = false) {
+        if (!start || !end) return "N/A";
+        const d1 = new Date(start);
+        const d2 = new Date(end);
+        const diffTime = Math.abs(d2 - d1);
+        let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (isDenda) diffDays += 1;
+        else diffDays = Math.max(1, diffDays);
+
+        return `${String(d1.getDate()).padStart(2, "0")}/${String(d1.getMonth() + 1).padStart(2, "0")}/${String(d1.getFullYear()).slice(-2)} - ${String(d2.getDate()).padStart(2, "0")}/${String(d2.getMonth() + 1).padStart(2, "0")}/${String(d2.getFullYear()).slice(-2)} (${diffDays}hr)`;
+      }
+
+      function truncateStr(str, num) {
+        if (!str) return "";
+        if (str.length <= num) {
+          return str;
+        }
+        return str.slice(0, num) + "...";
+      }
+
+      // === 3. RENDER UI STRUK ===
+      function renderStruk(data) {
+        const container = document.getElementById("struk-container");
+        const summary = data.global_summary;
+        const shifts = data.shifts;
+
+        let html = `
+                <div class="struk-header">
+                    <h1>KP CAMP</h1>
+                    <p>LAPORAN SHIFT HARIAN</p>
+                    <p>Kasir: ${data.admin_name}</p>
+                    <p>${formatDateDisplay(currentSelectedDate)}</p>
+                </div>
+
+                <div class="section-header">RINGKASAN HARI INI</div>
+                
+                <div class="summary-box">
+                    <div class="row"><span>Bayar DP:</span><span>${rp(summary.total_dp)}</span></div>
+                    <div class="row"><span>Pelunasan DP:</span><span>${rp(summary.total_pelunasan_cicil)}</span></div>
+                    <div class="row"><span>Bayar Lunas:</span><span>${rp(summary.total_lunas_langsung)}</span></div>
+                    <div class="row"><span>Bayar Denda:</span><span>${rp(summary.total_denda)}</span></div>
+                    <div class="row total"><span>Revenue:</span><span>${rp(summary.total_revenue)}</span></div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="row"><span>DP:</span><span>${summary.cnt_dp}</span></div>
+                    <div class="row"><span>Pelunasan DP:</span><span>${summary.cnt_pelunasan_cicil}</span></div>
+                    <div class="row"><span>Bayar Lunas:</span><span>${summary.cnt_lunas_langsung}</span></div>
+                    <div class="row"><span>Extend (denda):</span><span>${summary.cnt_denda}</span></div>
+                    <div class="row"><span>Dispensasi:</span><span>${summary.cnt_dispensasi}</span></div> 
+                    <div class="row total"><span>Total Trx:</span><span>${summary.cnt_total_trx}</span></div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="row"><span>Cash:</span><span>${rp(summary.total_cash)}</span></div>
+                    <div class="row"><span>Transfer:</span><span>${rp(summary.total_transfer)}</span></div>
+                    <div class="row"><span>Qris:</span><span>${rp(summary.total_qris)}</span></div>
+                    <div class="row total"><span>Payment:</span><span>${rp(summary.total_revenue)}</span></div>
+                </div>
+            `;
+
+        shifts.forEach((shift) => {
+          if (shift.transactions.length === 0) return;
+
+          html += `
+                    <div class="shift-header">${shift.shift_label}</div>
+                    <div class="summary-box" style="border-bottom: 2px dashed #000;">
+                        <div class="row"><span>Trx Shift Ini:</span><span>${shift.total_entries_count}</span></div>
+                        <div class="row"><span>Cash:</span><span>${rp(shift.total_cash)}</span></div>
+                        <div class="row"><span>Transfer:</span><span>${rp(shift.total_transfer)}</span></div>
+                        <div class="row"><span>Qris:</span><span>${rp(shift.total_qris)}</span></div>
+                        <div class="row total"><span>TOTAL SHIFT:</span><span>${rp(shift.total_shift_revenue)}</span></div>
+                    </div>
+                `;
+
+          shift.transactions.forEach((t) => {
+            // Logika Label
+            let badge = "";
+            if (t.tipe === "denda") {
+              if (t.metode === "Dispensasi") badge = "DISPENSASI";
+              else if (t.metode === "Kompensasi") badge = "KOMPENSASI";
+              else badge = "DENDA";
+            } else {
+              if (t.status_pesanan === "Cancel")
+                badge = `${t.jenis.toUpperCase()} CANCEL`;
+              else
+                badge =
+                  t.jenis === "DP"
+                    ? "DP"
+                    : t.is_lunas_langsung
+                      ? "BAYAR LUNAS"
+                      : "PELUNASAN";
+            }
+
+            // Tampilan Header Card
+            html += `
+                    <div class="trans-card">
+                        <div style="font-weight:bold; border-bottom:1px dashed #000; padding-bottom:2px;">
+                            ${t.kode_nota} - ${truncateStr(t.nama_pelanggan, 12)}
+                            <span class="badge" style="float:right;">${badge}</span>
+                        </div>
+                        <div class="row"><span>${formatTime(t.waktu)}</span><span>${truncateStr(t.petugas, 10)}</span></div>
+                        <div class="row"><span>${formatPeriod(t.tanggal_from, t.tanggal_to, t.tipe === "denda")}</span></div>
+                    `;
+
+            // Tampilan Nominal Baris Abu-abu
+            let nominalHtml = "";
+            const metodeText =
+              t.metode === "Extend Included" ? "Cash (Extend)" : t.metode;
+
+            if (
+              t.tipe === "payment" &&
+              t.status_pesanan === "Cancel" &&
+              t.nominal_raw > 0
+            ) {
+              const pct = Math.round((t.nominal / t.nominal_raw) * 100);
+              nominalHtml = `
+                            <div class="text-right">
+                                <span>${rp(t.nominal)}</span><br>
+                                <span style="font-size: 7.5pt; color: #cc0000; font-weight: normal;">Cancel -${pct}% ${rp(t.nominal_raw)}</span>
+                            </div>
+                        `;
+            } else {
+              nominalHtml = `<span>${rp(t.nominal)}</span>`;
+            }
+
+            html += `
+                        <div class="row" style="background:#eee; font-weight:bold;">
+                            <span>${metodeText}</span>
+                            ${nominalHtml}
+                        </div>
+                    `;
+
+            // Split Bill Details
+            if (t.metode === "Split Bill" || t.metode === "Campur") {
+              html += `<div style="font-size: 8pt; font-style: italic; padding-left: 10px; margin-bottom: 2px;">`;
+              if (t.split_cash > 0)
+                html += `<span style="margin-right:5px;">Cash: ${rp(t.split_cash)}</span>`;
+              if (t.split_transfer > 0)
+                html += `<span style="margin-right:5px;">Trf: ${rp(t.split_transfer)}</span>`;
+              if (t.split_qris > 0)
+                html += `<span>Qris: ${rp(t.split_qris)}</span>`;
+              html += `</div>`;
+            }
+
+            // Tipe Pembayaran Reguler
+            if (t.tipe === "payment") {
+              html += `
+                            <div class="row"><span>Total:</span><span>${rp(t.total)}</span></div>
+                            <div class="row"><span>Sisa:</span><span>${rp(Math.max(0, t.total - t.paid))}</span></div>
+                        `;
+
+              if (t.has_discount && t.status_pesanan !== "Cancel") {
+                html += `
+                            <div class="discount-box">
+                                <div style="font-weight: bold; text-align:center; margin-bottom: 2px;">DISKON (${t.discount_percent}%)</div>
+                                <div class="row" style="font-size:8pt;"><span>Awal:</span><span style="text-decoration: line-through;">${rp(t.discount_total_raw)}</span></div>
+                                <div class="row" style="font-size:8pt;"><span>Disc:</span><span>-${rp(t.discount_nominal)}</span></div>
+                            </div>`;
+              }
+
+              if (t.items && t.items.length > 0) {
+                html += `<div style="font-size:8pt; padding: 2px 0 0 4px; border-top: 1px dashed #ccc; margin-top: 4px; font-weight: bold;">RINCIAN ITEM:</div>`;
+                t.items.forEach((i) => {
+                  html += `
+                                    <div style="font-size:8pt; padding: 2px 0 0 4px;">- ${i.nama}</div>
+                                    <div class="row" style="font-size:8pt; padding: 0 4px 2px 10px;">
+                                        <span style="max-width: 65%;">(${i.info})</span>
+                                        <span style="font-weight:bold;">${rp(i.subtotal)}</span>
+                                    </div>
+                                `;
+                });
+              }
+            }
+            // Tipe Denda
+            else if (t.tipe === "denda") {
+              if (t.items && t.items.length > 0) {
+                html += `<div style="font-size:8pt; padding: 2px 0 0 4px; border-top: 1px dashed #ccc; margin-top: 4px; font-weight: bold;">RINCIAN ITEM DENDA:</div>`;
+                t.items.forEach((i) => {
+                  html += `
+                                    <div style="font-size:8pt; padding: 2px 0 0 4px;">- ${i.nama}</div>
+                                    <div class="row" style="font-size:8pt; padding: 0 4px 2px 10px;">
+                                        <span style="max-width: 65%;">(${i.info})</span>
+                                        <span style="font-weight:bold;">${rp(i.subtotal)}</span>
+                                    </div>
+                                `;
+                });
+              }
+            }
+
+            html += `</div>`; // End trans-card
+          });
+        });
+
+        html += `
+                <div class="struk-footer" style="margin-top: 15px;">
+                    <p>================================</p>
+                    <p>KP CAMP OUTDOOR</p>
+                    <p>================================</p>
+                </div>
+            `;
+
+        container.innerHTML = html;
+      }
+
+      // === 4. SHARE KE WHATSAPP (PDF) ===
+      function shareWAPDF() {
+        const btnContainer = document.getElementById("print-btn-container");
+        if (btnContainer) btnContainer.style.display = "none";
+
+        const element = document.body;
+        const bodyHeightPx = document.body.scrollHeight;
+        const bodyHeightMm = bodyHeightPx * 0.264583;
+        const finalHeight = bodyHeightMm + 20;
+
+        const opt = {
+          margin: 0,
+          filename: `Laporan-Shift-${currentSelectedDate}.pdf`,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, scrollY: 0 },
+          jsPDF: {
+            unit: "mm",
+            format: [58, finalHeight],
+            orientation: "portrait",
+          },
+        };
+
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .save()
+          .then(function () {
+            if (btnContainer) btnContainer.style.display = "flex";
+            setTimeout(function () {
+              const message = `Berikut Laporan Shift Tanggal ${formatDateDisplay(currentSelectedDate)} (File PDF telah diunduh, silakan lampirkan file tersebut).`;
+              const waUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+              window.open(waUrl, "_blank");
+            }, 1500);
+          });
+      }
+
+      // === 5. MOCK DATA ===
+      function getMockData(date) {
+        return {
+          admin_name: "Mock Admin",
+          global_summary: {
+            total_dp: 150000,
+            total_pelunasan_cicil: 50000,
+            total_lunas_langsung: 200000,
+            total_denda: 50000,
+            total_revenue: 450000,
+            cnt_dp: 2,
+            cnt_pelunasan_cicil: 1,
+            cnt_lunas_langsung: 1,
+            cnt_denda: 1,
+            cnt_dispensasi: 1,
+            cnt_total_trx: 6,
+            total_cash: 250000,
+            total_transfer: 200000,
+            total_qris: 0,
+          },
+          shifts: [
+            {
+              shift_label: "Shift 1 (08:00 - 16:00)",
+              total_entries_count: 2,
+              total_cash: 200000,
+              total_transfer: 50000,
+              total_qris: 0,
+              total_shift_revenue: 250000,
+              transactions: [
+                {
+                  tipe: "payment",
+                  tid: 1,
+                  kode_nota: "#0001",
+                  nama_pelanggan: "Budi Santoso",
+                  petugas: "Pagi",
+                  status_pesanan: "Saat Ini",
+                  jenis: "DP",
+                  metode: "Cash",
+                  waktu: new Date().toISOString(),
+                  tanggal_from: "2026-06-20",
+                  tanggal_to: "2026-06-22",
+                  nominal: 150000,
+                  nominal_raw: 150000,
+                  split_cash: 0,
+                  split_transfer: 0,
+                  split_qris: 0,
+                  total: 300000,
+                  paid: 150000,
+                  is_lunas_langsung: false,
+                  has_discount: false,
+                  items: [
+                    {
+                      nama: "Tenda 4P",
+                      info: "Rp 50.000/hr x 1 qty x 3 hr",
+                      subtotal: 150000,
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

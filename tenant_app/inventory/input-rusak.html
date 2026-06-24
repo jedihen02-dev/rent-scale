@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Catatan Item Rusak | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --bg-color: #f4f6f9;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Skeleton Loader */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Header Actions */
+      .header-actions .btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+      }
+      .header-actions .btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background-color: #f8f9fa;
+      }
+
+      /* Kartu Ringkasan (Meniru desain dashboard.php) */
+      .info-card {
+        border-radius: 1rem;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+      .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+      .info-card .bg-icon {
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        font-size: 3.5rem;
+        color: rgba(220, 53, 69, 0.1);
+        z-index: 1;
+      }
+      .info-card .card-body {
+        position: relative;
+        z-index: 2;
+        padding: 1.5rem;
+      }
+      .main-title {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+        color: #dc2626;
+      }
+      .main-value {
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+        color: #b91c1c;
+      }
+      .sub-info {
+        font-size: 0.9rem;
+        color: #555;
+        padding-top: 0.5rem;
+        border-top: 1px dashed rgba(220, 38, 38, 0.2);
+        margin-top: 0.75rem;
+        font-weight: 500;
+      }
+      .card-total-rusak {
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+      }
+
+      /* Mobile Card Style */
+      .rusak-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        border: 1px solid #f3f4f6;
+      }
+      .rusak-card:active {
+        transform: scale(0.98);
+      }
+      .rusak-card-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        flex-shrink: 0;
+      }
+      .rusak-card-body {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+      }
+      .rusak-card-body h6 {
+        font-weight: 700;
+        font-size: 1.05rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 2px;
+      }
+      .rusak-card-body .sub-info {
+        font-size: 0.85rem;
+        color: #6b7280;
+        font-weight: 500;
+      }
+      .rusak-card-body .harga {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #dc2626;
+      }
+
+      @media (min-width: 768px) {
+        .rusak-list-mobile {
+          display: none;
+        }
+      }
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .rusak-table-desktop {
+          display: none;
+        }
+        .header-actions {
+          margin-top: 0.5rem;
+        }
+
+        /* Modal Mobile Optimization */
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+        .modal-header {
+          position: sticky;
+          top: 0;
+          z-index: 1050;
+          background: #fff;
+          border-bottom: 1px solid #f3f4f6;
+        }
+        .modal-footer {
+          position: sticky;
+          bottom: 0;
+          z-index: 1050;
+          background: #f9fafb;
+          border-top: 1px solid #f3f4f6;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-3">
+            <div id="alert-container"></div>
+
+            <div
+              class="d-flex justify-content-between align-items-center flex-wrap mb-4"
+            >
+              <div>
+                <h3 class="mb-0 font-bold text-gray-800 text-xl md:text-2xl">
+                  Catatan Item Rusak
+                </h3>
+                <p
+                  id="ui-filter-text"
+                  class="text-gray-500 mb-0 mt-1 text-sm font-semibold skeleton w-48 h-5 rounded"
+                ></p>
+              </div>
+              <div class="btn-group header-actions" role="group">
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  data-toggle="modal"
+                  data-target="#modalFilterTanggal"
+                  title="Filter Tanggal"
+                >
+                  <i class="fas fa-calendar-alt text-gray-600"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-light"
+                  onclick="openModalTambah()"
+                  title="Tambah Catatan"
+                >
+                  <i class="fas fa-plus text-gray-600"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="row mb-4 justify-content-center">
+              <div class="col-lg-8 col-md-10">
+                <div class="card info-card card-total-rusak">
+                  <i class="fas fa-exclamation-triangle bg-icon"></i>
+                  <div class="card-body">
+                    <p class="main-title mb-0">
+                      Total Ganti Rugi (Periode Ini)
+                    </p>
+                    <div class="d-flex align-items-baseline gap-1 main-value">
+                      <span class="text-lg">Rp</span>
+                      <span
+                        id="ui-total-nominal"
+                        class="skeleton w-32 h-10 rounded block"
+                      ></span>
+                    </div>
+                    <div class="sub-info">
+                      <p class="mb-0 text-red-800">
+                        <i class="fas fa-box-open mr-1"></i> Jumlah Item Rusak:
+                        <span
+                          id="ui-total-items"
+                          class="font-bold skeleton w-10 h-5 inline-block"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rusak-list-mobile" id="ui-mobile-list">
+              <div class="rusak-card">
+                <div class="skeleton h-20 w-full rounded-xl"></div>
+              </div>
+            </div>
+
+            <div
+              class="card rusak-table-desktop shadow-sm border-0 rounded-2xl overflow-hidden"
+            >
+              <div class="card-body table-responsive p-0">
+                <table class="table table-hover align-middle mb-0 text-sm">
+                  <thead
+                    class="bg-gray-50 text-gray-500 font-semibold border-b border-gray-200"
+                  >
+                    <tr>
+                      <th class="py-3 px-4">Tgl Laporan</th>
+                      <th class="py-3 px-4">Foto</th>
+                      <th class="py-3 px-4">Nama Item</th>
+                      <th class="py-3 px-4">Nama Penyewa</th>
+                      <th class="py-3 px-4">Ganti Rugi</th>
+                      <th class="py-3 px-4 text-center">Metode Bayar</th>
+                      <th class="py-3 px-4 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ui-desktop-table">
+                    <tr>
+                      <td colspan="7" class="text-center p-4">
+                        <div class="skeleton h-6 w-full"></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="modalFilterTanggal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <form
+          id="formFilter"
+          class="modal-content shadow-2xl rounded-2xl border-0 overflow-hidden"
+        >
+          <div
+            class="modal-header text-white"
+            style="background-color: var(--primary-color)"
+          >
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-filter mr-2"></i>Filter Laporan
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="bg-gray-100 p-1 rounded-xl mb-4 d-flex">
+              <button
+                type="button"
+                id="btnFilterHarian"
+                class="btn w-50 rounded-lg font-bold border-0 bg-white shadow-sm text-gray-800"
+                onclick="switchFilter('harian')"
+              >
+                Harian
+              </button>
+              <button
+                type="button"
+                id="btnFilterCustom"
+                class="btn w-50 rounded-lg font-bold border-0 text-gray-500"
+                onclick="switchFilter('custom')"
+              >
+                Custom
+              </button>
+              <input type="hidden" id="inp_filter_type" value="harian" />
+            </div>
+
+            <div id="filter-harian" class="form-group mb-0">
+              <label class="text-xs font-bold text-gray-500 uppercase"
+                >Pilih Tanggal</label
+              >
+              <input
+                type="date"
+                id="inp_tanggal"
+                class="form-control rounded-xl bg-gray-50 border-gray-200"
+              />
+            </div>
+
+            <div id="filter-custom" style="display: none">
+              <div class="form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Dari Tanggal</label
+                >
+                <input
+                  type="date"
+                  id="inp_start_date"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200"
+                />
+              </div>
+              <div class="form-group mb-0">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Sampai Tanggal</label
+                >
+                <input
+                  type="date"
+                  id="inp_end_date"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-gray-50 border-t border-gray-100 p-4">
+            <button
+              type="submit"
+              class="btn btn-primary btn-block rounded-xl font-bold py-2 shadow-sm border-0"
+              style="background-color: var(--primary-color)"
+            >
+              Terapkan Filter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalTambah" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form
+          id="formTambah"
+          class="modal-content shadow-2xl rounded-2xl border-0 overflow-hidden"
+        >
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-file-signature mr-2"></i>Form Laporan Kerusakan
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nama Penyewa</label
+                >
+                <input
+                  type="text"
+                  id="nama_penyewa"
+                  class="form-control rounded-xl bg-gray-50"
+                  required
+                  placeholder="Cth: Budi Santoso"
+                />
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nama Item yang Rusak</label
+                >
+                <input
+                  type="text"
+                  id="nama_item"
+                  class="form-control rounded-xl bg-gray-50"
+                  required
+                  placeholder="Cth: Frame Tenda Patah"
+                />
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nominal Ganti Rugi (Rp)</label
+                >
+                <input
+                  type="number"
+                  id="nominal_ganti_rugi"
+                  class="form-control rounded-xl bg-gray-50"
+                  required
+                />
+              </div>
+              <div class="col-md-6 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Metode Pembayaran</label
+                >
+                <select
+                  id="metode_pembayaran"
+                  class="form-control rounded-xl bg-gray-50"
+                  required
+                >
+                  <option value="Cash">Tunai / Cash</option>
+                  <option value="Transfer">Transfer Bank / E-Wallet</option>
+                </select>
+              </div>
+              <div class="col-12 form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Foto Bukti Kerusakan</label
+                >
+                <input
+                  type="file"
+                  id="foto_kerusakan"
+                  class="form-control-file p-2 border rounded-xl bg-gray-50"
+                  accept="image/*"
+                  capture="environment"
+                  onchange="previewTambahFoto(event)"
+                  required
+                />
+                <div class="text-center mt-3">
+                  <img
+                    id="tambahPreview"
+                    class="img-thumbnail rounded-lg shadow-sm"
+                    style="max-height: 180px; display: none; margin: 0 auto"
+                  />
+                </div>
+              </div>
+              <div class="col-12 form-group mb-0">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Kronologi / Deskripsi Kerusakan</label
+                >
+                <textarea
+                  id="deskripsi_kerusakan"
+                  class="form-control rounded-xl bg-gray-50 resize-none"
+                  rows="3"
+                  required
+                  placeholder="Jelaskan secara singkat bagaimana kerusakan terjadi..."
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-gray-50 p-4 border-t border-gray-100">
+            <button
+              type="button"
+              class="btn btn-light flex-fill mr-2 rounded-xl font-bold"
+              data-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnSubmitTambah"
+              class="btn btn-danger flex-fill ml-2 rounded-xl font-bold shadow-sm"
+            >
+              Simpan Laporan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalDetail" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content shadow-2xl rounded-2xl border-0 overflow-hidden"
+        >
+          <div class="modal-header bg-gray-50 border-b border-gray-100">
+            <h5 class="modal-title font-bold text-gray-800" id="detailNamaItem">
+              Detail Kerusakan
+            </h5>
+            <button type="button" class="close" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div
+              class="bg-gray-100 rounded-xl mb-4 overflow-hidden flex items-center justify-center p-2"
+              style="height: 200px"
+            >
+              <img
+                id="detailFoto"
+                src=""
+                class="img-fluid rounded-lg shadow-sm"
+                style="max-height: 100%; object-fit: contain"
+              />
+            </div>
+
+            <table class="table table-sm table-borderless text-sm mb-0">
+              <tr>
+                <td width="130px" class="text-gray-500 font-semibold">
+                  Penyewa
+                </td>
+                <td id="detailNamaPenyewa" class="font-bold text-gray-800"></td>
+              </tr>
+              <tr>
+                <td class="text-gray-500 font-semibold">Ganti Rugi</td>
+                <td id="detailGantiRugi" class="font-bold text-red-600"></td>
+              </tr>
+              <tr>
+                <td class="text-gray-500 font-semibold">Metode Bayar</td>
+                <td id="detailMetodeBayar"></td>
+              </tr>
+              <tr>
+                <td class="text-gray-500 font-semibold">Tgl Laporan</td>
+                <td id="detailTanggal" class="text-gray-800"></td>
+              </tr>
+            </table>
+
+            <div class="mt-4">
+              <label class="text-xs font-bold text-gray-500 uppercase"
+                >Deskripsi</label
+              >
+              <p
+                id="detailDeskripsi"
+                class="bg-gray-50 p-3 border border-gray-100 rounded-xl text-sm text-gray-700 m-0"
+              ></p>
+            </div>
+          </div>
+          <div
+            class="modal-footer p-3 bg-gray-50 border-t border-gray-100 justify-content-center"
+          >
+            <button
+              type="button"
+              class="btn btn-light rounded-xl font-bold px-5"
+              data-dismiss="modal"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalPreviewGambar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        // Setup Form Default Value (Filter Tanggal)
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterType = urlParams.get("filter_type") || "harian";
+        const today = new Date().toISOString().split("T")[0];
+
+        document.getElementById("inp_filter_type").value = filterType;
+        document.getElementById("inp_tanggal").value =
+          urlParams.get("tanggal") || today;
+        document.getElementById("inp_start_date").value =
+          urlParams.get("start_date") || today;
+        document.getElementById("inp_end_date").value =
+          urlParams.get("end_date") || today;
+
+        switchFilter(filterType);
+        fetchDataRusak();
+      });
+
+      // UI Helpers
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const bg =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+        const icon =
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+        container.innerHTML = `<div class='${bg} border px-4 py-3 rounded-xl mb-4 flex items-start text-sm font-medium shadow-sm transition-all'><i class='fa-solid ${icon} mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      function switchFilter(type) {
+        document.getElementById("inp_filter_type").value = type;
+        const btnHarian = document.getElementById("btnFilterHarian");
+        const btnCustom = document.getElementById("btnFilterCustom");
+        const divHarian = document.getElementById("filter-harian");
+        const divCustom = document.getElementById("filter-custom");
+
+        if (type === "harian") {
+          btnHarian.className =
+            "btn w-50 rounded-lg font-bold border-0 bg-white shadow-sm text-gray-800";
+          btnCustom.className =
+            "btn w-50 rounded-lg font-bold border-0 text-gray-500 bg-transparent";
+          divHarian.style.display = "block";
+          divCustom.style.display = "none";
+        } else {
+          btnCustom.className =
+            "btn w-50 rounded-lg font-bold border-0 bg-white shadow-sm text-gray-800";
+          btnHarian.className =
+            "btn w-50 rounded-lg font-bold border-0 text-gray-500 bg-transparent";
+          divCustom.style.display = "block";
+          divHarian.style.display = "none";
+        }
+      }
+
+      // === 1. FETCH DATA DARI API GAS ===
+      async function fetchDataRusak() {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Siapkan Payload Parameter URL
+        const params = new URLSearchParams({
+          action: "get_item_rusak",
+          admin_id: adminId,
+          filter_type: document.getElementById("inp_filter_type").value,
+          tanggal: document.getElementById("inp_tanggal").value,
+          start_date: document.getElementById("inp_start_date").value,
+          end_date: document.getElementById("inp_end_date").value,
+        });
+
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            renderDataUI(
+              {
+                keteranganTanggal: "Harian: (Offline)",
+                totalNominal: 50000,
+                totalItems: 1,
+              },
+              getMockData(),
+            );
+            return;
+          }
+
+          const response = await fetch(`${GAS_API_URL}?${params.toString()}`);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderDataUI(result.data.summary, result.data.items);
+          } else {
+            showAlert("error", "Gagal memuat data item rusak.");
+          }
+        } catch (error) {
+          console.error(error);
+          renderDataUI(
+            {
+              keteranganTanggal: "Error Koneksi",
+              totalNominal: 0,
+              totalItems: 0,
+            },
+            [],
+          );
+        }
+      }
+
+      // === 2. RENDER UI ===
+      function renderDataUI(summary, items) {
+        const fmtRupiah = (num) => new Intl.NumberFormat("id-ID").format(num);
+
+        // Render KPI
+        const elKeterangan = document.getElementById("ui-filter-text");
+        elKeterangan.textContent = summary.keteranganTanggal;
+        elKeterangan.classList.remove("skeleton", "w-48", "h-5");
+
+        const elTotalNom = document.getElementById("ui-total-nominal");
+        elTotalNom.textContent = fmtRupiah(summary.totalNominal);
+        elTotalNom.classList.remove("skeleton", "w-32", "h-10");
+
+        const elTotalItem = document.getElementById("ui-total-items");
+        elTotalItem.textContent = summary.totalItems;
+        elTotalItem.classList.remove("skeleton", "w-10");
+
+        // Render Lists
+        const mobileList = document.getElementById("ui-mobile-list");
+        const desktopTable = document.getElementById("ui-desktop-table");
+        mobileList.innerHTML = "";
+        desktopTable.innerHTML = "";
+
+        if (!items || items.length === 0) {
+          const msg = "Belum ada data item rusak untuk periode ini.";
+          mobileList.innerHTML = `<div class="alert alert-warning text-center shadow-sm rounded-xl text-sm border-0"><i class="fas fa-clipboard-check mb-2 text-2xl opacity-50 block"></i>${msg}</div>`;
+          desktopTable.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-500">${msg}</td></tr>`;
+          return;
+        }
+
+        items.forEach((row) => {
+          const imgSrc = row.foto_kerusakan || "../../assets/img/no-image.png"; // Fallback
+          const rowJson = encodeURIComponent(JSON.stringify(row));
+          const tglFormated = new Date(row.tanggal_laporan).toLocaleString(
+            "id-ID",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            },
+          );
+
+          // Mobile Render
+          mobileList.innerHTML += `
+            <div class="rusak-card" onclick="showDetailModal('${rowJson}')">
+                <img src="${imgSrc}" class="rusak-card-img">
+                <div class="rusak-card-body">
+                    <h6>${row.nama_item}</h6>
+                    <p class="sub-info mb-1">Penyewa: <span class="text-gray-800 font-semibold">${row.nama_penyewa}</span></p>
+                    <p class="harga mt-auto mb-0">Rp ${fmtRupiah(row.nominal_ganti_rugi)}</p>
+                </div>
+            </div>`;
+
+          // Desktop Render
+          const badgeColor =
+            row.metode_pembayaran.toLowerCase() === "cash"
+              ? "bg-emerald-100 text-emerald-800"
+              : "bg-blue-100 text-blue-800";
+          desktopTable.innerHTML += `
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-4 text-gray-600">${tglFormated}</td>
+                <td class="px-4">
+                    <img src="${imgSrc}" class="img-thumbnail rounded-lg shadow-sm" style="width: 50px; height: 50px; object-fit:cover; cursor:pointer;" onclick="showImagePreview('${imgSrc}')">
+                </td>
+                <td class="px-4 font-bold text-gray-800">${row.nama_item}</td>
+                <td class="px-4 text-gray-700">${row.nama_penyewa}</td>
+                <td class="px-4 font-bold text-red-600">Rp ${fmtRupiah(row.nominal_ganti_rugi)}</td>
+                <td class="px-4 text-center"><span class="badge ${badgeColor} px-2 py-1 rounded">${row.metode_pembayaran}</span></td>
+                <td class="px-4 text-center">
+                    <button class="btn btn-sm bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border-0 font-bold rounded-lg px-3" onclick="showDetailModal('${rowJson}')">
+                        <i class="fas fa-eye mr-1"></i> Detail
+                    </button>
+                </td>
+            </tr>`;
+        });
+      }
+
+      // === 3. LOGIKA FORM & CANVAS KOMPRESI FOTO ===
+      let base64Image = "";
+
+      function previewTambahFoto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const MAX_WIDTH = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            base64Image = canvas.toDataURL("image/jpeg", 0.7); // Kualitas 70%
+
+            const preview = document.getElementById("tambahPreview");
+            preview.src = base64Image;
+            preview.style.display = "block";
+          };
+        };
+      }
+
+      function openModalTambah() {
+        document.getElementById("formTambah").reset();
+        document.getElementById("tambahPreview").style.display = "none";
+        base64Image = "";
+        $("#modalTambah").modal("show");
+      }
+
+      // Simpan Data
+      document
+        .getElementById("formTambah")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitTambah");
+          btn.innerHTML =
+            '<i class="fas fa-circle-notch fa-spin"></i> Menyimpan...';
+          btn.disabled = true;
+
+          if (!base64Image) {
+            showAlert(
+              "error",
+              "Harap lampirkan foto bukti kerusakan terlebih dahulu.",
+            );
+            btn.innerHTML = "Simpan Laporan";
+            btn.disabled = false;
+            return;
+          }
+
+          const payload = {
+            action: "save_item_rusak",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            nama_penyewa: document.getElementById("nama_penyewa").value,
+            nama_item: document.getElementById("nama_item").value,
+            nominal_ganti_rugi:
+              document.getElementById("nominal_ganti_rugi").value,
+            metode_pembayaran:
+              document.getElementById("metode_pembayaran").value,
+            deskripsi_kerusakan: document.getElementById("deskripsi_kerusakan")
+              .value,
+            foto_base64: base64Image,
+          };
+
+          try {
+            if (
+              typeof GAS_API_URL === "undefined" ||
+              GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            )
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+
+            if (result.status === "success") {
+              $("#modalTambah").modal("hide");
+              showAlert("success", "Laporan kerusakan berhasil disimpan.");
+              fetchDataRusak(); // Refresh data
+            } else {
+              showAlert("error", result.message || "Gagal menyimpan laporan.");
+            }
+          } catch (err) {
+            showAlert("success", "Tersimpan lokal (MOCK MODE).");
+            $("#modalTambah").modal("hide");
+          } finally {
+            btn.innerHTML = "Simpan Laporan";
+            btn.disabled = false;
+          }
+        });
+
+      // Aksi UI Filter
+      document.getElementById("formFilter").addEventListener("submit", (e) => {
+        e.preventDefault();
+        $("#modalFilterTanggal").modal("hide");
+        fetchDataRusak();
+      });
+
+      // Aksi View Detail / Foto Full
+      window.showDetailModal = function (encodedData) {
+        const data = JSON.parse(decodeURIComponent(encodedData));
+        document.getElementById("detailNamaItem").textContent = data.nama_item;
+        document.getElementById("detailFoto").src = data.foto_kerusakan || "";
+        document.getElementById("detailNamaPenyewa").textContent =
+          data.nama_penyewa;
+        document.getElementById("detailGantiRugi").textContent =
+          `Rp ${new Intl.NumberFormat("id-ID").format(data.nominal_ganti_rugi)}`;
+
+        const badgeColor =
+          data.metode_pembayaran.toLowerCase() === "cash"
+            ? "bg-emerald-100 text-emerald-800"
+            : "bg-blue-100 text-blue-800";
+        document.getElementById("detailMetodeBayar").innerHTML =
+          `<span class="badge ${badgeColor} px-2 py-1 rounded">${data.metode_pembayaran}</span>`;
+
+        document.getElementById("detailTanggal").textContent = new Date(
+          data.tanggal_laporan,
+        ).toLocaleString("id-ID", { dateStyle: "long", timeStyle: "short" });
+        document.getElementById("detailDeskripsi").textContent =
+          data.deskripsi_kerusakan;
+        $("#modalDetail").modal("show");
+      };
+
+      window.showImagePreview = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      // --- MOCK DATA ---
+      function getMockData() {
+        return [
+          {
+            id: 1,
+            tanggal_laporan: new Date().toISOString(),
+            foto_kerusakan: "",
+            nama_item: "Frame Tenda Dome",
+            nama_penyewa: "Andi Saputra",
+            nominal_ganti_rugi: 50000,
+            metode_pembayaran: "Cash",
+            deskripsi_kerusakan: "Patah 1 ruas.",
+          },
+        ];
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Struk Denda - Tenda Camp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- html2canvas untuk fitur share WA -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+      /* === [CSS LENGKAP] === */
+      @page {
+        margin: 0;
+        size: 58mm auto;
+      }
+      html {
+        background-color: #f0f0f0;
+      }
+      body {
+        width: 58mm;
+        margin: 10px auto;
+        padding: 2mm 0;
+        background-color: #fff;
+        font-family: "monospace", "Courier New", Courier;
+        font-size: 11pt;
+        color: #000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .struk-header {
+        text-align: center;
+        margin-bottom: 5px;
+        padding: 0 4px;
+      }
+      .struk-header img {
+        width: 40%;
+        margin: 0 auto 5px;
+        display: block;
+      }
+      .struk-header p {
+        margin: 1px 0;
+        font-size: 10pt;
+        line-height: 1.3;
+      }
+      .info-block {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1px 0;
+      }
+      .row span:first-child {
+        text-align: left;
+        margin-right: 5px;
+        flex-shrink: 1;
+        overflow-wrap: break-word;
+        word-break: break-all;
+      }
+      .row span:last-child {
+        text-align: right;
+        font-weight: bold;
+        flex-shrink: 0;
+        padding-left: 5px;
+      }
+      .separator {
+        text-align: center;
+        font-size: 10pt;
+        overflow: hidden;
+        margin: 5px 0;
+        line-height: 1;
+      }
+      .item-list {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .item-name {
+        font-weight: bold;
+        margin-top: 3px;
+      }
+      .item-detail {
+        padding-left: 8px;
+        font-size: 10pt;
+      }
+      .summary-block {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .summary-block .row.total {
+        font-weight: bold;
+        font-size: 12pt;
+        margin-top: 2px;
+        border-top: 1px dashed #000;
+        padding-top: 2px;
+      }
+      .summary-block .row.denda span {
+        color: #000;
+        font-weight: bold;
+      }
+      .struk-footer {
+        text-align: center;
+        padding: 5px 4px 0;
+        font-size: 10pt;
+      }
+      .struk-footer p {
+        margin: 2px 0;
+      }
+      .status-badge {
+        border: 1px solid #000;
+        padding: 2px 5px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 5px;
+        font-size: 12pt;
+      }
+
+      /* ACTION BUTTONS */
+      .action-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1000;
+      }
+      .btn {
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: sans-serif;
+        transition: transform 0.1s;
+        text-decoration: none;
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .print-button {
+        background: #007bff;
+      }
+      .print-button:hover {
+        background: #0056b3;
+      }
+      .wa-button {
+        background-color: #25d366;
+      }
+      .wa-button:hover {
+        background-color: #128c7e;
+      }
+
+      @media print {
+        html,
+        body {
+          background-color: #fff !important;
+          box-shadow: none !important;
+        }
+        body {
+          width: 100%;
+          margin: 0 !important;
+          padding: 1mm 0 !important;
+        }
+        .action-buttons {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="loading-message"
+      style="text-align: center; padding: 20px; font-family: sans-serif"
+    >
+      Memuat data struk denda...
+    </div>
+
+    <div
+      id="error-message"
+      style="
+        display: none;
+        padding: 20px;
+        text-align: center;
+        color: red;
+        font-family: sans-serif;
+        font-size: 12pt;
+      "
+    >
+      <!-- Pesan error akan muncul di sini -->
+    </div>
+
+    <!-- Container Struk -->
+    <div class="struk-container" id="areaCetak" style="display: none">
+      <!-- Konten HTML disuntik via JS -->
+    </div>
+
+    <div class="action-buttons" id="actionButtons" style="display: none">
+      <button class="btn print-button" onclick="window.print()">
+        <i class="fas fa-print"></i> Cetak Struk Denda
+      </button>
+      <button class="btn wa-button" onclick="shareWAImage()">
+        <i class="fab fa-whatsapp"></i> Kirim JPG ke WA
+      </button>
+    </div>
+
+    <!-- Script Internal -->
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/api.js"></script>
+
+    <script>
+      // Variabel global untuk menyimpan data sementara keperluan Share WA
+      let waData = {
+        phone: "",
+        nama: "",
+        trx: "",
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!checkAuth()) {
+          window.location.href = "../../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const transaksi_id =
+          urlParams.get("transaksi_id") || urlParams.get("id");
+
+        if (!transaksi_id) {
+          showError("ID Transaksi tidak valid.");
+          return;
+        }
+
+        try {
+          // Panggil endpoint dari Google Apps Script via api.js
+          // Pastikan backend GAS merespons dengan data denda terkait
+          const response = await api.get("get_nota_denda_detail", {
+            id: transaksi_id,
+          });
+
+          if (response.success && response.data) {
+            renderStrukDenda(response.data);
+          } else {
+            showError(
+              response.message ||
+                `Transaksi dengan ID #${transaksi_id} tidak ditemukan.`,
+            );
+          }
+        } catch (error) {
+          console.error("Error memuat struk denda:", error);
+          showError("Error jaringan/database saat memuat data struk denda.");
+        }
+      });
+
+      function showError(msg) {
+        document.getElementById("loading-message").style.display = "none";
+        const errorDiv = document.getElementById("error-message");
+        errorDiv.textContent = msg;
+        errorDiv.style.display = "block";
+      }
+
+      function renderStrukDenda(data) {
+        // Pemetaan data dari respon API
+        const t = data.transaksi || {};
+        const dendaItems = data.denda_items || [];
+        const dendaInfo = data.denda_info || {};
+        const riwayatDenda = data.riwayat_pembayaran_denda || [];
+
+        // Logika Perhitungan
+        const grand_total_biaya_item = parseFloat(t.total_biaya_item || 0);
+        const total_dibayar_sewa = parseFloat(data.total_dibayar_sewa || 0);
+        const total_denda = parseFloat(dendaInfo.total_denda_ditetapkan || 0);
+
+        // Hitung total denda dibayar & cek kompensasi
+        let total_denda_dibayar = 0;
+        let is_all_kompensasi = riwayatDenda.length > 0;
+
+        riwayatDenda.forEach((p) => {
+          total_denda_dibayar += parseFloat(p.total_jumlah || 0);
+          if (
+            !(p.metode_pembayaran || "").toLowerCase().includes("kompensasi")
+          ) {
+            is_all_kompensasi = false;
+          }
+        });
+
+        // Perhitungan Sisa
+        const total_keseluruhan = grand_total_biaya_item + total_denda;
+        const total_sudah_dibayar = total_dibayar_sewa + total_denda_dibayar;
+        const sisa_keseluruhan = Math.max(
+          0,
+          total_keseluruhan - total_sudah_dibayar,
+        );
+        const sisa_denda_keseluruhan = Math.max(
+          0,
+          total_denda - total_denda_dibayar,
+        );
+
+        // Logika Penentuan Teks Status Badge
+        let status_pembayaran_text =
+          total_dibayar_sewa >= grand_total_biaya_item
+            ? "LUNAS"
+            : total_dibayar_sewa > 0
+              ? "DP"
+              : "BELUM BAYAR";
+
+        if (sisa_denda_keseluruhan > 0) {
+          status_pembayaran_text = "DENDA BELUM LUNAS";
+        } else if (total_denda > 0 && sisa_denda_keseluruhan <= 0) {
+          if (is_all_kompensasi && total_denda_dibayar > 0) {
+            status_pembayaran_text = "KOMPENSASI";
+          } else {
+            status_pembayaran_text = "LUNAS (Termasuk Denda)";
+          }
+        } else if (t.status_pesanan === "Cancel") {
+          status_pembayaran_text = "DIBATALKAN";
+        }
+
+        // Variabel Tampilan
+        let kode_nota = "#" + String(t.id).padStart(4, "0");
+        let tanggal_transaksi = formatDateTime(t.created_at || new Date());
+
+        let jumlah_hari_denda = parseInt(dendaInfo.jumlah_hari_denda || 0);
+        let denda_sewa_formatted = formatDate(dendaInfo.denda_from);
+        let denda_kembali_formatted = formatDate(dendaInfo.denda_to);
+
+        // Penentuan Kasir
+        let nama_shift = t.nama_shift_pembuat || "N/A";
+        if (t.nama_shift_pengupdate) nama_shift = t.nama_shift_pengupdate;
+        if (riwayatDenda.length > 0) {
+          const last_denda_payment = riwayatDenda[riwayatDenda.length - 1];
+          if (last_denda_payment.nama_shift_penerima) {
+            nama_shift = last_denda_payment.nama_shift_penerima;
+          }
+        }
+
+        let nama_user = t.user_nama || "Pelanggan";
+        let user_phone = t.user_phone || "-";
+
+        // Simpan ke variabel global untuk WhatsApp
+        waData.phone = user_phone;
+        waData.nama = nama_user;
+        waData.trx = kode_nota;
+
+        // Generate HTML
+        let html = `
+                <div class="struk-header">
+                    <img src="../../assets/img/kpcamp.png" alt="Logo" onerror="this.style.display='none'">
+                    <div class="separator" style="margin: 3px 0;">--------------------------</div>
+                    <p style="font-size: 15pt; line-height: 1.2;">STRUK DENDA</p>
+                </div>
+                
+                <div class="separator">--------------------------</div>
+                
+                <div class="info-block">
+                    <div class="row"><span>No. Nota:</span><span>${kode_nota}</span></div>
+                    <div class="row"><span>Tanggal:</span><span>${tanggal_transaksi}</span></div>
+                    <div class="row"><span>Kasir:</span><span>${escapeHTML(nama_shift)}</span></div>
+                    <div class="row"><span>Pelanggan:</span><span>${escapeHTML(nama_user)}</span></div>
+                    <div class="row"><span>No HP:</span><span>${escapeHTML(user_phone)}</span></div>
+                    <div class="row"><span>Status Jaminan:</span><span>${escapeHTML(t.jaminan || "-")}</span></div>
+                </div>
+            `;
+
+        if (jumlah_hari_denda > 0) {
+          html += `
+                    <div class="separator">--------------------------</div>
+                    <div class="info-block">
+                        Periode Denda:<br>
+                        ${denda_sewa_formatted}-${denda_kembali_formatted} <strong>(${jumlah_hari_denda} Hari)</strong>
+                    </div>
+                `;
+        }
+
+        html += `<div class="separator">================================</div><div class="item-list">`;
+
+        if (dendaItems.length > 0) {
+          dendaItems.forEach((item) => {
+            html += `
+                        <div class="item">
+                            <div class="item-name">${escapeHTML(item.item_nama)}</div>
+                            <div class="row item-detail">
+                                <span>(${item.item_qty}x ${item.jumlah_hari_denda}hr @${formatRupiah(item.harga_denda_satuan)})</span>
+                                <span>${formatRupiah(item.total_denda_per_item)}</span>
+                            </div>
+                        </div>
+                    `;
+          });
+        } else {
+          html += `<div class="item"><div class="item-name">(Tidak ada rincian item denda)</div></div>`;
+        }
+
+        html += `</div><div class="separator">================================</div><div class="summary-block">`;
+
+        if (total_denda > 0) {
+          html += `<div class="row denda"><span>Denda Ditetapkan:</span><span>${formatRupiah(total_denda)}</span></div>`;
+        }
+
+        if (riwayatDenda.length > 0) {
+          riwayatDenda.forEach((p) => {
+            html += `<div class="row"><span>Bayar Denda (${escapeHTML(p.metode_pembayaran)})</span><span>${formatRupiah(p.total_jumlah)}</span></div>`;
+          });
+        }
+
+        html += `<div class="row total"><span>Sisa Bayar:</span><span>${formatRupiah(sisa_keseluruhan)}</span></div></div>`;
+
+        html += `
+                <div class="separator">--------------------------</div>
+                <div class="struk-footer">
+                    <div class="status-badge">${status_pembayaran_text}</div>
+                    <div style="margin-top: 8px; font-size: 9pt; line-height: 1.3;">
+                        <p style="font-weight: bold; margin-bottom: 3px; font-size: 10pt;">Catatan Penting:</p>
+                        <p>Menyewa sama dengan menyetujui syarat dan ketentuan sewa</p>
+                    </div>
+                    <div style="margin-top: 15px; border-top: 1px dashed #000; padding-top: 10px;">
+                        <p>Terima Kasih!</p>
+                        <p>Semoga kembali lagi 😊</p>
+                    </div>
+                </div>
+            `;
+
+        // Render ke DOM
+        document.getElementById("loading-message").style.display = "none";
+        const areaCetak = document.getElementById("areaCetak");
+        areaCetak.innerHTML = html;
+        areaCetak.style.display = "block";
+        document.getElementById("actionButtons").style.display = "flex";
+
+        document.title = `Struk Denda ${kode_nota} - Tenda Camp`;
+      }
+
+      function shareWAImage() {
+        const element = document.getElementById("areaCetak");
+        const actionButtons = document.getElementById("actionButtons");
+
+        if (actionButtons) actionButtons.style.display = "none";
+
+        html2canvas(element, {
+          scale: 3,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+        })
+          .then((canvas) => {
+            if (actionButtons) actionButtons.style.display = "flex";
+
+            const imgData = canvas.toDataURL("image/jpeg", 0.9);
+            const link = document.createElement("a");
+            link.href = imgData;
+            link.download = `Struk-Denda-${waData.trx}.jpg`;
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            let phone = waData.phone.replace(/\D/g, "");
+            if (phone.length < 5) {
+              alert("Nomor HP tidak valid.");
+              return;
+            }
+            if (phone.startsWith("0")) {
+              phone = "62" + phone.slice(1);
+            } else if (phone.startsWith("8")) {
+              phone = "62" + phone;
+            }
+
+            setTimeout(() => {
+              const message = `Halo Kak *${waData.nama}*, berikut terlampir struk denda *${waData.trx}*. \n\nMohon Dicek ya. Terima kasih!`;
+              window.open(
+                `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                "_blank",
+              );
+            }, 1500);
+          })
+          .catch((err) => {
+            if (actionButtons) actionButtons.style.display = "flex";
+            alert("Gagal membuat gambar: " + err);
+          });
+      }
+    </script>
+  </body>
+</html>

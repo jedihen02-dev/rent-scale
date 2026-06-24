@@ -1,0 +1,1460 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Laporan Transaksi | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --bg-color: #f3f4f6;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --primary-color: #4f46e5;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader Overlay & Skeletons */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Header Controls */
+      .header-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-top: 1rem;
+      }
+      .btn-control {
+        border-radius: 50px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        background: white;
+        border: 1px solid #e5e7eb;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        min-width: 100px;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .btn-control:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      .btn-filter {
+        color: #2563eb;
+      }
+      .btn-search {
+        color: #4b5563;
+      }
+      .btn-pdf {
+        color: #dc2626;
+      }
+
+      /* Summary Dashboard Card */
+      .hero-summary-card {
+        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25);
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Modern Hybrid Card UI (Transaksi & Denda) */
+      .modern-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        margin-bottom: 20px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        border-left: 6px solid transparent;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .modern-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
+      .modern-card.border-danger-soft {
+        border-left-color: #ff4757;
+      }
+      .modern-card.border-warning-soft {
+        border-left-color: #ffa502;
+      }
+      .modern-card.border-primary-soft {
+        border-left-color: #007bff;
+      }
+      .modern-card.border-success-soft {
+        border-left-color: #2ed573;
+      }
+      .modern-card.border-info-soft {
+        border-left-color: #17a2b8;
+      }
+
+      .card-header-modern {
+        padding: 15px 15px 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .customer-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2f3542;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      .receipt-id {
+        font-size: 0.8rem;
+        color: #a4b0be;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      .card-body-modern {
+        padding: 10px 15px;
+        flex-grow: 1;
+      }
+
+      .info-box-sewa {
+        background-color: #f1f2f6;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .info-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #747d8c;
+        font-weight: 600;
+      }
+      .info-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2f3542;
+      }
+
+      .card-footer-modern {
+        padding: 12px 15px;
+        border-top: 1px solid #f1f2f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      .updated-text {
+        font-size: 0.75rem;
+        color: #ced6e0;
+        font-style: italic;
+      }
+
+      /* iOS Theme Details Modal */
+      .ios-modal-content {
+        border-radius: 14px;
+        background-color: #f2f2f7;
+        border: none;
+        overflow: hidden;
+      }
+      .ios-header {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid #c6c6c8;
+        padding: 15px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ios-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: #000;
+        text-align: left;
+      }
+      .ios-close-btn {
+        color: #8e8e93;
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        text-align: right;
+      }
+      .ios-body {
+        padding: 20px 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .ios-card-group {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .ios-list-row {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        color: #000;
+      }
+      .ios-list-row:last-child {
+        border-bottom: none;
+      }
+      .ios-label {
+        font-size: 16px;
+        color: #000;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .ios-value {
+        font-size: 16px;
+        color: #8e8e93;
+        text-align: right;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ios-value.highlight {
+        color: #000;
+        font-weight: 600;
+      }
+      .ios-value.blue {
+        color: #007aff;
+      }
+      .ios-value.red {
+        color: #ff3b30;
+      }
+      .ios-value.green {
+        color: #34c759;
+      }
+      .ios-section-header {
+        text-transform: uppercase;
+        color: #6d6d72;
+        font-size: 13px;
+        margin-bottom: 6px;
+        margin-left: 16px;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+      .ios-item-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-item-row:last-child {
+        border-bottom: none;
+      }
+      .ios-item-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: #eee;
+        object-fit: cover;
+        margin-right: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .item-thumb-modal {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ios-item-info {
+        flex-grow: 1;
+        text-align: left;
+      }
+      .ios-item-name {
+        font-weight: 500;
+        font-size: 16px;
+        color: #000;
+        margin-bottom: 4px;
+      }
+      .ios-item-desc {
+        font-size: 13px;
+        color: #8e8e93;
+        margin-bottom: 2px;
+      }
+      .ios-item-price-right {
+        text-align: right;
+        font-weight: 600;
+        color: #000;
+        min-width: 90px;
+        white-space: nowrap;
+      }
+      .ios-history-row {
+        padding: 15px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-history-row:last-child {
+        border-bottom: none;
+      }
+      .ios-history-header {
+        font-size: 16px;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+      .ios-history-item {
+        margin-bottom: 12px;
+      }
+      .ios-history-item-name {
+        font-size: 15px;
+        color: #000;
+        font-weight: 600;
+        margin-bottom: 2px;
+      }
+      .ios-history-calc {
+        font-size: 14px;
+        color: #333;
+      }
+      .ios-history-footer {
+        font-size: 13px;
+        color: #8e8e93;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .header-controls {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .btn-control {
+          flex: 1;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Laporan Transaksi...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-3 pb-2">
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h4 class="font-weight-bold text-dark m-0">
+                  Laporan Transaksi
+                </h4>
+                <div
+                  class="text-gray-500 mt-1"
+                  style="font-size: 0.85rem; font-weight: 500"
+                >
+                  <i class="far fa-calendar-alt mr-1"></i>
+                  <span
+                    id="ui-filter-text"
+                    class="skeleton w-32 h-4 inline-block rounded"
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="header-controls mb-4">
+              <button class="btn-control btn-filter" id="tombolFilterPIN">
+                <i class="fas fa-filter mr-2"></i> Filter
+              </button>
+              <button
+                class="btn-control btn-search"
+                data-toggle="modal"
+                data-target="#modalSearch"
+              >
+                <i class="fas fa-search mr-2"></i> Cari
+              </button>
+              <a
+                href="#"
+                id="btn-export-pdf"
+                target="_blank"
+                class="btn-control btn-pdf"
+                ><i class="fas fa-file-pdf mr-2"></i> PDF</a
+              >
+            </div>
+
+            <div
+              id="search-alert"
+              class="alert alert-info mb-4 border-0 shadow-sm hidden flex justify-between items-center"
+            >
+              <span
+                >Menampilkan hasil pencarian untuk:
+                <strong id="search-keyword"></strong
+              ></span>
+              <button
+                class="btn btn-sm btn-danger rounded-pill px-3 font-bold"
+                onclick="resetFilters()"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <section class="content">
+          <div class="container-fluid">
+            <div class="hero-summary-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div
+                    style="
+                      font-size: 0.85rem;
+                      text-transform: uppercase;
+                      letter-spacing: 1px;
+                      opacity: 0.9;
+                      margin-bottom: 0.2rem;
+                    "
+                  >
+                    Total Uang Masuk
+                  </div>
+                  <div
+                    style="
+                      font-size: 2rem;
+                      font-weight: 800;
+                      line-height: 1.1;
+                      white-space: nowrap;
+                    "
+                    id="ui-total-masuk"
+                  >
+                    <span class="skeleton w-48 h-8 inline-block rounded"></span>
+                  </div>
+                </div>
+                <div style="font-size: 2.5rem; opacity: 0.2">
+                  <i class="fas fa-wallet"></i>
+                </div>
+              </div>
+              <hr
+                style="border-color: rgba(255, 255, 255, 0.2); margin: 1rem 0"
+              />
+              <div
+                class="d-flex justify-content-between align-items-center text-sm"
+              >
+                <div>
+                  Transaksi:
+                  <strong style="white-space: nowrap" id="ui-sub-trx"
+                    ><span class="skeleton w-24 h-4 inline-block rounded"></span
+                  ></strong>
+                </div>
+              </div>
+              <div
+                class="d-flex justify-content-between align-items-center text-sm mt-1"
+              >
+                <div class="text-yellow-300">
+                  Sisa Tagihan:
+                  <strong style="white-space: nowrap" id="ui-sub-sisa"
+                    ><span class="skeleton w-24 h-4 inline-block rounded"></span
+                  ></strong>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="font-weight-bold text-dark mb-3">
+              <i class="fas fa-stream text-primary mr-2"></i> Riwayat Aktivitas
+              Gabungan
+            </h5>
+
+            <div class="row" id="transactionListContainer">
+              <div class="col-12">
+                <div class="skeleton h-32 w-full rounded-2xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="modalPIN" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div
+          class="modal-content border-0 shadow-lg rounded-2xl overflow-hidden"
+        >
+          <div class="modal-header bg-gray-800 text-white p-3">
+            <h6 class="modal-title mx-auto font-bold">
+              <i class="fas fa-lock mr-2 text-yellow-400"></i>Akses Admin
+            </h6>
+          </div>
+          <div class="modal-body text-center p-4">
+            <p class="text-sm text-gray-500 font-medium mb-3">
+              Masukkan PIN untuk membuka filter tanggal
+            </p>
+            <input
+              type="password"
+              id="pin_input"
+              class="form-control text-center font-bold tracking-[10px] text-2xl bg-gray-100 border-0 rounded-xl"
+              placeholder="••••"
+              maxlength="6"
+              inputmode="numeric"
+            />
+            <small id="pinError" class="text-red-500 font-bold mt-2 hidden"
+              >PIN Salah!</small
+            >
+          </div>
+          <div
+            class="modal-footer justify-content-center border-0 pt-0 pb-4 bg-white"
+          >
+            <button
+              type="button"
+              class="btn btn-primary px-5 rounded-xl font-bold shadow-md"
+              id="submitPIN"
+            >
+              Buka Akses
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalFilter" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content ios-modal-content">
+          <form id="formFilter" method="GET" action="report.html">
+            <div class="ios-header">
+              <div style="width: 30px"></div>
+              <div class="ios-title">Filter Periode</div>
+              <button type="button" class="ios-close-btn" data-dismiss="modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="ios-body">
+              <div class="form-group">
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                  >Periode</label
+                >
+                <select
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="periode"
+                  name="periode"
+                  onchange="toggleDateInputs()"
+                >
+                  <option value="harian">Harian</option>
+                  <option value="mingguan">Mingguan</option>
+                  <option value="bulanan">Bulanan</option>
+                  <option value="tahunan">Tahunan</option>
+                </select>
+              </div>
+
+              <div
+                id="filterHarian"
+                class="mt-3 filter-group"
+                style="display: none"
+              >
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                  >Tanggal</label
+                >
+                <input
+                  type="date"
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="inp_tanggal"
+                  name="tanggal"
+                />
+              </div>
+
+              <div
+                id="filterMingguan"
+                class="mt-3 filter-group"
+                style="display: none"
+              >
+                <div class="row gx-2">
+                  <div class="col-6">
+                    <label
+                      class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                      >Dari</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tanggal_dari"
+                      name="tanggal_dari"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label
+                      class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                      >Sampai</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tanggal_sampai"
+                      name="tanggal_sampai"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div
+                id="filterBulanan"
+                class="mt-3 filter-group"
+                style="display: none"
+              >
+                <div class="row gx-2">
+                  <div class="col-7">
+                    <label
+                      class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                      >Bulan</label
+                    >
+                    <select
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_bulan"
+                      name="bulan_input"
+                    ></select>
+                  </div>
+                  <div class="col-5">
+                    <label
+                      class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                      >Tahun</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tahun_bulan"
+                      name="tahun_input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div
+                id="filterTahunan"
+                class="mt-3 filter-group"
+                style="display: none"
+              >
+                <label
+                  class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+                  >Tahun</label
+                >
+                <input
+                  type="number"
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="inp_tahun"
+                  name="tahun_input"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block mt-4 rounded-xl font-bold py-3 shadow-md border-0"
+                style="background-color: var(--primary-color)"
+              >
+                Terapkan Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalSearch" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content ios-modal-content">
+          <form id="formSearch" method="GET" action="report.html">
+            <div class="ios-header">
+              <div style="width: 30px"></div>
+              <div class="ios-title">Cari Aktivitas</div>
+              <button type="button" class="ios-close-btn" data-dismiss="modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="ios-body text-center">
+              <div class="ios-card-group mb-4 text-left p-3">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nama / No HP Pelanggan</label
+                >
+                <input
+                  type="text"
+                  class="form-control border-0 px-0 bg-transparent shadow-none font-bold text-lg"
+                  id="inp_search"
+                  name="search"
+                  placeholder="Ketik keyword..."
+                  autocomplete="off"
+                />
+              </div>
+
+              <input type="hidden" id="hid_tanggal" name="tanggal" />
+              <input type="hidden" id="hid_tanggal_dari" name="tanggal_dari" />
+              <input
+                type="hidden"
+                id="hid_tanggal_sampai"
+                name="tanggal_sampai"
+              />
+              <input type="hidden" id="hid_bulan_input" name="bulan_input" />
+              <input type="hidden" id="hid_tahun_input" name="tahun_input" />
+              <input type="hidden" id="hid_periode" name="periode" />
+
+              <button
+                type="submit"
+                class="btn btn-info btn-block rounded-xl font-bold py-2 shadow-sm"
+              >
+                <i class="fas fa-search mr-1"></i> Cari Sekarang
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div class="modal-content ios-modal-content">
+          <div class="ios-header">
+            <div style="width: 30px"></div>
+            <div class="ios-title" id="detail-modal-title">Rincian Laporan</div>
+            <button type="button" class="ios-close-btn" data-dismiss="modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="ios-body p-0" id="detail-modal-body">
+            <div class="text-center py-5">
+              <i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      const PIN_FILTER_BENAR = "73928"; // Sesuai file PHP asli Anda
+
+      let currentSearch = "";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        initFilters();
+        fetchReportData();
+        setupListeners();
+      });
+
+      // === 1. MANAJEMEN DATA FILTER & PARSING URL ===
+      function initFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const todayStr = new Date().toISOString().split("T")[0];
+        const curYear = new Date().getFullYear();
+        const curMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+
+        const periode = urlParams.get("periode") || "harian";
+        currentSearch = urlParams.get("search") || "";
+
+        document.getElementById("periode").value = periode;
+        document.getElementById("inp_tanggal").value =
+          urlParams.get("tanggal") || todayStr;
+
+        const dDari = new Date();
+        dDari.setDate(dDari.getDate() - 6);
+        document.getElementById("inp_tanggal_dari").value =
+          urlParams.get("tanggal_dari") || dDari.toISOString().split("T")[0];
+        document.getElementById("inp_tanggal_sampai").value =
+          urlParams.get("tanggal_sampai") || todayStr;
+
+        document.getElementById("inp_tahun_bulan").value =
+          urlParams.get("tahun_input") || curYear;
+        document.getElementById("inp_tahun").value =
+          urlParams.get("tahun_input") || curYear;
+
+        const bulanSelect = document.getElementById("inp_bulan");
+        const bulanNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        const activeBulan = urlParams.get("bulan_input") || curMonth;
+        bulanNames.forEach((name, idx) => {
+          let val = String(idx + 1).padStart(2, "0");
+          bulanSelect.innerHTML += `<option value="${val}" ${val === activeBulan ? "selected" : ""}>${name}</option>`;
+        });
+
+        // Sinkronisasi form pencarian
+        document.getElementById("hid_periode").value = periode;
+        document.getElementById("hid_tanggal").value =
+          document.getElementById("inp_tanggal").value;
+        document.getElementById("hid_tanggal_dari").value =
+          document.getElementById("inp_tanggal_dari").value;
+        document.getElementById("hid_tanggal_sampai").value =
+          document.getElementById("inp_tanggal_sampai").value;
+        document.getElementById("hid_bulan_input").value =
+          document.getElementById("inp_bulan").value;
+        document.getElementById("hid_tahun_input").value =
+          document.getElementById("inp_tahun").value;
+
+        if (currentSearch) {
+          document.getElementById("inp_search").value = currentSearch;
+          document.getElementById("search-alert").classList.remove("hidden");
+          document.getElementById("search-keyword").textContent = currentSearch;
+        }
+
+        // Set rute export PDF
+        document.getElementById("btn-export-pdf").href =
+          `export-pdf.php?tanggal_dari=${document.getElementById("inp_tanggal_dari").value}&tanggal_sampai=${document.getElementById("inp_tanggal_sampai").value}&search=${encodeURIComponent(currentSearch)}`;
+
+        toggleDateInputs();
+      }
+
+      function toggleDateInputs() {
+        const p = document.getElementById("periode").value;
+        document
+          .querySelectorAll(".filter-group")
+          .forEach((el) => (el.style.display = "none"));
+        if (p === "harian")
+          document.getElementById("filterHarian").style.display = "block";
+        if (p === "mingguan")
+          document.getElementById("filterMingguan").style.display = "block";
+        if (p === "bulanan")
+          document.getElementById("filterBulanan").style.display = "block";
+        if (p === "tahunan")
+          document.getElementById("filterTahunan").style.display = "block";
+      }
+
+      function resetFilters() {
+        window.location.href = "report.html";
+      }
+
+      // === 2. AMBIL DATA LAPORAN DARI API ===
+      async function fetchReportData() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderReportUI(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const payload = new URLSearchParams({
+            action: "get_laporan_transaksi",
+            admin_id: adminId,
+            periode: document.getElementById("periode").value,
+            tanggal: document.getElementById("inp_tanggal").value,
+            tanggal_dari: document.getElementById("inp_tanggal_dari").value,
+            tanggal_sampai: document.getElementById("inp_tanggal_sampai").value,
+            bulan_input: document.getElementById("inp_bulan").value,
+            tahun_input: document.getElementById("inp_tahun").value,
+            search: currentSearch,
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderReportUI(result.data);
+          } else {
+            renderReportUI(null);
+          }
+        } catch (err) {
+          console.error(err);
+          renderReportUI(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 3. RENDER UI CARDS ===
+      function renderReportUI(data) {
+        if (!data) {
+          document.getElementById("transactionListContainer").innerHTML =
+            '<div class="col-12 text-center text-red-500 font-bold p-4">Gagal memuat data laporan dari server.</div>';
+          return;
+        }
+
+        // Header Meta
+        document.getElementById("ui-filter-text").textContent =
+          data.summary.filter_text;
+        document.getElementById("ui-total-masuk").textContent =
+          FORMATTER.format(data.summary.total_uang_masuk);
+        document.getElementById("ui-sub-trx").textContent = FORMATTER.format(
+          data.summary.total_uang_masuk_transaksi,
+        );
+        document.getElementById("ui-sub-sisa").textContent = FORMATTER.format(
+          data.summary.total_sisa_keseluruhan,
+        );
+
+        const container = document.getElementById("transactionListContainer");
+        container.innerHTML = "";
+
+        if (!data.mixed_cards || data.mixed_cards.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-2xl shadow-sm border p-5">
+                    <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 font-semibold m-0">Tidak ada riwayat aktivitas ditemukan pada periode ini.</p>
+                </div>
+            </div>`;
+          return;
+        }
+
+        data.mixed_cards.forEach((card, idx) => {
+          // A. RENDER BLOK KARTU TRANSAKSI
+          if (card.type === "transaksi") {
+            const trx = card.data;
+            const sisa = parseFloat(trx.sisa_pembayaran);
+            const status = trx.status_pesanan;
+
+            let borderClass = "border-warning-soft";
+            let badge =
+              '<span class="badge badge-warning text-dark font-bold px-2 py-1 rounded-pill">Belum Lunas</span>';
+
+            if (status.toLowerCase() === "dispensasi") {
+              borderClass = "border-info-soft";
+              badge =
+                '<span class="badge badge-info font-bold px-2 py-1 rounded-pill">DISPENSASI</span>';
+            } else if (status === "Cancel") {
+              borderClass = "border-danger-soft";
+              badge =
+                '<span class="badge badge-danger font-bold px-2 py-1 rounded-pill">DP CANCEL</span>';
+            } else if (sisa <= 0) {
+              borderClass = "border-success-soft";
+              badge =
+                '<span class="badge badge-success font-bold px-2 py-1 rounded-pill">LUNAS</span>';
+            }
+
+            let valueDisplay = FORMATTER.format(trx.total_biaya_item);
+            let masukDisplay = `<span class="font-bold ${trx.total_dibayar_fix > 0 ? "text-green-600" : "text-gray-400"} whitespace-nowrap">${FORMATTER.format(trx.total_dibayar_fix)}</span>`;
+
+            if (status === "Cancel") {
+              const pct =
+                trx.total_dibayar_raw > 0
+                  ? Math.round(
+                      (trx.total_dibayar_fix / trx.total_dibayar_raw) * 100,
+                    )
+                  : 0;
+              valueDisplay = `<span class="text-red-500 font-bold">-${pct}% ${FORMATTER.format(trx.total_dibayar_fix)}</span>`;
+              masukDisplay = `<div class="text-right leading-tight"><span class="font-bold text-gray-800">${FORMATTER.format(trx.total_dibayar_fix)}</span><br><span class="text-red-500 text-xs font-bold">Cancel -${pct}% ${FORMATTER.format(trx.total_dibayar_raw)}</span></div>`;
+            } else if (status.toLowerCase() === "dispensasi") {
+              valueDisplay = `<span class="text-blue-500 font-bold">Rp 0</span>`;
+              masukDisplay = `<span class="font-bold text-gray-400">Rp 0</span>`;
+            }
+
+            let alertDenda = "";
+            if (trx.total_denda_belum_dibayar > 0 && status !== "Cancel") {
+              alertDenda = `
+                <div class="d-flex justify-content-between align-items-center mt-2 p-1 bg-yellow-50 rounded border border-yellow-200 text-red-500 text-xs font-bold shadow-sm">
+                    <span><i class="fas fa-exclamation-triangle mr-1"></i> Sisa Denda Toko</span><span class="whitespace-nowrap">${FORMATTER.format(trx.total_denda_belum_dibayar)}</span>
+                </div>`;
+            }
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card ${borderClass} fade-in" onclick="openDetailTransaksiModal(${trx.id})">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${trx.nama_user || "Pelanggan"}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> #${String(trx.id).padStart(4, "0")}</div>
+                        </div>
+                        <div>${badge}</div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa">
+                            <div class="info-item"><span class="info-label">Periode Sewa</span><span class="info-value text-xs">${trx.periode_sewa_text}</span></div>
+                            <div class="info-item text-right"><span class="info-label">Tagihan</span><span class="info-value text-xs">${valueDisplay}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Total Masuk:</span>${masukDisplay}</div>
+                        ${alertDenda}
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> Buat: ${new Date(trx.created_at).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</div>
+                        <div class="text-gray-300"><i class="fas fa-chevron-right text-xs"></i></div>
+                    </div>
+                </div>
+            </div>`;
+
+            // B. RENDER BLOK KARTU DENDA MASUK
+          } else if (card.type === "denda") {
+            const dn = card.data;
+            const isDisp = (dn.semua_metode_pembayaran_denda || "")
+              .toLowerCase()
+              .includes("dispensasi");
+
+            const badgeClass = isDisp ? "badge-info" : "badge-danger";
+            const bColor = isDisp ? "border-info-soft" : "border-danger-soft";
+            const bgColor = isDisp ? "#e0f2fe" : "#fee2e2";
+            const tc = isDisp ? "text-blue-600" : "text-red-600";
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card ${bColor} fade-in" onclick="openDetailDendaModal(${dn.transaksi_id}, '${dn.kode_nota}')">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${dn.user_nama}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> ${dn.kode_nota}</div>
+                        </div>
+                        <div><span class="badge ${badgeClass} font-bold px-2 py-1 rounded-pill"><i class="fas ${isDisp ? "fa-handshake" : "fa-exclamation-triangle"} mr-1"></i> ${isDisp ? "DISPENSASI" : "DENDA"}</span></div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa" style="background:${bgColor};">
+                            <div class="info-item"><span class="info-label ${tc}">Periode Denda</span><span class="info-value ${tc} text-xs font-bold whitespace-nowrap">${dn.denda_periode_text}</span></div>
+                            <div class="info-item text-right"><span class="info-label ${tc}">Total Tagihan</span><span class="info-value ${tc} text-xs font-black whitespace-nowrap">${isDisp ? "Rp 0" : FORMATTER.format(dn.total_tagihan_denda)}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-500 text-xs font-bold">Penerima Denda:</span>
+                            <span class="font-bold text-gray-700 text-xs"><i class="fas fa-user-tie mr-1"></i> ${dn.nama_shift_penerima_denda || "N/A"}</span>
+                        </div>
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> Bayar: ${new Date(dn.latest_payment_time).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</div>
+                        <div class="text-gray-300"><i class="fas fa-chevron-right text-xs"></i></div>
+                    </div>
+                </div>
+            </div>`;
+          }
+        });
+      }
+
+      // === 4. MODALS DETAIL (ON-DEMAND RE-FETCH) ===
+      function setupListeners() {
+        document
+          .getElementById("periode")
+          .addEventListener("change", toggleDateInputs);
+
+        // Trigger PIN check sebelum buka filter modal
+        document
+          .getElementById("tombolFilterPIN")
+          .addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("pin_input").value = "";
+            document.getElementById("pinError").classList.add("hidden");
+            $("#modalPIN").modal("show");
+          });
+
+        document.getElementById("submitPIN").addEventListener("click", () => {
+          if (document.getElementById("pin_input").value === PIN_FILTER_BENAR) {
+            $("#modalPIN").modal("hide");
+            setTimeout(() => {
+              $("#modalFilter").modal("show");
+            }, 300);
+          } else {
+            document.getElementById("pinError").classList.remove("hidden");
+            document.getElementById("pin_input").focus();
+          }
+        });
+
+        document
+          .getElementById("formSearch")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            const s = document.getElementById("inp_search").value;
+            window.location.href = `report.html?search=${encodeURIComponent(s)}&periode=${document.getElementById("periode").value}`;
+          });
+      }
+
+      // A. Modal Rincian Sewa Transaksi
+      async function openDetailTransaksiModal(id) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Transaksi`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_transaction_detail&id=${id}`,
+          );
+          const result = await res.json();
+          if (result.status === "success") renderModalTransaksi(result.data);
+        } catch (e) {
+          body.innerHTML =
+            '<div class="p-4 text-center text-red-500">Gagal menarik data detail.</div>';
+        }
+      }
+
+      function renderModalTransaksi(data) {
+        const buildRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+        const isLunas = data.sisa_pembayaran <= 0;
+
+        let statusText = isLunas ? "LUNAS" : "BELUM LUNAS";
+        if (data.status_pesanan === "Cancel") statusText = "DP CANCEL";
+        else if (data.status_pesanan.toLowerCase() === "dispensasi")
+          statusText = "DISPENSASI";
+
+        let html = `
+    <div class="p-3">
+        <div class="ios-section-header">INFORMASI PELANGGAN</div>
+        <div class="ios-card-group">
+            ${buildRow("Nota", data.kode_nota, "highlight")}
+            ${buildRow("Nama", data.nama_user, "highlight")}
+            ${buildRow("Telepon", data.phone, "blue")}
+            ${buildRow("Shift Pembuat", data.nama_admin_pembuat || "-", "")}
+        </div>
+
+        <div class="ios-section-header">DETAIL SEWA</div>
+        <div class="ios-card-group">`;
+
+        if (data.durasi_hari) {
+          html += buildRow(
+            "Periode",
+            `${new Date(data.tanggal_from).toLocaleDateString("id-ID")} - ${new Date(data.tanggal_to).toLocaleDateString("id-ID")}`,
+          );
+          html += buildRow("Durasi", `${data.durasi_hari} Hari`);
+        }
+        html += buildRow(
+          "Status Bayar",
+          statusText,
+          isLunas || statusText === "DISPENSASI" ? "green" : "red",
+        );
+        html += buildRow(
+          "Total Biaya",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(
+                data.status_pesanan === "Cancel"
+                  ? data.total_biaya_item_raw
+                  : data.total_biaya_item,
+              ),
+          "highlight",
+        );
+
+        if (
+          data.diskon_persen > 0 &&
+          data.status_pesanan !== "Cancel" &&
+          data.status_pesanan.toLowerCase() !== "dispensasi"
+        ) {
+          html += `<div class="ios-list-row bg-yellow-50"><div class="ios-label text-yellow-600">Diskon ${data.diskon_persen}%</div><div class="ios-value text-yellow-600">- ${FORMATTER.format(data.diskon_nominal)}</div></div>`;
+        }
+        html += buildRow(
+          "Sudah Bayar",
+          FORMATTER.format(data.total_dibayar_sekarang),
+          "green",
+        );
+        html += buildRow(
+          "Sisa",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(data.sisa_pembayaran),
+          data.sisa_pembayaran > 0 ? "red" : "green",
+        );
+        html += `</div>`;
+
+        html += `<div class="ios-section-header">RINCIAN ITEM CATALOG</div><div class="ios-card-group">`;
+        data.items.forEach((item) => {
+          const img = item.foto
+            ? `<img src="${item.foto}" class="ios-item-thumb" onclick="showImage('${item.foto}')" style="cursor:pointer">`
+            : `<div class="ios-item-thumb"><i class="fas fa-box text-gray-400"></i></div>`;
+          const desc = item.jenis_item.toLowerCase().includes("sewa")
+            ? `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)} x ${item.jumlah_hari} Hari`
+            : `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)}`;
+          html += `
+        <div class="ios-item-row">
+            ${img}
+            <div class="ios-item-info"><div class="ios-item-name">${item.nama_item}</div><div class="ios-item-desc">${desc}</div></div>
+            <div class="ios-item-price-right highlight">${data.status_pesanan.toLowerCase() === "dispensasi" ? "Rp 0" : FORMATTER.format(item.total_harga_item)}</div>
+        </div>`;
+        });
+        html += `</div>`;
+
+        html += `<div class="ios-section-header">RIWAYAT ALOKASI DANA</div><div class="ios-card-group">`;
+        if (data.riwayat_pembayaran.length > 0) {
+          data.riwayat_pembayaran.forEach((h) => {
+            const sub = h.is_split
+              ? h.splits
+                  .map(
+                    (s) =>
+                      `<div class="flex justify-between text-xs text-gray-500 mt-1"><span>${s.metode}</span><strong>${FORMATTER.format(s.amount)}</strong></div>`,
+                  )
+                  .join("")
+              : `<div class="text-xs text-gray-400">${h.metode_pembayaran}</div>`;
+            html += `
+            <div class="ios-history-row">
+                <div class="flex justify-between items-center mb-1"><span class="font-bold text-sm text-gray-700">${h.label}</span><strong class="text-green-600">${FORMATTER.format(h.jumlah_bayar)}</strong></div>
+                ${sub}
+                <div class="text-[10px] text-gray-400 mt-1">${new Date(h.tanggal_bayar).toLocaleString("id-ID")} &bull; ${h.admin_nama}</div>
+            </div>`;
+          });
+        } else {
+          html += `<div class="p-3 text-center text-gray-400 text-sm">Tidak ada riwayat dana masuk.</div>`;
+        }
+        html += `</div></div>`;
+
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      // B. Modal Rincian Laporan Denda
+      async function openDetailDendaModal(id, nota) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Denda - ${nota}`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-red-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_denda_detail&id=${id}`,
+          );
+          const result = await res.json();
+          if (result.status === "success") renderModalDenda(result.data);
+        } catch (e) {
+          body.innerHTML =
+            '<div class="p-4 text-center text-red-500">Gagal memuat rincian denda.</div>';
+        }
+      }
+
+      function renderModalDenda(data) {
+        const buildRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+
+        let html = `
+    <div class="p-4">
+        <div class="ios-section-header m-0 mb-2">RINGKASAN DENDA</div>
+        <div class="ios-card-group">
+            ${buildRow("Pelanggan", data.nama_user, "highlight")}
+            ${buildRow("Nota Induk", data.kode_nota)}
+            ${buildRow("Rentang Waktu", data.denda_periode_formatted || "-")}
+            ${buildRow("Total Tagihan", FORMATTER.format(data.denda), "text-danger font-bold")}
+        </div>
+
+        <div class="ios-section-header m-0 mb-2">ALOKASI PEMBAYARAN DENDA</div>
+        <div class="ios-card-group bg-transparent shadow-none">`;
+
+        if (
+          data.history_denda_grouped &&
+          data.history_denda_grouped.length > 0
+        ) {
+          let tTentukan = 0;
+          let tTunai = 0;
+          let tKomp = 0;
+
+          data.history_denda_grouped.forEach((g) => {
+            const totalGrp = g.jumlah_denda_satuan * g.count;
+            tTentukan += totalGrp;
+            let isKomp = g.metode_pembayaran
+              .toLowerCase()
+              .includes("kompensasi");
+            let itemBayar = isKomp ? 0 : g.jumlah_pembayaran_satuan * g.count;
+
+            if (g.status_denda === "Sudah Dibayar") {
+              if (isKomp) tKomp += g.jumlah_pembayaran_satuan * g.count;
+              else tTunai += itemBayar;
+            }
+
+            const badge =
+              g.status_denda === "Sudah Dibayar"
+                ? `<span class="badge badge-success text-[10px] mr-2">Paid</span>`
+                : `<span class="badge badge-danger text-[10px] mr-2">Unpaid</span>`;
+            const label =
+              g.count > 1 &&
+              g.keterangan_list[0].toLowerCase().includes("keterlambatan")
+                ? `Denda Terlambat ${g.count} Hari`
+                : g.keterangan_list[0];
+
+            let desc = "";
+            if (g.status_denda === "Sudah Dibayar") {
+              desc = `<div class="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-100">
+                    Masuk Fisik: <strong class="text-gray-700">${FORMATTER.format(itemBayar)}</strong> (${g.metode_pembayaran}) oleh <strong>${g.nama_admin_penerima_denda || data.nama_shift_pembuat}</strong>
+                    ${isKomp ? `<br><span class="badge bg-indigo-900 text-white mt-1 font-normal">Kompensasi: ${FORMATTER.format(g.jumlah_pembayaran_satuan * g.count)}</span>` : ""}
+                </div>`;
+            }
+
+            html += `
+            <div class="bg-white border-l-4 border-red-500 rounded-xl shadow-sm mb-2 p-3">
+                <div class="flex justify-between items-start mb-1">
+                    <h6 class="text-red-500 font-bold text-sm m-0 flex items-center">${badge} ${label}</h6>
+                    <span class="font-black text-gray-800">${FORMATTER.format(totalGrp)}</span>
+                </div>
+                ${desc}
+            </div>`;
+          });
+
+          html += `
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mt-3 text-xs shadow-sm">
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Denda Ditentukan:</span><strong class="text-gray-800">${FORMATTER.format(tTentukan)}</strong></div>
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Masuk Fisik (Kas):</span><strong class="text-emerald-600 font-black">${FORMATTER.format(tTunai)}</strong></div>
+            <div class="flex justify-between"><span class="text-gray-600">Total Nilai Kompensasi:</span><strong class="text-gray-800">${FORMATTER.format(tKomp)}</strong></div>
+        </div>`;
+        } else {
+          html += `<div class="bg-white p-3 text-center text-gray-500 text-sm rounded-xl">Tidak ada riwayat denda.</div>`;
+        }
+
+        html += `</div></div>`;
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      // === 5. MOCK DATA FALLBACK ===
+      function getMockData() {
+        return {
+          summary: {
+            filter_text: "Harian (Mock)",
+            total_uang_masuk: 450000,
+            total_uang_masuk_transaksi: 400000,
+            total_sisa_keseluruhan: 100000,
+          },
+          mixed_cards: [
+            {
+              type: "transaksi",
+              data: {
+                id: 1,
+                nama_user: "Andi Saputra",
+                total_biaya_item: 400000,
+                total_dibayar_fix: 400000,
+                total_dibayar_raw: 400000,
+                sisa_pembayaran: 0,
+                status_pesanan: "Selesai",
+                periode_sewa_text: "12/10/26 - 15/10/26",
+                total_denda_belum_dibayar: 0,
+                created_at: new Date().toISOString(),
+              },
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

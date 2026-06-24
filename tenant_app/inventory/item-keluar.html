@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rekap Item Keluar | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+      }
+      body {
+        background-color: #f3f4f6;
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Skeleton Loader Animasi */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* --- Header & Buttons Style --- */
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .report-title h1 {
+        font-weight: 800;
+        color: var(--text-dark);
+        font-size: 1.75rem;
+        margin: 0;
+      }
+      .report-date {
+        display: inline-flex;
+        align-items: center;
+        background: #e5e7eb;
+        color: var(--text-dark);
+        padding: 0.4rem 1rem;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .action-buttons .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        background: white;
+        border: 1px solid #e5e7eb;
+        color: #374151;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .action-buttons .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: #f9fafb;
+      }
+
+      /* --- SUMMARY CARDS --- */
+      .info-card {
+        border-radius: 1.25rem;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        color: white;
+        height: 100%;
+      }
+      .card-total-qty {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      }
+      .card-total-trx {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      }
+      .info-card h3 {
+        font-weight: 800;
+        font-size: 2.5rem;
+        margin-bottom: 0.2rem;
+      }
+      .info-card p {
+        opacity: 0.9;
+        margin-bottom: 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* --- ITEM LIST --- */
+      .item-row-card {
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+        border: 1px solid #eef2f7;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+      }
+      .item-row-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-color: #dee2e6;
+      }
+      .item-image-wrapper {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background-color: #f8f9fa;
+        border: 1px solid #eee;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .item-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .item-details {
+        flex-grow: 1;
+        padding-left: 15px;
+        overflow: hidden;
+      }
+      .item-name {
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #1f2937;
+        margin-bottom: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .item-type {
+        font-size: 0.8rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+      .qty-wrapper {
+        text-align: right;
+        padding-left: 15px;
+        min-width: 80px;
+      }
+      .qty-label {
+        font-size: 0.7rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        display: block;
+        margin-bottom: 0px;
+        font-weight: 600;
+      }
+      .qty-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #3b82f6;
+        line-height: 1;
+      }
+
+      @media (max-width: 768px) {
+        .report-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+        .action-buttons {
+          width: 100%;
+        }
+        .action-buttons .btn {
+          flex: 1;
+        }
+        .info-card h3 {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-3">
+            <div class="report-header">
+              <div class="report-title">
+                <h1>Rekap Item Keluar</h1>
+                <div class="report-date">
+                  <i class="far fa-calendar-alt mr-2"></i>
+                  <span
+                    id="ui-filter-text"
+                    class="skeleton w-32 h-5 inline-block rounded"
+                  ></span>
+                </div>
+              </div>
+
+              <div class="action-buttons">
+                <button
+                  class="btn"
+                  data-toggle="modal"
+                  data-target="#modalFilter"
+                >
+                  <i class="fas fa-filter text-primary mr-1"></i> Filter
+                </button>
+                <a
+                  id="btnReset"
+                  href="item-keluar.html"
+                  class="btn hidden text-danger"
+                >
+                  <i class="fas fa-times mr-1"></i> Reset
+                </a>
+                <button
+                  class="btn"
+                  data-toggle="modal"
+                  data-target="#modalSearch"
+                >
+                  <i class="fas fa-search text-info mr-1"></i> Cari
+                </button>
+              </div>
+            </div>
+
+            <div
+              id="search-alert"
+              class="alert alert-info mb-4 shadow-sm border-0 hidden"
+            >
+              Menampilkan hasil pencarian untuk:
+              <strong id="search-keyword"></strong>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-6">
+                <div class="info-card card-total-qty p-4">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h3
+                        id="ui-total-qty"
+                        class="skeleton w-16 h-10 mb-1 rounded"
+                      >
+                        0
+                      </h3>
+                      <p>Total Unit</p>
+                    </div>
+                    <i class="fas fa-cubes fa-2x opacity-50"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="info-card card-total-trx p-4">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h3
+                        id="ui-total-trx"
+                        class="skeleton w-16 h-10 mb-1 rounded"
+                      >
+                        0
+                      </h3>
+                      <p>Total Transaksi</p>
+                    </div>
+                    <i class="fas fa-receipt fa-2x opacity-50"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12" id="ui-item-list">
+                <div class="item-row-card">
+                  <div class="skeleton w-full h-16 rounded-xl"></div>
+                </div>
+                <div class="item-row-card">
+                  <div class="skeleton w-full h-16 rounded-xl"></div>
+                </div>
+                <div class="item-row-card">
+                  <div class="skeleton w-full h-16 rounded-xl"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="modalFilter" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div
+          class="modal-content shadow-2xl border-0 rounded-2xl overflow-hidden"
+        >
+          <form id="formFilter" method="GET" action="item-keluar.html">
+            <div class="modal-header bg-light border-0">
+              <h6 class="modal-title font-weight-bold text-gray-800">
+                <i class="fas fa-filter mr-2 text-primary"></i>Filter Periode
+              </h6>
+              <button type="button" class="close" data-dismiss="modal">
+                &times;
+              </button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+              <div class="form-group">
+                <label
+                  class="small text-muted font-bold uppercase tracking-wider"
+                  >Tipe Periode</label
+                >
+                <select
+                  class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                  id="periode"
+                  name="periode"
+                  onchange="toggleDateInputs()"
+                >
+                  <option value="harian">Harian</option>
+                  <option value="mingguan">Mingguan</option>
+                  <option value="bulanan">Bulanan</option>
+                  <option value="tahunan">Tahunan</option>
+                </select>
+              </div>
+
+              <div id="filterHarian" class="mt-3" style="display: none">
+                <label
+                  class="small text-muted font-bold uppercase tracking-wider"
+                  >Tanggal</label
+                >
+                <input
+                  type="date"
+                  class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                  id="inp_tanggal"
+                  name="tanggal"
+                />
+              </div>
+
+              <div id="filterMingguan" class="mt-3" style="display: none">
+                <div class="row gx-2">
+                  <div class="col-6">
+                    <label
+                      class="small text-muted font-bold uppercase tracking-wider"
+                      >Dari</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                      id="inp_tanggal_dari"
+                      name="tanggal_dari"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label
+                      class="small text-muted font-bold uppercase tracking-wider"
+                      >Sampai</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                      id="inp_tanggal_sampai"
+                      name="tanggal_sampai"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div id="filterBulanan" class="mt-3" style="display: none">
+                <div class="row gx-2">
+                  <div class="col-7">
+                    <label
+                      class="small text-muted font-bold uppercase tracking-wider"
+                      >Bulan</label
+                    >
+                    <select
+                      class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                      id="inp_bulan"
+                      name="bulan_input"
+                    ></select>
+                  </div>
+                  <div class="col-5">
+                    <label
+                      class="small text-muted font-bold uppercase tracking-wider"
+                      >Tahun</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                      id="inp_tahun_bulan"
+                      name="tahun_input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div id="filterTahunan" class="mt-3" style="display: none">
+                <label
+                  class="small text-muted font-bold uppercase tracking-wider"
+                  >Tahun</label
+                >
+                <input
+                  type="number"
+                  class="form-control form-control-sm rounded-lg bg-gray-50 border-gray-200"
+                  id="inp_tahun"
+                  name="tahun_input"
+                />
+              </div>
+            </div>
+            <div class="modal-footer p-3 bg-gray-50 border-t border-gray-100">
+              <button
+                type="submit"
+                class="btn btn-primary btn-block rounded-xl font-bold shadow-sm"
+                style="background-color: var(--primary-color); border: none"
+              >
+                Terapkan Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalSearch" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div
+          class="modal-content shadow-2xl border-0 rounded-2xl overflow-hidden"
+        >
+          <form id="formSearch" method="GET" action="item-keluar.html">
+            <div class="modal-header bg-info text-white">
+              <h6 class="modal-title font-weight-bold">
+                <i class="fas fa-search mr-2"></i>Cari Item
+              </h6>
+              <button
+                type="button"
+                class="close text-white"
+                data-dismiss="modal"
+              >
+                &times;
+              </button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+              <div class="form-group mb-0">
+                <label
+                  class="small text-muted font-bold uppercase tracking-wider"
+                  >Kata Kunci (Nama Item)</label
+                >
+                <input
+                  type="text"
+                  class="form-control rounded-xl bg-gray-50 border-gray-200 py-2 px-3"
+                  id="inp_search"
+                  name="search"
+                  placeholder="Contoh: Tenda..."
+                  required
+                />
+              </div>
+              <input type="hidden" id="hid_tanggal" name="tanggal" />
+              <input type="hidden" id="hid_tanggal_dari" name="tanggal_dari" />
+              <input
+                type="hidden"
+                id="hid_tanggal_sampai"
+                name="tanggal_sampai"
+              />
+              <input type="hidden" id="hid_bulan_input" name="bulan_input" />
+              <input type="hidden" id="hid_tahun_input" name="tahun_input" />
+              <input type="hidden" id="hid_periode" name="periode" />
+            </div>
+            <div class="modal-footer p-3 bg-gray-50 border-t border-gray-100">
+              <button
+                type="submit"
+                class="btn btn-info btn-block rounded-xl font-bold shadow-sm"
+              >
+                Cari Sekarang
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalPreviewGambar" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="max-height: 80vh; margin: 0 auto; cursor: pointer"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        initFilters();
+        fetchItemKeluar();
+      });
+
+      // === 1. MANAJEMEN FILTER FORM ===
+      function initFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const todayStr = new Date().toISOString().split("T")[0];
+        const curYear = new Date().getFullYear();
+        const curMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+
+        // Get Values
+        const periode = urlParams.get("periode") || "harian";
+        const search = urlParams.get("search") || "";
+
+        // Set to Modal Form
+        document.getElementById("periode").value = periode;
+        document.getElementById("inp_tanggal").value =
+          urlParams.get("tanggal") || todayStr;
+
+        const dDari = new Date();
+        dDari.setDate(dDari.getDate() - 6);
+        document.getElementById("inp_tanggal_dari").value =
+          urlParams.get("tanggal_dari") || dDari.toISOString().split("T")[0];
+        document.getElementById("inp_tanggal_sampai").value =
+          urlParams.get("tanggal_sampai") || todayStr;
+
+        document.getElementById("inp_tahun_bulan").value =
+          urlParams.get("tahun_input") || curYear;
+        document.getElementById("inp_tahun").value =
+          urlParams.get("tahun_input") || curYear;
+
+        // Populate Bulan Options
+        const bulanSelect = document.getElementById("inp_bulan");
+        const bulanNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        const activeBulan = urlParams.get("bulan_input") || curMonth;
+        bulanNames.forEach((name, idx) => {
+          let val = String(idx + 1).padStart(2, "0");
+          bulanSelect.innerHTML += `<option value="${val}" ${val === activeBulan ? "selected" : ""}>${name}</option>`;
+        });
+
+        // Populate Hidden Search Form Inputs
+        document.getElementById("hid_periode").value = periode;
+        document.getElementById("hid_tanggal").value =
+          document.getElementById("inp_tanggal").value;
+        document.getElementById("hid_tanggal_dari").value =
+          document.getElementById("inp_tanggal_dari").value;
+        document.getElementById("hid_tanggal_sampai").value =
+          document.getElementById("inp_tanggal_sampai").value;
+        document.getElementById("hid_bulan_input").value =
+          document.getElementById("inp_bulan").value;
+        document.getElementById("hid_tahun_input").value =
+          document.getElementById("inp_tahun").value;
+
+        // Display Search Alert & Reset Button
+        if (search) {
+          document.getElementById("inp_search").value = search;
+          document.getElementById("search-alert").classList.remove("hidden");
+          document.getElementById("search-keyword").textContent = search;
+
+          const btnReset = document.getElementById("btnReset");
+          btnReset.classList.remove("hidden");
+          // Reset path removes search param but keeps dates
+          urlParams.delete("search");
+          btnReset.href = `item-keluar.html?${urlParams.toString()}`;
+        }
+
+        toggleDateInputs();
+      }
+
+      function toggleDateInputs() {
+        const p = document.getElementById("periode").value;
+        document.getElementById("filterHarian").style.display =
+          p === "harian" ? "block" : "none";
+        document.getElementById("filterMingguan").style.display =
+          p === "mingguan" ? "block" : "none";
+        document.getElementById("filterBulanan").style.display =
+          p === "bulanan" ? "block" : "none";
+        document.getElementById("filterTahunan").style.display =
+          p === "tahunan" ? "block" : "none";
+      }
+
+      $("#modalSearch").on("shown.bs.modal", function () {
+        document.getElementById("inp_search").focus();
+      });
+
+      window.showImage = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      // === 2. FETCH DATA DARI API ===
+      async function fetchItemKeluar() {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Default params jika kosong dari URL
+        const payload = new URLSearchParams({
+          action: "get_item_keluar",
+          admin_id: adminId,
+          periode: document.getElementById("periode").value,
+          tanggal: document.getElementById("inp_tanggal").value,
+          tanggal_dari: document.getElementById("inp_tanggal_dari").value,
+          tanggal_sampai: document.getElementById("inp_tanggal_sampai").value,
+          bulan_input: document.getElementById("inp_bulan").value,
+          tahun_input: document.getElementById("inp_tahun").value,
+          search: urlParams.get("search") || "",
+        });
+
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            renderUI(
+              {
+                filter_text: "Harian: (Offline)",
+                total_qty: 45,
+                total_transaksi: 12,
+              },
+              getMockData(),
+            );
+            return;
+          }
+
+          const response = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderUI(result.data.summary, result.data.items);
+          } else {
+            console.error("Gagal memuat data", result.message);
+            renderUI(
+              { filter_text: "Error", total_qty: 0, total_transaksi: 0 },
+              [],
+            );
+          }
+        } catch (error) {
+          console.error("Fetch API error:", error);
+          renderUI(
+            {
+              filter_text: "Koneksi Terputus",
+              total_qty: 0,
+              total_transaksi: 0,
+            },
+            [],
+          );
+        }
+      }
+
+      // === 3. RENDER UI ===
+      function renderUI(summary, items) {
+        // Render Header & Summary Cards
+        const elFilterText = document.getElementById("ui-filter-text");
+        elFilterText.textContent = summary.filter_text;
+        elFilterText.classList.remove("skeleton", "w-32", "h-5", "rounded");
+
+        const elTotalQty = document.getElementById("ui-total-qty");
+        elTotalQty.textContent = new Intl.NumberFormat("id-ID").format(
+          summary.total_qty || 0,
+        );
+        elTotalQty.classList.remove("skeleton", "w-16", "h-10", "rounded");
+
+        const elTotalTrx = document.getElementById("ui-total-trx");
+        elTotalTrx.textContent = new Intl.NumberFormat("id-ID").format(
+          summary.total_transaksi || 0,
+        );
+        elTotalTrx.classList.remove("skeleton", "w-16", "h-10", "rounded");
+
+        // Render Item List
+        const container = document.getElementById("ui-item-list");
+        container.innerHTML = "";
+
+        if (!items || items.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-5 bg-white rounded-2xl shadow-sm border border-gray-100">
+                <i class="fas fa-folder-open text-gray-300 text-6xl mb-3"></i>
+                <p class="text-gray-500 font-medium">Tidak ada item keluar pada periode ini.</p>
+            </div>`;
+          return;
+        }
+
+        items.forEach((row) => {
+          const imgSrc = row.foto || "../../assets/img/no-image.png"; // Ganti dengan path no-image yang sesuai
+          const imgHTML = row.foto
+            ? `<img src="${row.foto}" class="item-image" onclick="showImage('${row.foto}')" style="cursor:pointer;">`
+            : `<i class="fas fa-box text-muted" style="font-size: 24px;"></i>`;
+
+          container.innerHTML += `
+            <div class="item-row-card">
+                <div class="item-image-wrapper">
+                    ${imgHTML}
+                </div>
+                <div class="item-details">
+                    <div class="item-name" title="${row.nama_item}">${row.nama_item}</div>
+                    <div class="item-type"><i class="fas fa-tag mr-1 text-gray-400"></i> ${row.jenis_item}</div>
+                </div>
+                <div class="qty-wrapper">
+                    <span class="qty-label">TOTAL QTY</span>
+                    <span class="qty-value">${new Intl.NumberFormat("id-ID").format(row.total_qty_keluar)}</span>
+                </div>
+            </div>
+        `;
+        });
+      }
+
+      // --- MOCK DATA ---
+      function getMockData() {
+        return [
+          {
+            item_id: 1,
+            nama_item: "Tenda Dome 2P",
+            jenis_item: "sewa",
+            foto: "",
+            total_qty_keluar: 15,
+          },
+          {
+            item_id: 2,
+            nama_item: "Gas Hi-Cook",
+            jenis_item: "jual",
+            foto: "",
+            total_qty_keluar: 30,
+          },
+        ];
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Laporan Denda | SewaTendaku</title>
+
+    <!-- Dependencies -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+      }
+      body {
+        background-color: #f0f2f5;
+        font-family: "Poppins", sans-serif;
+      }
+
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Custom Cards */
+      .info-card {
+        border-radius: 1rem;
+        border: 1px solid #333;
+        transition:
+          transform 0.3s ease,
+          box-shadow 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        color: #333;
+      }
+      .info-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      }
+      .info-card .bg-icon {
+        position: absolute;
+        top: 5px;
+        right: 15px;
+        font-size: 3rem;
+        color: rgba(0, 0, 0, 0.05);
+        z-index: 1;
+      }
+      .info-card .card-body {
+        position: relative;
+        z-index: 2;
+        padding: 1rem 1.5rem;
+      }
+      .card-total-pendapatan {
+        background-color: #c8e6c9;
+      }
+      .card-total-pendapatan .main-value,
+      .card-total-pendapatan .main-title {
+        color: #00a896;
+      }
+      .card-total-transaksi {
+        background-color: #b3e5fc;
+      }
+      .card-total-transaksi .main-value,
+      .card-total-transaksi .main-title {
+        color: #0047ab;
+      }
+      .main-title {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .main-value {
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 0.5rem;
+      }
+      .sub-info {
+        font-size: 0.8rem;
+        color: #555;
+        padding-top: 0.5rem;
+        border-top: 1px dashed #a0a0a0;
+        margin-top: 0.75rem;
+      }
+      .sub-info p {
+        margin-bottom: 0.2rem;
+        font-weight: 600;
+      }
+
+      /* Filter Buttons */
+      .filter-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid currentColor;
+        background-color: transparent;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition: all 0.2s;
+      }
+      .filter-btn:hover {
+        background-color: #e2e8f0;
+        color: #495057;
+      }
+
+      /* Denda Card List */
+      .denda-card {
+        border-left: 5px solid;
+        margin-bottom: 1rem;
+        position: relative;
+        cursor: pointer;
+        background-color: #ffffff;
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+        border-radius: 0.75rem;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .denda-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+      }
+      .denda-card:active {
+        transform: translateY(1px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+      }
+      .denda-card.status-denda-paid {
+        border-color: #dc3545 !important;
+      }
+      .denda-card .card-body {
+        padding: 1.25rem;
+      }
+      .small-text {
+        font-size: 0.875em !important;
+      }
+
+      /* iOS Theme Modal Styles */
+      .ios-modal-content {
+        border-radius: 14px;
+        background-color: #f2f2f7;
+        border: none;
+        overflow: hidden;
+      }
+      .ios-header {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid #c6c6c8;
+        padding: 15px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ios-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: #000;
+        text-align: left;
+      }
+      .ios-close-btn {
+        color: #8e8e93;
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        text-align: right;
+      }
+      .ios-body {
+        padding: 20px 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .ios-card-group {
+        background: white;
+        border-radius: 10px;
+        overflow: visible;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .ios-list-row {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        color: #000;
+      }
+      .ios-list-row:last-child {
+        border-bottom: none;
+      }
+      .ios-label {
+        font-size: 16px;
+        color: #000;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .ios-value {
+        font-size: 16px;
+        color: #8e8e93;
+        text-align: right;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ios-value.highlight {
+        color: #000;
+        font-weight: 600;
+      }
+      .ios-value.blue {
+        color: #007aff;
+      }
+      .ios-value.red {
+        color: #e3342f;
+      }
+      .ios-value.green {
+        color: #38c172;
+      }
+      .ios-section-header {
+        text-transform: uppercase;
+        color: #8e8e93;
+        font-size: 12px;
+        margin-bottom: 8px;
+        margin-left: 5px;
+        margin-top: 15px;
+        font-weight: 600;
+      }
+      .item-thumb-modal {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .item-card-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #e5e5ea;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .item-card-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .item-img-modern {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+      }
+      .item-card-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+      .item-card-subtitle {
+        font-size: 13px;
+        color: #6b7280;
+      }
+      .item-card-total {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      @media (max-width: 767px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Laporan Denda...</h5>
+      </div>
+
+      <!-- Komponen Global -->
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-4">
+          <div class="container-fluid">
+            <div
+              class="d-flex flex-wrap justify-content-between align-items-center mb-4"
+            >
+              <h3 class="m-0 font-bold text-gray-800 text-2xl">
+                Laporan Denda
+              </h3>
+              <div class="d-flex align-items-center mt-2 mt-md-0">
+                <button
+                  class="btn btn-sm filter-btn mr-2"
+                  data-toggle="modal"
+                  data-target="#modalFilter"
+                  title="Filter Tanggal"
+                >
+                  <i class="fas fa-calendar-alt"></i>
+                  <span class="d-none d-sm-inline ml-2 font-bold">Filter</span>
+                </button>
+                <button
+                  class="btn btn-sm filter-btn"
+                  data-toggle="modal"
+                  data-target="#modalSearch"
+                  title="Cari Nama"
+                >
+                  <i class="fas fa-search"></i>
+                  <span class="d-none d-sm-inline ml-2 font-bold">Cari</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <p class="text-gray-500 m-0 font-medium" id="ui-filter-text">
+                <span class="skeleton w-48 h-5 inline-block rounded"></span>
+              </p>
+              <button
+                class="btn btn-sm btn-danger rounded-pill px-3 font-bold shadow-sm hidden"
+                id="btnResetSearch"
+                onclick="resetFilters()"
+              >
+                <i class="fas fa-times mr-1"></i> Reset
+              </button>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="row mb-3">
+              <div class="col-12 col-md-6 mb-3">
+                <div class="info-card card-total-pendapatan">
+                  <i class="fas fa-sack-dollar bg-icon"></i>
+                  <div class="card-body">
+                    <p class="main-title mb-0">
+                      Total Denda Dibayar <small>(Uang Masuk Tunai)</small>
+                    </p>
+                    <h2 class="main-value" id="ui-val-tunai">
+                      <span
+                        class="skeleton w-32 h-10 inline-block rounded"
+                      ></span>
+                    </h2>
+                    <div class="sub-info">
+                      <p>
+                        Uang Masuk Tunai/Transfer:
+                        <span id="ui-sub-tunai">Rp 0</span>
+                      </p>
+                      <p>
+                        Kompensasi (Non-Tunai):
+                        <span id="ui-sub-komp">Rp 0</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <div class="info-card card-total-transaksi">
+                  <i class="fas fa-list-alt bg-icon"></i>
+                  <div class="card-body">
+                    <p class="main-title mb-0">Total Denda Ditetapkan</p>
+                    <h2 class="main-value" id="ui-val-ditetapkan">
+                      <span
+                        class="skeleton w-32 h-10 inline-block rounded"
+                      ></span>
+                    </h2>
+                    <div class="sub-info">
+                      <p>
+                        Total nilai denda yang telah ditetapkan pada periode
+                        ini.
+                      </p>
+                      <p class="text-transparent select-none">Placeholder</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h5
+              class="mt-4 mb-3 pt-3 border-t border-gray-200 font-bold text-gray-700"
+            >
+              <i class="fas fa-gavel mr-2 text-danger"></i> Riwayat Pembayaran
+              Denda
+            </h5>
+
+            <!-- List Transaksi Denda -->
+            <div class="row" id="dendaListContainer">
+              <div class="col-12">
+                <div class="skeleton h-32 w-full rounded-xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <!-- MODAL FILTER TANGGAL -->
+    <div class="modal fade" id="modalFilter" tabindex="-1">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content ios-modal-content">
+          <form id="formFilter" method="GET" action="laporan-denda.html">
+            <div class="ios-header">
+              <div style="width: 30px"></div>
+              <div class="ios-title">Filter Tanggal</div>
+              <button type="button" class="ios-close-btn" data-dismiss="modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="ios-body">
+              <div class="form-group">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Pilih Periode</label
+                >
+                <select
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="periode"
+                  name="periode"
+                  onchange="toggleDateInputs()"
+                >
+                  <option value="harian">Harian</option>
+                  <option value="mingguan">Mingguan</option>
+                  <option value="bulanan">Bulanan</option>
+                  <option value="tahunan">Tahunan</option>
+                </select>
+              </div>
+
+              <div id="filterHarian" class="mt-3" style="display: none">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Tanggal</label
+                >
+                <input
+                  type="date"
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="inp_tanggal"
+                  name="tanggal"
+                />
+              </div>
+
+              <div id="filterMingguan" class="mt-3" style="display: none">
+                <div class="row gx-2">
+                  <div class="col-6">
+                    <label class="text-xs font-bold text-gray-500 uppercase"
+                      >Dari</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tanggal_dari"
+                      name="tanggal_dari"
+                    />
+                  </div>
+                  <div class="col-6">
+                    <label class="text-xs font-bold text-gray-500 uppercase"
+                      >Sampai</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tanggal_sampai"
+                      name="tanggal_sampai"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div id="filterBulanan" class="mt-3" style="display: none">
+                <div class="row gx-2">
+                  <div class="col-7">
+                    <label class="text-xs font-bold text-gray-500 uppercase"
+                      >Bulan</label
+                    >
+                    <select
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_bulan"
+                      name="bulan_input"
+                    >
+                      <!-- Options populated by JS -->
+                    </select>
+                  </div>
+                  <div class="col-5">
+                    <label class="text-xs font-bold text-gray-500 uppercase"
+                      >Tahun</label
+                    >
+                    <input
+                      type="number"
+                      class="form-control rounded-lg bg-white border-gray-200"
+                      id="inp_tahun_bulan"
+                      name="tahun_input"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div id="filterTahunan" class="mt-3" style="display: none">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Tahun</label
+                >
+                <input
+                  type="number"
+                  class="form-control rounded-lg bg-white border-gray-200"
+                  id="inp_tahun"
+                  name="tahun_input"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary btn-block mt-4 rounded-xl font-bold py-2 shadow-sm"
+              >
+                Terapkan Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL CARI -->
+    <div class="modal fade" id="modalSearch" tabindex="-1">
+      <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content ios-modal-content">
+          <form id="formSearch" method="GET" action="laporan-denda.html">
+            <div class="ios-header">
+              <div style="width: 30px"></div>
+              <div class="ios-title">Pencarian</div>
+              <button type="button" class="ios-close-btn" data-dismiss="modal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+            <div class="ios-body text-center">
+              <div class="ios-card-group mb-4 text-left p-3">
+                <label class="text-xs font-bold text-gray-500 uppercase"
+                  >Nama atau No HP</label
+                >
+                <input
+                  type="text"
+                  class="form-control border-0 px-0 bg-transparent shadow-none font-bold text-lg"
+                  id="inp_search"
+                  name="search"
+                  placeholder="Cari..."
+                  autocomplete="off"
+                />
+              </div>
+              <!-- Hidden inputs carry filters -->
+              <input type="hidden" id="hid_tanggal" name="tanggal" />
+              <input type="hidden" id="hid_tanggal_dari" name="tanggal_dari" />
+              <input
+                type="hidden"
+                id="hid_tanggal_sampai"
+                name="tanggal_sampai"
+              />
+              <input type="hidden" id="hid_bulan_input" name="bulan_input" />
+              <input type="hidden" id="hid_tahun_input" name="tahun_input" />
+              <input type="hidden" id="hid_periode" name="periode" />
+
+              <button
+                type="submit"
+                class="btn btn-info btn-block rounded-xl font-bold py-2 shadow-sm"
+              >
+                <i class="fas fa-search mr-1"></i> Cari Data
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DETAIL TRANSAKSI -->
+    <div class="modal fade" id="detailModal" tabindex="-1">
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div class="modal-content ios-modal-content">
+          <div class="ios-header">
+            <div style="width: 30px"></div>
+            <div class="ios-title" id="detail-modal-title">
+              Detail Transaksi
+            </div>
+            <button type="button" class="ios-close-btn" data-dismiss="modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="ios-body p-0" id="detail-modal-body">
+            <div class="text-center py-5">
+              <i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL GAMBAR -->
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        initFilters();
+        fetchLaporanDenda();
+      });
+
+      // === 1. FILTER MANAGEMENT ===
+      function initFilters() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const todayStr = new Date().toISOString().split("T")[0];
+        const curYear = new Date().getFullYear();
+        const curMonth = String(new Date().getMonth() + 1).padStart(2, "0");
+
+        const periode = urlParams.get("periode") || "harian";
+        const search = urlParams.get("search") || "";
+
+        document.getElementById("periode").value = periode;
+        document.getElementById("inp_tanggal").value =
+          urlParams.get("tanggal") || todayStr;
+
+        const dDari = new Date();
+        dDari.setDate(dDari.getDate() - 6);
+        document.getElementById("inp_tanggal_dari").value =
+          urlParams.get("tanggal_dari") || dDari.toISOString().split("T")[0];
+        document.getElementById("inp_tanggal_sampai").value =
+          urlParams.get("tanggal_sampai") || todayStr;
+
+        document.getElementById("inp_tahun_bulan").value =
+          urlParams.get("tahun_input") || curYear;
+        document.getElementById("inp_tahun").value =
+          urlParams.get("tahun_input") || curYear;
+
+        const bulanSelect = document.getElementById("inp_bulan");
+        const bulanNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        const activeBulan = urlParams.get("bulan_input") || curMonth;
+        bulanNames.forEach((name, idx) => {
+          let val = String(idx + 1).padStart(2, "0");
+          bulanSelect.innerHTML += `<option value="${val}" ${val === activeBulan ? "selected" : ""}>${name}</option>`;
+        });
+
+        // Hidden Search Inputs
+        document.getElementById("hid_periode").value = periode;
+        document.getElementById("hid_tanggal").value =
+          document.getElementById("inp_tanggal").value;
+        document.getElementById("hid_tanggal_dari").value =
+          document.getElementById("inp_tanggal_dari").value;
+        document.getElementById("hid_tanggal_sampai").value =
+          document.getElementById("inp_tanggal_sampai").value;
+        document.getElementById("hid_bulan_input").value =
+          document.getElementById("inp_bulan").value;
+        document.getElementById("hid_tahun_input").value =
+          document.getElementById("inp_tahun").value;
+
+        if (search) {
+          document.getElementById("inp_search").value = search;
+          document.getElementById("btnResetSearch").classList.remove("hidden");
+        }
+
+        toggleDateInputs();
+      }
+
+      function toggleDateInputs() {
+        const p = document.getElementById("periode").value;
+        document.getElementById("filterHarian").style.display =
+          p === "harian" ? "block" : "none";
+        document.getElementById("filterMingguan").style.display =
+          p === "mingguan" ? "block" : "none";
+        document.getElementById("filterBulanan").style.display =
+          p === "bulanan" ? "block" : "none";
+        document.getElementById("filterTahunan").style.display =
+          p === "tahunan" ? "block" : "none";
+      }
+
+      function resetFilters() {
+        const url = new URL(window.location);
+        url.searchParams.delete("search");
+        window.location.href = url.toString();
+      }
+
+      // === 2. FETCH DATA Laporan Denda ===
+      async function fetchLaporanDenda() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderLaporan(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const urlParams = new URLSearchParams(window.location.search);
+
+          const payload = new URLSearchParams({
+            action: "get_laporan_denda",
+            admin_id: adminId,
+            periode: document.getElementById("periode").value,
+            tanggal: document.getElementById("inp_tanggal").value,
+            tanggal_dari: document.getElementById("inp_tanggal_dari").value,
+            tanggal_sampai: document.getElementById("inp_tanggal_sampai").value,
+            bulan_input: document.getElementById("inp_bulan").value,
+            tahun_input: document.getElementById("inp_tahun").value,
+            search: urlParams.get("search") || "",
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderLaporan(result.data);
+          } else {
+            console.error(result.message);
+            renderLaporan(null);
+          }
+        } catch (err) {
+          console.error(err);
+          renderLaporan(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 3. RENDER UI Laporan Denda ===
+      function renderLaporan(data) {
+        if (!data) return;
+
+        // Summary Text
+        const elFilterText = document.getElementById("ui-filter-text");
+        elFilterText.textContent = data.summary.filter_text;
+        elFilterText.classList.remove("skeleton", "w-48", "h-5");
+
+        // KPI Values
+        document.getElementById("ui-val-tunai").textContent = FORMATTER.format(
+          data.summary.total_dibayar_tunai,
+        );
+        document.getElementById("ui-sub-tunai").textContent = FORMATTER.format(
+          data.summary.total_dibayar_tunai,
+        );
+        document.getElementById("ui-sub-komp").textContent = FORMATTER.format(
+          data.summary.total_kompensasi,
+        );
+        document.getElementById("ui-val-ditetapkan").textContent =
+          FORMATTER.format(data.summary.total_denda_ditetapkan);
+
+        // Lists
+        const container = document.getElementById("dendaListContainer");
+        container.innerHTML = "";
+
+        if (!data.transactions || data.transactions.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+                    <i class="fas fa-check-circle fa-4x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 font-medium">Tidak ada pembayaran denda yang tercatat pada periode ini.</p>
+                </div>
+            </div>`;
+          return;
+        }
+
+        data.transactions.forEach((row, i) => {
+          const uTunai = parseFloat(row.total_denda_paid_tunai) || 0;
+          const uKomp = parseFloat(row.total_kompensasi) || 0;
+          const kodeNota =
+            row.kode_nota || `#${String(row.transaksi_id).padStart(4, "0")}`;
+          const latestTime = row.latest_payment_time
+            ? new Date(row.latest_payment_time).toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            : "-";
+
+          let badgeText = "";
+          let badgeClass = "";
+          if (uTunai > 0 && uKomp > 0) {
+            badgeText = "BAYAR & KOMP";
+            badgeClass = "badge-primary";
+          } else if (uTunai > 0) {
+            badgeText = "DENDA DIBAYAR";
+            badgeClass = "badge-danger";
+          } else if (uKomp > 0) {
+            badgeText = "KOMPENSASI";
+            badgeClass = "badge-success";
+          } else return;
+
+          let kompRow =
+            uKomp > 0
+              ? `
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small-text font-bold"><i class="fas fa-handshake mr-1"></i> Total Kompensasi</span>
+                <span class="font-weight-bold text-info small-text">${FORMATTER.format(uKomp)}</span>
+            </div>`
+              : "";
+
+          container.innerHTML += `
+            <div class="col-12 mb-3" style="animation-delay: ${i * 0.05}s">
+                 <div class="card denda-card shadow-sm border-danger status-denda-paid m-0" onclick="openDetailModal(${row.transaksi_id}, '${kodeNota}')">
+                     <div class="card-body">
+                          <div class="d-flex justify-content-between align-items-start">
+                              <div>
+                                  <h5 class="mb-0 font-bold text-gray-800">${row.user_nama}</h5>
+                                  <small class="text-blue-600 font-bold text-xs"><i class="fas fa-barcode mr-1"></i> ${kodeNota}</small>
+                              </div>
+                              <div class="text-right">
+                                  <span class="badge badge-pill ${badgeClass} text-xs px-2 py-1"><i class="fas fa-gavel mr-1"></i> ${badgeText}</span>
+                                  <br><span class="mt-1 font-bold text-gray-500 text-xs inline-block">Oleh: ${row.nama_shift_penerima_denda || "N/A"}</span>
+                              </div>
+                          </div>
+                          <hr class="my-3 border-gray-100">
+                          <div class="d-flex justify-content-between align-items-center mb-2">
+                              <span class="text-muted small-text font-bold"><i class="fas fa-money-bill-wave mr-1"></i> Uang Masuk Tunai</span>
+                              <span class="font-weight-bold text-danger small-text">${FORMATTER.format(uTunai)}</span>
+                          </div>
+                          ${kompRow}
+                          <hr class="my-2 border-gray-50">
+                          <div class="d-flex justify-content-between align-items-center pt-1">
+                               <small class="text-gray-400 font-medium"><i class="fas fa-user-tie mr-1"></i> Penerima: <strong class="text-gray-600">${row.nama_shift_penerima_denda || "N/A"}</strong></small> 
+                               <small class="text-gray-400 font-medium"><i class="fas fa-clock mr-1"></i>${latestTime}</small>
+                          </div>
+                      </div>
+                  </div>
+            </div>`;
+        });
+      }
+
+      // === 4. MODAL DETAIL DENDA (iOS Style) ===
+      async function openDetailModal(id, nota) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Transaksi - ${nota}`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i><p class="mt-2 text-gray-500">Memuat detail...</p></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_denda_detail&id=${id}`,
+          );
+          const result = await res.json();
+
+          if (result.status === "success") renderModalDetailHtml(result.data);
+          else {
+            body.innerHTML = `<div class="p-4 text-center text-red-500 font-bold">${result.message}</div>`;
+          }
+        } catch (e) {
+          console.error(e);
+          body.innerHTML = `<div class="p-4 text-center text-red-500">Error memuat data (MOCK MODE).</div>`;
+        }
+      }
+
+      function renderModalDetailHtml(data) {
+        const buildListRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+
+        // Perhitungan Info
+        const totalPaidLifetime = parseFloat(data.total_dibayar_lifetime) || 0;
+        const totalBiayaItem = parseFloat(data.total_biaya_item) || 0;
+        const sisaBayarItem = Math.max(0, totalBiayaItem - totalPaidLifetime);
+        const statusItemBayar = sisaBayarItem <= 0 ? "LUNAS" : "BELUM LUNAS";
+
+        let html = `
+    <div class="p-3">
+        <div class="row gx-2 mb-3">
+            <div class="col-6">
+                <div class="text-center p-2 rounded-lg ${statusItemBayar === "LUNAS" ? "bg-green-500" : "bg-yellow-400 text-yellow-900"} text-white shadow-sm">
+                    <h6 class="text-[10px] uppercase opacity-80 m-0 font-bold">Status Bayar Item</h6>
+                    <strong class="text-sm">${statusItemBayar}</strong>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="text-center p-2 rounded-lg bg-blue-500 text-white shadow-sm">
+                    <h6 class="text-[10px] uppercase opacity-80 m-0 font-bold">Status Kembali</h6>
+                    <strong class="text-sm truncate block px-1">${data.status_pengembalian || "N/A"}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="ios-section-header m-0 mb-2"><i class="fas fa-money-bill-wave mr-1"></i> Rincian Pembayaran Item</div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-3">
+            ${buildListRow("Total Biaya Item", FORMATTER.format(totalBiayaItem), "text-gray-800 font-bold")}
+            ${buildListRow("DP/Terbayar", FORMATTER.format(totalPaidLifetime), "text-green-600 font-bold")}
+            ${buildListRow("Sisa Pembayaran", FORMATTER.format(sisaBayarItem), "text-red-600 font-black")}
+        </div>
+    `;
+
+        // Jika ada total denda belum dibayar
+        if (data.total_denda_belum_dibayar > 0) {
+          html += `
+        <div class="ios-section-header m-0 mb-2 text-red-500"><i class="fas fa-exclamation-triangle mr-1"></i> Tagihan Denda</div>
+        <div class="bg-red-50 rounded-xl shadow-sm border border-red-100 overflow-hidden mb-3">
+            ${buildListRow('<span class="text-red-500 font-bold">Belum Dibayar</span>', FORMATTER.format(data.total_denda_belum_dibayar), "text-red-600 font-black")}
+        </div>`;
+        }
+
+        // Data Pelanggan
+        html += `<div class="ios-section-header m-0 mb-2"><i class="fas fa-user-circle mr-1"></i> Data Pelanggan</div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-4">
+            ${buildListRow("Pelanggan", data.nama_user)}
+            ${buildListRow("Telepon", data.phone, "text-blue-600")}
+            ${buildListRow("Pembuat", data.nama_shift_pembuat || "N/A", "text-blue-600 font-bold")}
+        </div>`;
+
+        // Riwayat Denda & Pembayaran Grouped
+        html += `<div class="ios-section-header m-0 mb-2"><i class="fas fa-gavel mr-1"></i> Riwayat Denda & Pembayaran</div>
+             <div class="bg-transparent shadow-none mb-4">`;
+
+        if (
+          data.history_denda_grouped &&
+          data.history_denda_grouped.length > 0
+        ) {
+          let totalDitetapkan = 0;
+          let totalTunai = 0;
+          let totalKomp = 0;
+
+          data.history_denda_grouped.forEach((g) => {
+            const count = g.count;
+            const satuan = g.jumlah_denda_satuan;
+            const totalGrp = satuan * count;
+            totalDitetapkan += totalGrp;
+
+            let isKomp = g.metode_pembayaran
+              .toLowerCase()
+              .includes("kompensasi");
+            let jumlahBayarDisplay = isKomp
+              ? 0
+              : g.jumlah_pembayaran_satuan * count;
+
+            if (g.status_denda === "Sudah Dibayar") {
+              if (isKomp) totalKomp += g.jumlah_pembayaran_satuan * count;
+              else totalTunai += jumlahBayarDisplay;
+            }
+
+            const badge =
+              g.status_denda === "Sudah Dibayar"
+                ? `<span class="badge badge-success text-[10px] mr-2">${g.status_denda}</span>`
+                : `<span class="badge badge-danger text-[10px] mr-2">${g.status_denda}</span>`;
+            const labelKet =
+              count > 1 &&
+              g.keterangan_list[0].toLowerCase().includes("keterlambatan")
+                ? `Denda Keterlambatan ${count} Hari`
+                : g.keterangan_list[0];
+
+            let paidDesc = "";
+            if (g.status_denda === "Sudah Dibayar") {
+              const wkt = new Date(g.waktu_pembayaran).toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              paidDesc = `<div class="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-200">
+                    Dibayar: <strong class="text-gray-700">${FORMATTER.format(jumlahBayarDisplay)}</strong> (${g.metode_pembayaran}) oleh <strong class="text-gray-700">${g.nama_admin_penerima_denda || data.nama_shift_pembuat}</strong> ${wkt}
+                    ${isKomp ? `<span class="badge bg-blue-800 text-white ml-1 font-normal">Kompensasi: ${FORMATTER.format(g.jumlah_pembayaran_satuan * count)}</span>` : ""}
+                </div>`;
+            }
+
+            html += `
+            <div class="bg-white border-l-4 border-red-500 rounded-xl shadow-sm mb-2 p-3">
+                <div class="flex justify-between items-start mb-1">
+                    <h6 class="text-red-500 font-bold text-sm m-0 flex items-center">${badge} ${labelKet}</h6>
+                    <span class="font-black text-gray-800">${FORMATTER.format(totalGrp)}</span>
+                </div>
+                <div class="text-xs text-gray-500 font-medium">Ditetapkan: ${FORMATTER.format(satuan)} x ${count} Hari/Item</div>
+                ${paidDesc}
+            </div>`;
+          });
+
+          html += `
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mt-3 text-xs">
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Denda Ditentukan:</span><strong class="text-gray-800">${FORMATTER.format(totalDitetapkan)}</strong></div>
+            <div class="flex justify-between mb-1"><span class="text-gray-600">Total Dibayar Tunai/Transfer:</span><strong class="text-gray-800">${FORMATTER.format(totalTunai)}</strong></div>
+            <div class="flex justify-between"><span class="text-gray-600">Total Denda Kompensasi:</span><strong class="text-gray-800">${FORMATTER.format(totalKomp)}</strong></div>
+        </div>`;
+        } else {
+          html += `<div class="bg-white p-3 text-center text-gray-500 text-sm rounded-xl border border-gray-100">Tidak ada denda tercatat.</div>`;
+        }
+
+        html += `</div></div>`;
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      window.showImage = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      // MOCK DATA
+      function getMockData() {
+        return {
+          summary: {
+            filter_text: "Harian (Mock)",
+            total_dibayar_tunai: 150000,
+            total_kompensasi: 50000,
+            total_denda_ditetapkan: 200000,
+          },
+          transactions: [
+            {
+              transaksi_id: 1,
+              kode_nota: "#0001",
+              user_nama: "Budi Santoso",
+              nama_shift_penerima_denda: "Shift Pagi",
+              total_denda_paid_tunai: 150000,
+              total_kompensasi: 0,
+              latest_payment_time: new Date().toISOString(),
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1049 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Detail Shift | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --primary-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --bg-color: #f3f4f6;
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --primary-color: #4f46e5;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader & Skeleton */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Summary Card */
+      .hero-summary-card {
+        background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%);
+        border-radius: 1.25rem;
+        padding: 1.5rem;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.25);
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Modern Hybrid Card UI */
+      .modern-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        margin-bottom: 20px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        border-left: 6px solid transparent;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .modern-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
+      .modern-card.border-danger-soft {
+        border-left-color: #ff4757;
+      }
+      .modern-card.border-warning-soft {
+        border-left-color: #ffa502;
+      }
+      .modern-card.border-success-soft {
+        border-left-color: #2ed573;
+      }
+      .modern-card.border-info-soft {
+        border-left-color: #17a2b8;
+      }
+
+      .card-header-modern {
+        padding: 15px 15px 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .customer-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2f3542;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      .receipt-id {
+        font-size: 0.8rem;
+        color: #a4b0be;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      .card-body-modern {
+        padding: 10px 15px;
+        flex-grow: 1;
+      }
+
+      .info-box-sewa {
+        background-color: #f1f2f6;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .info-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #747d8c;
+        font-weight: 600;
+      }
+      .info-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2f3542;
+      }
+
+      .card-footer-modern {
+        padding: 12px 15px;
+        border-top: 1px solid #f1f2f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      .updated-text {
+        font-size: 0.75rem;
+        color: #ced6e0;
+        font-style: italic;
+      }
+
+      /* iOS Theme Modal Styles */
+      .ios-modal-content {
+        border-radius: 14px;
+        background-color: #f2f2f7;
+        border: none;
+        overflow: hidden;
+      }
+      .ios-header {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid #c6c6c8;
+        padding: 15px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ios-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: #000;
+        text-align: left;
+      }
+      .ios-close-btn {
+        color: #8e8e93;
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        text-align: right;
+      }
+      .ios-body {
+        padding: 20px 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .ios-card-group {
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .ios-list-row {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        color: #000;
+      }
+      .ios-list-row:last-child {
+        border-bottom: none;
+      }
+      .ios-label {
+        font-size: 16px;
+        color: #000;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .ios-value {
+        font-size: 16px;
+        color: #8e8e93;
+        text-align: right;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ios-value.highlight {
+        color: #000;
+        font-weight: 600;
+      }
+      .ios-value.blue {
+        color: #007aff;
+      }
+      .ios-value.red {
+        color: #ff3b30;
+      }
+      .ios-value.green {
+        color: #34c759;
+      }
+      .ios-section-header {
+        text-transform: uppercase;
+        color: #6d6d72;
+        font-size: 13px;
+        margin-bottom: 6px;
+        margin-left: 16px;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+      .ios-item-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-item-row:last-child {
+        border-bottom: none;
+      }
+      .ios-item-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background: #eee;
+        object-fit: cover;
+        margin-right: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ios-item-info {
+        flex-grow: 1;
+        text-align: left;
+      }
+      .ios-item-name {
+        font-weight: 500;
+        font-size: 16px;
+        color: #000;
+        margin-bottom: 4px;
+      }
+      .ios-item-desc {
+        font-size: 13px;
+        color: #8e8e93;
+        margin-bottom: 2px;
+      }
+      .ios-item-price-right {
+        text-align: right;
+        font-weight: 600;
+        color: #000;
+        min-width: 90px;
+        white-space: nowrap;
+      }
+      .ios-history-row {
+        padding: 15px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .ios-history-row:last-child {
+        border-bottom: none;
+      }
+      .ios-history-header {
+        font-size: 16px;
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Detail Shift...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-4 pb-2">
+          <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h4 class="font-weight-bold text-dark m-0" id="ui-shift-title">
+                  Detail
+                  <span class="skeleton w-24 h-6 inline-block rounded"></span>
+                </h4>
+                <div
+                  class="text-muted mt-1 font-medium"
+                  style="font-size: 0.85rem; letter-spacing: 0.5px"
+                  id="ui-shift-time"
+                >
+                  <span class="skeleton w-32 h-4 inline-block rounded"></span>
+                </div>
+                <div
+                  class="text-muted mt-1"
+                  style="font-size: 0.8rem"
+                  id="ui-shift-date"
+                >
+                  <i class="far fa-calendar-alt mr-1"></i>
+                  <span class="skeleton w-24 h-3 inline-block rounded"></span>
+                </div>
+              </div>
+              <a
+                href="shift-report.html"
+                class="btn bg-white text-dark shadow-sm rounded-pill font-weight-bold d-flex align-items-center border border-gray-200"
+                style="font-size: 0.85rem; padding: 0.4rem 1rem"
+              >
+                <i class="fas fa-arrow-left mr-2 text-indigo-500"></i> Kembali
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <section class="content">
+          <div class="container-fluid">
+            <div class="hero-summary-card">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <div
+                    style="
+                      font-size: 0.85rem;
+                      text-transform: uppercase;
+                      letter-spacing: 1px;
+                      opacity: 0.9;
+                      margin-bottom: 0.2rem;
+                    "
+                  >
+                    Total Uang Masuk
+                  </div>
+                  <div
+                    style="
+                      font-size: 2rem;
+                      font-weight: 800;
+                      line-height: 1.1;
+                      white-space: nowrap;
+                    "
+                    id="ui-total-masuk"
+                  >
+                    <span class="skeleton w-48 h-8 inline-block rounded"></span>
+                  </div>
+                </div>
+                <div style="font-size: 2.5rem; opacity: 0.2">
+                  <i class="fas fa-wallet"></i>
+                </div>
+              </div>
+              <hr
+                style="border-color: rgba(255, 255, 255, 0.2); margin: 1rem 0"
+              />
+              <div class="d-flex justify-content-between align-items-center">
+                <div style="font-size: 0.9rem; opacity: 0.9">
+                  <i class="fas fa-receipt mr-1"></i> Total Transaksi
+                </div>
+                <div
+                  style="
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    white-space: nowrap;
+                  "
+                  id="ui-total-nota"
+                >
+                  <span class="skeleton w-10 h-4 inline-block rounded"></span>
+                  <span class="text-xs font-normal opacity-80">Nota</span>
+                </div>
+              </div>
+            </div>
+
+            <h5 class="font-weight-bold text-dark mb-3">
+              Riwayat Transaksi Shift
+            </h5>
+
+            <div class="row" id="transactionListContainer">
+              <div class="col-12">
+                <div class="skeleton h-32 w-full rounded-2xl"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+      <div
+        class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable"
+      >
+        <div class="modal-content ios-modal-content">
+          <div class="ios-header">
+            <div style="width: 30px"></div>
+            <div class="ios-title" id="detail-modal-title">Rincian Laporan</div>
+            <button type="button" class="ios-close-btn" data-dismiss="modal">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="ios-body p-0" id="detail-modal-body">
+            <div class="text-center py-5">
+              <i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        fetchShiftDetailData();
+      });
+
+      // === 1. FETCH DATA DARI API ===
+      async function fetchShiftDetailData() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderUI(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const urlParams = new URLSearchParams(window.location.search);
+
+          const payload = new URLSearchParams({
+            action: "get_detail_shift",
+            admin_id: adminId,
+            date:
+              urlParams.get("date") || new Date().toISOString().split("T")[0],
+            shift_type: urlParams.get("shift_type") || "Shift 1",
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            renderUI(result.data);
+          } else {
+            console.error(result.message);
+            renderUI(null);
+          }
+        } catch (err) {
+          console.error("Fetch API error:", err);
+          renderUI(null);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. RENDER UI CARDS ===
+      function renderUI(data) {
+        if (!data) {
+          document.getElementById("transactionListContainer").innerHTML =
+            '<div class="col-12 text-center text-red-500 font-bold p-4">Gagal memuat data detail shift dari server.</div>';
+          return;
+        }
+
+        // Header & Summary
+        document.getElementById("ui-shift-title").innerHTML =
+          `Detail ${data.summary.shift_name}`;
+        document.getElementById("ui-shift-time").textContent =
+          data.summary.shift_time;
+        document.getElementById("ui-shift-date").innerHTML =
+          `<i class="far fa-calendar-alt mr-1"></i> ${data.summary.date_display}`;
+
+        document.getElementById("ui-total-masuk").innerHTML = FORMATTER.format(
+          data.summary.total_pendapatan,
+        );
+        document.getElementById("ui-total-nota").innerHTML =
+          `${data.summary.total_cards} <span class="text-xs font-normal opacity-80">Nota</span>`;
+
+        // Cards Container
+        const container = document.getElementById("transactionListContainer");
+        container.innerHTML = "";
+
+        if (!data.cards || data.cards.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-2xl shadow-sm border p-5">
+                    <i class="fas fa-folder-open fa-3x text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 font-semibold m-0">Tidak ada riwayat transaksi pada shift ini.</p>
+                </div>
+            </div>`;
+          return;
+        }
+
+        data.cards.forEach((card, idx) => {
+          // A. RENDER BLOK KARTU TRANSAKSI (PAYMENT)
+          if (card.type === "transaksi_payment") {
+            const trx = card;
+            let borderClass = "border-warning-soft";
+            let badgeHtml =
+              '<span class="badge badge-warning text-dark font-bold px-2 py-1 rounded-pill">DP</span>';
+
+            if (trx.status_pesanan === "Cancel") {
+              borderClass = "border-danger-soft";
+              badgeHtml =
+                '<span class="badge badge-danger font-bold px-2 py-1 rounded-pill">DP CANCEL</span>';
+            } else if (
+              trx.payment_type_display === "Langsung Lunas" ||
+              trx.badge_text === "LUNAS"
+            ) {
+              borderClass = "border-success-soft";
+              badgeHtml =
+                '<span class="badge badge-success font-bold px-2 py-1 rounded-pill">LUNAS</span>';
+            }
+
+            const isSplitBadge = trx.is_split
+              ? '<span class="badge badge-info ml-1 text-[10px]">SPLIT</span>'
+              : "";
+
+            let amountHtml = "";
+            if (trx.status_pesanan === "Cancel") {
+              const pct =
+                trx.jumlah_bayar_raw > 0
+                  ? Math.round((trx.jumlah_bayar / trx.jumlah_bayar_raw) * 100)
+                  : 0;
+              amountHtml = `<div class="text-right leading-tight"><span class="font-bold text-gray-800">${FORMATTER.format(trx.jumlah_bayar)}</span><br><span class="text-red-500 text-xs font-bold">Cancel -${pct}% ${FORMATTER.format(trx.jumlah_bayar_raw)}</span></div>`;
+            } else {
+              amountHtml = `<span class="font-bold ${trx.jumlah_bayar > 0 ? "text-green-600" : "text-gray-400"} whitespace-nowrap">${FORMATTER.format(trx.jumlah_bayar)}</span>`;
+            }
+
+            const timeText = trx.tanggal_bayar
+              ? new Date(trx.tanggal_bayar).toLocaleString("id-ID", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "-";
+            const actionBy =
+              trx.nama_shift_penerima_db ||
+              trx.nama_shift_pengupdate ||
+              "Admin";
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card ${borderClass} fade-in" onclick="openDetailTransaksiModal(${trx.transaksi_id})">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${trx.user_nama || "Pelanggan"}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> ${trx.kode_nota || "#" + String(trx.transaksi_id).padStart(4, "0")} ${isSplitBadge}</div>
+                        </div>
+                        <div>${badgeHtml}</div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa">
+                            <div class="info-item"><span class="info-label">Metode</span><span class="info-value text-xs">${trx.metode_pembayaran}</span></div>
+                            <div class="info-item text-right"><span class="info-label">Total Tagihan</span><span class="info-value text-xs">${FORMATTER.format(trx.total_biaya)}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Masuk Ke Shift:</span>${amountHtml}</div>
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> ${timeText} &bull; Oleh ${actionBy}</div>
+                        <div class="text-gray-300"><i class="fas fa-chevron-right text-xs"></i></div>
+                    </div>
+                </div>
+            </div>`;
+
+            // B. RENDER BLOK KARTU DENDA
+          } else if (card.type === "denda_group") {
+            const dn = card;
+            const uMasuk = parseFloat(dn.total_denda_paid_shift) || 0;
+            const uKomp = parseFloat(dn.total_kompensasi) || 0;
+
+            const isDisp = dn.is_dispensasi > 0;
+            const badgeHtml = isDisp
+              ? '<span class="badge badge-danger font-bold px-2 py-1 rounded-pill"><i class="fas fa-handshake mr-1"></i> DISPENSASI</span>'
+              : '<span class="badge badge-danger font-bold px-2 py-1 rounded-pill"><i class="fas fa-exclamation-triangle mr-1"></i> DENDA</span>';
+
+            let denda_periode = "-";
+            if (dn.denda_from && dn.denda_to) {
+              const df = new Date(dn.denda_from);
+              const dt = new Date(dn.denda_to);
+              const hari = Math.max(1, Math.round((dt - df) / 86400000) + 1);
+              denda_periode = `${df.toLocaleDateString("id-ID")} - ${dt.toLocaleDateString("id-ID")} (${hari} Hari)`;
+            }
+
+            let kompRow =
+              uKomp > 0
+                ? `<div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Kompensasi:</span><span class="font-bold text-info">${FORMATTER.format(uKomp)}</span></div>`
+                : "";
+
+            const timeText = dn.latest_payment_time
+              ? new Date(dn.latest_payment_time).toLocaleString("id-ID", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+              : "-";
+            const actionBy = dn.nama_shift_penerima_denda || "Admin";
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 mb-3" style="animation-delay: ${idx * 0.05}s">
+                <div class="modern-card border-danger-soft fade-in" onclick="openDetailDendaModal(${dn.transaksi_id}, '${dn.kode_nota}', '${dn.filter_start}', '${dn.filter_end}')">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${dn.user_nama}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> ${dn.kode_nota}</div>
+                        </div>
+                        <div>${badgeHtml}</div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa bg-red-50">
+                            <div class="info-item w-full"><span class="info-label text-red-500">Periode Denda</span><span class="info-value text-red-600 text-xs font-bold whitespace-nowrap">${denda_periode}</span></div>
+                        </div>
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Total Tagihan:</span><span class="font-bold text-gray-800">${FORMATTER.format(dn.total_tagihan_denda)}</span></div>
+                        ${kompRow}
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Masuk Ke Shift:</span><span class="font-bold ${uMasuk > 0 ? "text-danger" : "text-gray-400"}">${FORMATTER.format(uMasuk)}</span></div>
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> ${timeText} &bull; Oleh ${actionBy}</div>
+                        <div class="text-gray-300"><i class="fas fa-chevron-right text-xs"></i></div>
+                    </div>
+                </div>
+            </div>`;
+          }
+        });
+      }
+
+      // === 3. MODALS DETAIL (ON-DEMAND RE-FETCH) ===
+
+      // A. Modal Rincian Sewa Transaksi
+      async function openDetailTransaksiModal(id) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Transaksi`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-blue-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_transaction_detail&id=${id}`,
+          );
+          const result = await res.json();
+          if (result.status === "success") renderModalTransaksi(result.data);
+        } catch (e) {
+          body.innerHTML =
+            '<div class="p-4 text-center text-red-500">Gagal menarik data detail.</div>';
+        }
+      }
+
+      function renderModalTransaksi(data) {
+        const buildRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+        const isLunas = data.sisa_pembayaran <= 0;
+
+        let statusText = isLunas ? "LUNAS" : "BELUM LUNAS";
+        if (data.status_pesanan === "Cancel") statusText = "DP CANCEL";
+        else if (data.status_pesanan.toLowerCase() === "dispensasi")
+          statusText = "DISPENSASI";
+
+        let html = `
+    <div class="p-3">
+        <div class="ios-section-header m-0 mb-2">INFORMASI PELANGGAN</div>
+        <div class="ios-card-group">
+            ${buildRow("Nota", data.kode_nota, "highlight")}
+            ${buildRow("Nama", data.nama_user, "highlight")}
+            ${buildRow("Telepon", data.phone, "blue")}
+            ${buildRow("Jaminan", data.jaminan || "-")}
+            ${buildRow("Shift Pembuat", data.nama_admin_pembuat || "-", "")}
+        </div>
+
+        <div class="ios-section-header m-0 mb-2">DETAIL SEWA</div>
+        <div class="ios-card-group">`;
+
+        if (data.durasi_hari) {
+          html += buildRow(
+            "Periode",
+            `${new Date(data.tanggal_from).toLocaleDateString("id-ID")} - ${new Date(data.tanggal_to).toLocaleDateString("id-ID")}`,
+          );
+        }
+        html += buildRow(
+          "Status Bayar",
+          statusText,
+          isLunas || statusText === "DISPENSASI" ? "green" : "red",
+        );
+        html += buildRow(
+          "Total Biaya",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(
+                data.status_pesanan === "Cancel"
+                  ? data.total_biaya_item_raw
+                  : data.total_biaya_item,
+              ),
+          "highlight",
+        );
+
+        if (
+          data.diskon_persen > 0 &&
+          data.status_pesanan !== "Cancel" &&
+          data.status_pesanan.toLowerCase() !== "dispensasi"
+        ) {
+          html += `<div class="ios-list-row bg-yellow-50"><div class="ios-label text-yellow-600">Diskon ${data.diskon_persen}%</div><div class="ios-value text-yellow-600">- ${FORMATTER.format(data.diskon_nominal)}</div></div>`;
+        }
+        html += buildRow(
+          "Sudah Bayar",
+          FORMATTER.format(data.total_dibayar_sekarang),
+          "green",
+        );
+        html += buildRow(
+          "Sisa",
+          data.status_pesanan.toLowerCase() === "dispensasi"
+            ? "Rp 0"
+            : FORMATTER.format(data.sisa_pembayaran),
+          data.sisa_pembayaran > 0 ? "red" : "green",
+        );
+        html += `</div>`;
+
+        html += `<div class="ios-section-header m-0 mb-2">RINCIAN ITEM CATALOG</div><div class="ios-card-group">`;
+        if (data.items.length > 0) {
+          data.items.forEach((item) => {
+            const img = item.foto
+              ? `<img src="${item.foto}" class="ios-item-thumb" onclick="showImage('${item.foto}')" style="cursor:pointer">`
+              : `<div class="ios-item-thumb flex items-center justify-center"><i class="fas fa-box text-gray-400"></i></div>`;
+            const desc = item.jenis_item.toLowerCase().includes("sewa")
+              ? `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)} x ${item.jumlah_hari} Hari`
+              : `${FORMATTER.format(item.harga)} x ${Math.abs(item.qty)}`;
+            html += `
+            <div class="ios-item-row">
+                ${img}
+                <div class="ios-item-info"><div class="ios-item-name">${item.nama_item}</div><div class="ios-item-desc">${desc}</div></div>
+                <div class="ios-item-price-right highlight">${data.status_pesanan.toLowerCase() === "dispensasi" ? "Rp 0" : FORMATTER.format(item.total_harga_item)}</div>
+            </div>`;
+          });
+        } else {
+          html += `<div class="ios-list-row justify-center text-gray-500 text-sm">Tidak ada item.</div>`;
+        }
+        html += `</div>`;
+
+        html += `<div class="ios-section-header m-0 mb-2">RIWAYAT ALOKASI DANA</div><div class="ios-card-group">`;
+        if (data.riwayat_pembayaran.length > 0) {
+          data.riwayat_pembayaran.forEach((h) => {
+            const sub = h.is_split
+              ? h.splits
+                  .map(
+                    (s) =>
+                      `<div class="flex justify-between text-xs text-gray-500 mt-1"><span>${s.metode}</span><strong>${FORMATTER.format(s.amount)}</strong></div>`,
+                  )
+                  .join("")
+              : `<div class="text-xs text-gray-400 mb-1">${h.metode_pembayaran}</div>`;
+            html += `
+            <div class="ios-history-row">
+                <div class="flex justify-between items-center mb-1"><span class="font-bold text-sm text-gray-700">${h.label}</span><strong class="text-green-600">${FORMATTER.format(h.jumlah_bayar)}</strong></div>
+                ${sub}
+                <div class="text-[10px] text-gray-400 mt-1">${new Date(h.tanggal_bayar).toLocaleString("id-ID")} &bull; ${h.admin_nama}</div>
+            </div>`;
+          });
+        } else {
+          html += `<div class="p-3 text-center text-gray-400 text-sm">Tidak ada riwayat dana masuk.</div>`;
+        }
+        html += `</div></div>`;
+
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      // B. Modal Rincian Denda
+      async function openDetailDendaModal(id, nota, filterStart, filterEnd) {
+        const title = document.getElementById("detail-modal-title");
+        const body = document.getElementById("detail-modal-body");
+        title.textContent = `Detail Denda - ${nota}`;
+        body.innerHTML =
+          '<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-red-500"></i></div>';
+        $("#detailModal").modal("show");
+
+        try {
+          const payload = new URLSearchParams({
+            action: "get_denda_detail",
+            id: id,
+            filter_start: filterStart,
+            filter_end: filterEnd,
+          });
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") renderModalDetailDenda(result.data);
+          else {
+            body.innerHTML = `<div class="p-4 text-center text-red-500 font-bold">${result.message}</div>`;
+          }
+        } catch (e) {
+          console.error(e);
+          body.innerHTML = `<div class="p-4 text-center text-red-500">Error memuat data denda.</div>`;
+        }
+      }
+
+      function renderModalDetailDenda(data) {
+        const buildListRow = (l, v, c = "") =>
+          `<div class="ios-list-row"><div class="ios-label">${l}</div><div class="ios-value ${c}">${v}</div></div>`;
+
+        let html = `
+    <div class="p-4">
+        <div class="ios-section-header m-0 mb-2">INFORMASI DENDA</div>
+        <div class="ios-card-group">
+            ${buildListRow("Pelanggan", data.nama_user, "highlight")}
+            ${buildListRow("Nota Induk", data.kode_nota)}
+            ${buildListRow("Rentang Waktu", data.denda_periode_formatted || "-")}
+            ${buildListRow("Total Tagihan", FORMATTER.format(data.denda), "text-danger font-bold")}
+        </div>
+
+        <div class="ios-section-header m-0 mb-2">RIWAYAT PEMBAYARAN (SHIFT INI)</div>
+        <div class="ios-card-group bg-transparent shadow-none">`;
+
+        if (
+          data.history_denda_grouped_shift &&
+          data.history_denda_grouped_shift.length > 0
+        ) {
+          let totalDitetapkan = 0;
+          let totalTunai = 0;
+          let totalKomp = 0;
+
+          data.history_denda_grouped_shift.forEach((g) => {
+            const count = g.count;
+            const satuan = g.jumlah_denda_satuan;
+            const totalGrp = satuan * count;
+            totalDitetapkan += totalGrp;
+
+            let isKomp = g.metode_pembayaran
+              .toLowerCase()
+              .includes("kompensasi");
+            let jumlahBayarDisplay = isKomp
+              ? 0
+              : g.jumlah_pembayaran_satuan * count;
+
+            if (g.status_denda === "Sudah Dibayar") {
+              if (isKomp) totalKomp += g.jumlah_pembayaran_satuan * count;
+              else totalTunai += jumlahBayarDisplay;
+            }
+
+            const badge =
+              g.status_denda === "Sudah Dibayar"
+                ? `<span class="badge badge-success text-[10px] mr-2">Paid</span>`
+                : `<span class="badge badge-danger text-[10px] mr-2">Unpaid</span>`;
+            const labelKet =
+              count > 1 &&
+              g.keterangan_list[0].toLowerCase().includes("keterlambatan")
+                ? `Denda Terlambat ${count} Hari`
+                : g.keterangan_list[0];
+
+            let paidDesc = "";
+            if (g.status_denda === "Sudah Dibayar") {
+              const wkt = new Date(g.waktu_pembayaran).toLocaleString("id-ID", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+              paidDesc = `<div class="text-xs text-gray-500 mt-2 pt-2 border-t border-gray-100">
+                    Masuk Fisik: <strong class="text-gray-700">${FORMATTER.format(jumlahBayarDisplay)}</strong> (${g.metode_pembayaran}) oleh <strong>${g.nama_admin_penerima_denda || data.nama_shift_pembuat}</strong>
+                    ${isKomp ? `<br><span class="badge bg-indigo-900 text-white mt-1 font-normal">Kompensasi: ${FORMATTER.format(g.jumlah_pembayaran_satuan * count)}</span>` : ""}
+                </div>`;
+            }
+
+            html += `
+            <div class="bg-white border-l-4 border-red-500 rounded-xl shadow-sm mb-2 p-3">
+                <div class="flex justify-between items-start mb-1">
+                    <h6 class="text-red-500 font-bold text-sm m-0 flex items-center">${badge} ${labelKet}</h6>
+                    <span class="font-black text-gray-800">${FORMATTER.format(totalGrp)}</span>
+                </div>
+                ${paidDesc}
+            </div>`;
+          });
+
+          html += `
+        <div class="mt-4 text-center">
+            <div class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Total Masuk Shift Ini</div>
+            <div class="text-3xl font-black text-red-500">${FORMATTER.format(totalTunai)}</div>
+        </div>`;
+        } else {
+          html += `<div class="bg-white p-3 text-center text-gray-500 text-sm rounded-xl border border-gray-100">Tidak ada riwayat denda.</div>`;
+        }
+
+        html += `</div></div>`;
+        document.getElementById("detail-modal-body").innerHTML = html;
+      }
+
+      window.showImage = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      // === 5. MOCK DATA FALLBACK ===
+      function getMockData() {
+        return {
+          summary: {
+            shift_name: "Shift 1",
+            shift_time: "(08:00 - 16:00 WIB)",
+            date_display: "10 Okt 2026",
+            total_pendapatan: 500000,
+            total_cards: 2,
+          },
+          cards: [
+            {
+              type: "transaksi_payment",
+              transaksi_id: 1,
+              kode_nota: "#0001",
+              user_nama: "Andi Saputra",
+              jumlah_bayar: 450000,
+              jumlah_bayar_raw: 450000,
+              metode_pembayaran: "Cash",
+              total_biaya: 450000,
+              payment_type_display: "Langsung Lunas",
+              badge_text: "LUNAS",
+              status_pesanan: "Selesai",
+              tanggal_bayar: new Date().toISOString(),
+            },
+            {
+              type: "denda_group",
+              transaksi_id: 1,
+              kode_nota: "#0001",
+              user_nama: "Andi Saputra",
+              total_denda_paid_shift: 50000,
+              total_tagihan_denda: 50000,
+              total_kompensasi: 0,
+              latest_payment_time: new Date().toISOString(),
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

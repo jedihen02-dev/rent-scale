@@ -1,0 +1,637 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengaturan Toko & Akun | SewaTendaku</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", primaryHover: "#4338CA" },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              outfit: ["Outfit", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&display=swap");
+      body {
+        background-color: #f8fafc;
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Animasi Skeleton Loading */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body class="flex h-screen overflow-hidden antialiased">
+    <div
+      id="sidebarOverlay"
+      onclick="toggleSidebar()"
+      class="fixed inset-0 bg-gray-900/50 z-40 hidden md:hidden transition-opacity"
+    ></div>
+
+    <aside
+      id="sidebar"
+      class="bg-white border-r border-gray-200 w-64 flex-shrink-0 flex flex-col fixed md:static inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out"
+    >
+      <div
+        class="h-16 flex items-center px-6 border-b border-gray-100 shrink-0"
+      >
+        <span
+          class="font-outfit text-2xl text-gray-900 font-extrabold tracking-tight"
+          >SewaTendaku</span
+        >
+      </div>
+
+      <div class="px-6 py-4 border-b border-gray-50">
+        <div
+          class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2"
+        >
+          Toko Anda
+        </div>
+        <div
+          class="flex items-center gap-3 bg-gray-50 p-2.5 rounded-xl border border-gray-200"
+        >
+          <div
+            id="ui-inisial-toko"
+            class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-bold text-sm skeleton"
+          >
+            S
+          </div>
+          <div class="overflow-hidden w-full">
+            <div
+              id="ui-nama-toko-sidebar"
+              class="font-bold text-gray-900 text-sm truncate skeleton"
+            >
+              Memuat...
+            </div>
+            <a
+              id="ui-link-kasir"
+              href="#"
+              target="_blank"
+              class="text-[10px] text-primary hover:underline block truncate font-medium"
+              >Buka Kasir
+              <i class="fa-solid fa-arrow-up-right-from-square text-[8px]"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-1.5">
+        <a
+          href="index.html"
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors"
+        >
+          <i class="fa-solid fa-chart-pie w-5 text-center"></i> Ringkasan
+        </a>
+        <a
+          href="billing.html"
+          class="flex items-center gap-3 px-3 py-2.5 text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-xl font-medium transition-colors"
+        >
+          <i class="fa-solid fa-file-invoice-dollar w-5 text-center"></i>
+          Tagihan & Paket
+        </a>
+        <a
+          href="settings.html"
+          class="flex items-center gap-3 px-3 py-2.5 bg-indigo-50 text-primary rounded-xl font-semibold transition-colors"
+        >
+          <i class="fa-solid fa-gear w-5 text-center"></i> Pengaturan Toko
+        </a>
+      </nav>
+
+      <div class="p-4 border-t border-gray-100 shrink-0">
+        <button
+          onclick="handleLogout()"
+          class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-red-50 hover:bg-red-100 text-red-600 border border-red-100 text-sm font-bold rounded-xl transition-colors"
+        >
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+        </button>
+      </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      <header
+        class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 shrink-0 relative z-30"
+      >
+        <div class="flex items-center gap-4">
+          <button
+            onclick="toggleSidebar()"
+            class="md:hidden text-gray-500 hover:text-gray-800 focus:outline-none p-1 bg-gray-50 rounded-lg"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="text-xl font-bold text-gray-800">Pengaturan</h1>
+        </div>
+      </header>
+
+      <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 relative">
+        <div class="max-w-4xl mx-auto w-full">
+          <div id="alert-container"></div>
+
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">
+              Konfigurasi Toko & Keamanan Akun
+            </h2>
+            <p class="text-sm text-gray-500">
+              Perbarui informasi identitas usaha Anda dan kelola kredensial
+              password.
+            </p>
+          </div>
+
+          <div class="space-y-8">
+            <!-- FORM: PROFIL TOKO -->
+            <div
+              class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden"
+            >
+              <div
+                class="px-6 py-5 border-b border-gray-100 flex items-center gap-3"
+              >
+                <div
+                  class="w-8 h-8 rounded-lg bg-indigo-50 text-primary flex items-center justify-center"
+                >
+                  <i class="fa-solid fa-store text-sm"></i>
+                </div>
+                <h3 class="font-bold text-gray-900">Profil UMKM Toko</h3>
+              </div>
+              <form id="formToko" class="p-6 sm:p-8 space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Nama Toko / Usaha</label
+                    >
+                    <input
+                      type="text"
+                      id="input_nama_toko"
+                      required
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all font-semibold skeleton"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Nomor WhatsApp Usaha</label
+                    >
+                    <input
+                      type="text"
+                      id="input_no_wa_toko"
+                      placeholder="Contoh: 0812345678"
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all skeleton"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                    >Alamat Fisik Toko</label
+                  >
+                  <textarea
+                    id="input_alamat_toko"
+                    rows="3"
+                    placeholder="Tuliskan alamat lengkap operasional usaha rental Anda..."
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all resize-none skeleton"
+                  ></textarea>
+                </div>
+                <div class="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    id="btnUpdateToko"
+                    class="px-6 py-3 bg-primary hover:bg-primaryHover text-white text-sm font-bold rounded-xl shadow-md shadow-primary/20 transition-colors inline-flex items-center justify-center min-w-[160px]"
+                  >
+                    Simpan Profil Toko
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- FORM: AKUN OWNER -->
+            <div
+              class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden"
+            >
+              <div
+                class="px-6 py-5 border-b border-gray-100 flex items-center gap-3"
+              >
+                <div
+                  class="w-8 h-8 rounded-lg bg-gray-100 text-gray-700 flex items-center justify-center"
+                >
+                  <i class="fa-solid fa-user-shield text-sm"></i>
+                </div>
+                <h3 class="font-bold text-gray-900">
+                  Keamanan & Identitas Akun
+                </h3>
+              </div>
+              <form id="formAkun" class="p-6 sm:p-8 space-y-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Nama Lengkap Pemilik</label
+                    >
+                    <input
+                      type="text"
+                      id="input_nama_owner"
+                      required
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all skeleton"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Alamat Email Utama</label
+                    >
+                    <input
+                      type="email"
+                      id="input_email_owner"
+                      required
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all skeleton"
+                    />
+                  </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    id="btnUpdateAkun"
+                    class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white text-sm font-bold rounded-xl shadow-md transition-colors inline-flex items-center justify-center min-w-[190px]"
+                  >
+                    Perbarui Kontak Akun
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- FORM: GANTI PASSWORD -->
+            <div
+              class="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden"
+            >
+              <div
+                class="px-6 py-5 border-b border-gray-100 flex items-center gap-3"
+              >
+                <div
+                  class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"
+                >
+                  <i class="fa-solid fa-key text-sm"></i>
+                </div>
+                <h3 class="font-bold text-gray-900">Ganti Password</h3>
+              </div>
+              <form id="formPassword" class="p-6 sm:p-8 space-y-5">
+                <div>
+                  <label
+                    class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                    >Password Lama Saat Ini</label
+                  >
+                  <input
+                    type="password"
+                    id="input_pass_lama"
+                    required
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all"
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Password Baru</label
+                    >
+                    <input
+                      type="password"
+                      id="input_pass_baru"
+                      minlength="6"
+                      required
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all"
+                      placeholder="Min. 6 karakter"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                      >Konfirmasi Password Baru</label
+                    >
+                    <input
+                      type="password"
+                      id="input_pass_conf"
+                      required
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all"
+                      placeholder="Ulangi password baru"
+                    />
+                  </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    id="btnUpdatePass"
+                    class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-xl shadow-md shadow-red-600/10 transition-colors inline-flex items-center justify-center min-w-[210px]"
+                  >
+                    Ubah Kredensial Password
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="h-16"></div>
+        </div>
+      </main>
+    </div>
+
+    <!-- SCRIPT LOGIKA -->
+    <script>
+      // === 1. MANAJEMEN UI & SIDEBAR ===
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebarOverlay");
+
+      function toggleSidebar() {
+        sidebar.classList.toggle("-translate-x-full");
+        overlay.classList.toggle("hidden");
+      }
+
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const icon =
+          type === "success"
+            ? '<i class="fa-solid fa-circle-check mt-0.5 mr-2"></i>'
+            : '<i class="fa-solid fa-circle-exclamation mt-0.5 mr-2"></i>';
+        const colorClass =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+
+        container.innerHTML = `<div class='${colorClass} border px-4 py-3 rounded-xl mb-6 flex items-start text-sm font-medium shadow-sm'>${icon}<span>${message}</span></div>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // === 2. OTENTIKASI & LOGOUT ===
+      document.addEventListener("DOMContentLoaded", () => {
+        const tenantId = localStorage.getItem("saas_tenant_id");
+        const adminId = localStorage.getItem("saas_admin_id");
+
+        if (!tenantId || !adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        populateSidebar();
+        fetchSettingsData(adminId);
+      });
+
+      function handleLogout() {
+        localStorage.clear();
+        window.location.href = "../index.html";
+      }
+
+      function populateSidebar() {
+        const namaToko = localStorage.getItem("saas_nama_toko") || "Toko Saya";
+        const domainSlug = localStorage.getItem("saas_domain_slug") || "";
+
+        document.getElementById("ui-inisial-toko").classList.remove("skeleton");
+        document.getElementById("ui-inisial-toko").textContent = namaToko
+          .charAt(0)
+          .toUpperCase();
+
+        document
+          .getElementById("ui-nama-toko-sidebar")
+          .classList.remove("skeleton");
+        document.getElementById("ui-nama-toko-sidebar").textContent = namaToko;
+
+        const linkKasir = document.getElementById("ui-link-kasir");
+        linkKasir.href = `../tenant_app/login.html?toko=${encodeURIComponent(domainSlug)}`;
+      }
+
+      // === 3. INTEGRASI GOOGLE APPS SCRIPT (GAS) ===
+      const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+
+      // FETCH DATA AWAL
+      async function fetchSettingsData(adminId) {
+        try {
+          if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+            // MOCK DATA UI
+            fillFormFields({
+              nama_toko: localStorage.getItem("saas_nama_toko"),
+              no_wa_toko: "",
+              alamat_toko: "",
+              nama: localStorage.getItem("saas_nama"),
+              email: "owner@toko.com",
+            });
+            return;
+          }
+
+          const response = await fetch(
+            `${GAS_API_URL}?action=get_settings_data&admin_id=${adminId}`,
+          );
+          const result = await response.json();
+
+          if (result.status === "success") {
+            fillFormFields(result.data);
+          } else {
+            showAlert("error", "Gagal memuat pengaturan toko.");
+          }
+        } catch (error) {
+          console.error("Fetch error:", error);
+          showAlert("error", "Koneksi ke server terputus.");
+          fillFormFields({
+            nama_toko: "",
+            no_wa_toko: "",
+            alamat_toko: "",
+            nama: "",
+            email: "",
+          });
+        }
+      }
+
+      function fillFormFields(data) {
+        const fields = [
+          { id: "input_nama_toko", val: data.nama_toko },
+          { id: "input_no_wa_toko", val: data.no_wa_toko },
+          { id: "input_alamat_toko", val: data.alamat_toko },
+          { id: "input_nama_owner", val: data.nama },
+          { id: "input_email_owner", val: data.email },
+        ];
+
+        fields.forEach((f) => {
+          const el = document.getElementById(f.id);
+          el.classList.remove("skeleton");
+          el.value = f.val || "";
+        });
+      }
+
+      // === 4. HANDLE SUBMIT FORMS ===
+
+      // A. Form Toko
+      document
+        .getElementById("formToko")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const btn = document.getElementById("btnUpdateToko");
+          const originalText = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "update_toko",
+            tenant_id: localStorage.getItem("saas_tenant_id"),
+            nama_toko: document.getElementById("input_nama_toko").value,
+            no_wa_toko: document.getElementById("input_no_wa_toko").value,
+            alamat_toko: document.getElementById("input_alamat_toko").value,
+          };
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              throw new Error("API Belum Disetel.");
+
+            const response = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await response.json();
+
+            if (result.status === "success") {
+              localStorage.setItem("saas_nama_toko", payload.nama_toko);
+              populateSidebar(); // Update sidebar instantly
+              showAlert("success", "Profil toko berhasil diperbarui!");
+            } else {
+              showAlert(
+                "error",
+                result.message || "Gagal memperbarui profil toko.",
+              );
+            }
+          } catch (err) {
+            showAlert("error", "Terjadi kesalahan sistem.");
+          } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        });
+
+      // B. Form Akun
+      document
+        .getElementById("formAkun")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const btn = document.getElementById("btnUpdateAkun");
+          const originalText = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "update_akun",
+            admin_id: localStorage.getItem("saas_admin_id"),
+            nama: document.getElementById("input_nama_owner").value,
+            email: document.getElementById("input_email_owner").value,
+          };
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              throw new Error("API Belum Disetel.");
+
+            const response = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await response.json();
+
+            if (result.status === "success") {
+              localStorage.setItem("saas_nama", payload.nama);
+              showAlert("success", "Data keamanan akun berhasil diperbarui!");
+            } else {
+              showAlert(
+                "error",
+                result.message ||
+                  "Gagal memperbarui akun. (Mungkin email sudah dipakai)",
+              );
+            }
+          } catch (err) {
+            showAlert("error", "Terjadi kesalahan sistem.");
+          } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        });
+
+      // C. Form Password
+      document
+        .getElementById("formPassword")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const passLama = document.getElementById("input_pass_lama").value;
+          const passBaru = document.getElementById("input_pass_baru").value;
+          const passConf = document.getElementById("input_pass_conf").value;
+
+          if (passBaru !== passConf) {
+            showAlert("error", "Konfirmasi password baru tidak cocok.");
+            return;
+          }
+
+          const btn = document.getElementById("btnUpdatePass");
+          const originalText = btn.innerHTML;
+          btn.innerHTML =
+            '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "update_password",
+            admin_id: localStorage.getItem("saas_admin_id"),
+            pass_lama: passLama,
+            pass_baru: passBaru,
+          };
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              throw new Error("API Belum Disetel.");
+
+            const response = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await response.json();
+
+            if (result.status === "success") {
+              showAlert("success", "Password Anda berhasil diubah!");
+              document.getElementById("formPassword").reset(); // Clear fields
+            } else {
+              showAlert("error", result.message || "Password lama Anda salah.");
+            }
+          } catch (err) {
+            showAlert("error", "Terjadi kesalahan sistem.");
+          } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          }
+        });
+    </script>
+  </body>
+</html>

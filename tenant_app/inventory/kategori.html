@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manajemen Kategori | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --primary-color: #4f46e5;
+        --bg-color: #f4f6f9;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Skeleton Loader Animasi */
+      .skeleton {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Mobile-first styling */
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 1rem;
+        }
+        .content-header h3 {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+        .content-header a {
+          width: 100%;
+          text-align: center;
+        }
+
+        .list-item-card {
+          background-color: #fff;
+          border: none;
+          border-radius: 12px;
+          margin-bottom: 1rem;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+        }
+        .list-item-card:active {
+          transform: scale(0.98);
+        }
+        .list-item-card .item-info {
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          overflow: hidden;
+        }
+        .list-item-card .item-info h6 {
+          font-weight: 700;
+          margin-bottom: 0.25rem;
+          font-size: 1.1rem;
+          color: #1f2937;
+        }
+        .list-item-card .item-actions {
+          display: flex;
+          gap: 0.5rem;
+        }
+        .list-item-card .item-actions .btn {
+          width: 38px;
+          height: 38px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          border-radius: 10px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          margin: 0;
+          width: 100%;
+          height: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+        .modal-header,
+        .modal-footer {
+          border: none;
+        }
+      }
+
+      /* Desktop-specific styles */
+      @media (min-width: 768px) {
+        .list-view-mobile {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <section class="content">
+          <div class="container-fluid py-4">
+            <div id="alert-container"></div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h3 class="font-bold text-gray-800 m-0 text-xl md:text-2xl">
+                Manajemen Kategori
+              </h3>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-primary mb-4 btn-block d-md-none rounded-xl font-bold py-2 shadow-sm"
+              data-toggle="modal"
+              data-target="#tambahKategoriModal"
+              style="background-color: var(--primary-color); border: none"
+            >
+              <i class="fas fa-plus mr-1"></i> Tambah Kategori
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary mb-4 d-none d-md-inline-flex align-items-center rounded-lg font-bold shadow-sm"
+              data-toggle="modal"
+              data-target="#tambahKategoriModal"
+              style="background-color: var(--primary-color); border: none"
+            >
+              <i class="fas fa-plus mr-2"></i> Tambah Kategori
+            </button>
+
+            <div class="list-view-mobile d-block d-md-none" id="ui-mobile-list">
+              <div class="list-item-card">
+                <div class="skeleton h-6 w-3/4"></div>
+              </div>
+              <div class="list-item-card">
+                <div class="skeleton h-6 w-1/2"></div>
+              </div>
+            </div>
+
+            <div
+              class="card border-0 shadow-sm rounded-2xl d-none d-md-block overflow-hidden"
+            >
+              <div class="card-header bg-white border-b border-gray-100 py-3">
+                <h3 class="card-title font-bold text-gray-700 mb-0">
+                  Daftar Kategori Aktif
+                </h3>
+              </div>
+              <div class="card-body p-0 table-responsive">
+                <table class="table table-hover align-middle text-nowrap mb-0">
+                  <thead class="bg-gray-50 text-gray-500 text-sm">
+                    <tr>
+                      <th style="width: 60px" class="text-center py-3">No</th>
+                      <th class="py-3">Nama Kategori</th>
+                      <th style="width: 220px" class="text-center py-3">
+                        Aksi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="ui-desktop-table" class="text-sm">
+                    <tr>
+                      <td class="text-center">
+                        <div class="skeleton h-4 w-4 mx-auto"></div>
+                      </td>
+                      <td><div class="skeleton h-5 w-48"></div></td>
+                      <td><div class="skeleton h-8 w-32 mx-auto"></div></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="tambahKategoriModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <form
+          id="formTambah"
+          class="modal-content shadow-xl rounded-2xl overflow-hidden border-0"
+        >
+          <div
+            class="modal-header text-white"
+            style="background-color: var(--primary-color)"
+          >
+            <h5 class="modal-title font-bold">Tambah Kategori Baru</h5>
+            <button
+              type="button"
+              class="close text-white"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="form-group mb-0">
+              <label
+                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                >Nama Kategori</label
+              >
+              <input
+                type="text"
+                id="tambah_nama"
+                class="form-control rounded-xl bg-gray-50 border-gray-200 py-2.5 px-3 focus:ring-2 focus:ring-indigo-200"
+                required
+                placeholder="Contoh: Tenda Camping"
+              />
+            </div>
+          </div>
+          <div
+            class="modal-footer d-flex justify-content-between p-4 border-t border-gray-100 bg-gray-50"
+          >
+            <button
+              type="button"
+              class="btn btn-light flex-fill mr-2 rounded-xl font-bold text-gray-600"
+              data-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnSubmitTambah"
+              class="btn btn-primary flex-fill ml-2 rounded-xl font-bold shadow-sm"
+              style="background-color: var(--primary-color); border: none"
+            >
+              Simpan Data
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="editKategoriModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <form
+          id="formEdit"
+          class="modal-content shadow-xl rounded-2xl overflow-hidden border-0"
+        >
+          <div class="modal-header bg-warning text-dark">
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-edit mr-2"></i>Edit Kategori
+            </h5>
+            <button
+              type="button"
+              class="close text-dark"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body p-4">
+            <input type="hidden" id="edit_id" />
+            <div class="form-group mb-0">
+              <label
+                class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2"
+                >Nama Kategori</label
+              >
+              <input
+                type="text"
+                id="edit_nama"
+                class="form-control rounded-xl bg-gray-50 border-gray-200 py-2.5 px-3 focus:ring-2 focus:ring-yellow-200"
+                required
+              />
+            </div>
+          </div>
+          <div
+            class="modal-footer d-flex justify-content-between p-4 border-t border-gray-100 bg-gray-50"
+          >
+            <button
+              type="button"
+              class="btn btn-light flex-fill mr-2 rounded-xl font-bold text-gray-600"
+              data-dismiss="modal"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              id="btnSubmitEdit"
+              class="btn btn-warning flex-fill ml-2 rounded-xl font-bold shadow-sm border-0"
+            >
+              Simpan Perubahan
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Proteksi Kasir
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        // Inisialisasi Data
+        fetchKategori();
+      });
+
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const bg =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+        const icon =
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+
+        container.innerHTML = `
+        <div class='${bg} border px-4 py-3 rounded-xl mb-4 flex items-start text-sm font-medium shadow-sm transition-all'>
+            <i class='fa-solid ${icon} mt-0.5 mr-2'></i><span>${message}</span>
+        </div>
+    `;
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000); // Hilang dalam 5 detik
+      }
+
+      // === 1. FETCH DATA DARI API GAS ===
+      async function fetchKategori() {
+        const adminId = localStorage.getItem("tenant_admin_id");
+
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            renderKategoriUI(getMockData());
+            return;
+          }
+
+          const response = await fetch(
+            `${GAS_API_URL}?action=get_kategori&admin_id=${adminId}`,
+          );
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderKategoriUI(result.data);
+          } else {
+            showAlert("error", "Gagal memuat data kategori.");
+            renderKategoriUI([]);
+          }
+        } catch (error) {
+          console.error("Fetch Error:", error);
+          renderKategoriUI([]);
+        }
+      }
+
+      // === 2. RENDER KE UI ===
+      function renderKategoriUI(data) {
+        const mobileList = document.getElementById("ui-mobile-list");
+        const desktopTable = document.getElementById("ui-desktop-table");
+
+        mobileList.innerHTML = "";
+        desktopTable.innerHTML = "";
+
+        if (!data || data.length === 0) {
+          const emptyMsg = `<div class="bg-yellow-50 text-yellow-700 p-4 rounded-xl text-center border border-yellow-200 text-sm font-medium"><i class="fas fa-folder-open mb-2 text-2xl opacity-50 block"></i>Belum ada kategori aktif tersedia.</div>`;
+          mobileList.innerHTML = emptyMsg;
+          desktopTable.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-gray-500">Belum ada data kategori.</td></tr>`;
+          return;
+        }
+
+        data.forEach((row, index) => {
+          const urlDetail = `detail-kategori.html?id=${row.id}`;
+
+          // Render Mobile Card
+          mobileList.innerHTML += `
+            <div class="list-item-card">
+                <div class="item-info">
+                    <a href="${urlDetail}" class="text-primary hover:text-blue-700 transition-colors">
+                        <h6 class="text-truncate m-0">${row.nama}</h6>
+                    </a>
+                </div>
+                <div class="item-actions">
+                    <button type="button" class="btn btn-warning text-white" onclick="showEditModal('${row.id}', '${row.nama}')">
+                        <i class="fas fa-pen text-xs"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete('${row.id}', '${row.nama}')">
+                        <i class="fas fa-trash-alt text-xs"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+
+          // Render Desktop Row
+          desktopTable.innerHTML += `
+            <tr class="hover:bg-gray-50 transition-colors">
+                <td class="text-center text-gray-500 font-medium">${index + 1}</td>
+                <td>
+                    <a href="${urlDetail}" class="text-indigo-600 hover:text-indigo-800 font-bold transition-colors">
+                        ${row.nama}
+                    </a>
+                </td>
+                <td class="text-center">
+                    <div class="flex items-center justify-center gap-2">
+                        <button type="button" class="btn btn-sm bg-yellow-100 text-yellow-700 hover:bg-yellow-200 border-0 font-semibold rounded-lg px-3" onclick="showEditModal('${row.id}', '${row.nama}')">
+                            <i class="fas fa-edit mr-1"></i> Edit
+                        </button>
+                        <button type="button" class="btn btn-sm bg-red-100 text-red-700 hover:bg-red-200 border-0 font-semibold rounded-lg px-3" onclick="confirmDelete('${row.id}', '${row.nama}')">
+                            <i class="fas fa-power-off mr-1"></i> Non-Aktif
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+        });
+      }
+
+      // === 3. OPERASI CRUD API ===
+
+      // A. Tambah Kategori
+      document
+        .getElementById("formTambah")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitTambah");
+          btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+          btn.disabled = true;
+
+          const payload = {
+            action: "add_kategori",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            nama: document.getElementById("tambah_nama").value,
+          };
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+
+            if (result.status === "success") {
+              $("#tambahKategoriModal").modal("hide");
+              document.getElementById("formTambah").reset();
+              showAlert("success", "Kategori baru berhasil ditambahkan.");
+              fetchKategori();
+            } else {
+              showAlert("error", result.message || "Gagal menyimpan kategori.");
+            }
+          } catch (err) {
+            showAlert("success", "Data tersimpan lokal (MOCK MODE).");
+            $("#tambahKategoriModal").modal("hide");
+          } finally {
+            btn.innerHTML = "Simpan Data";
+            btn.disabled = false;
+          }
+        });
+
+      // B. Edit Kategori (Show Modal & Submit)
+      window.showEditModal = function (id, nama) {
+        document.getElementById("edit_id").value = id;
+        document.getElementById("edit_nama").value = nama;
+        $("#editKategoriModal").modal("show");
+      };
+
+      document
+        .getElementById("formEdit")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitEdit");
+          btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+          btn.disabled = true;
+
+          const payload = {
+            action: "update_kategori",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            id: document.getElementById("edit_id").value,
+            nama: document.getElementById("edit_nama").value,
+          };
+
+          try {
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+
+            if (result.status === "success") {
+              $("#editKategoriModal").modal("hide");
+              showAlert("success", "Perubahan kategori berhasil disimpan.");
+              fetchKategori();
+            } else {
+              showAlert("error", result.message || "Gagal mengubah kategori.");
+            }
+          } catch (err) {
+            showAlert("success", "Perubahan tersimpan lokal (MOCK MODE).");
+            $("#editKategoriModal").modal("hide");
+          } finally {
+            btn.innerHTML = "Simpan Perubahan";
+            btn.disabled = false;
+          }
+        });
+
+      // C. Hapus (Soft Delete)
+      window.confirmDelete = function (id, nama) {
+        Swal.fire({
+          title: "Non-aktifkan Kategori?",
+          html: `Anda akan menonaktifkan kategori <b>${nama}</b>.<br><small class="text-danger">Semua item di dalamnya juga akan ikut dinonaktifkan.</small>`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "Ya, Non-aktifkan",
+          cancelButtonText: "Batal",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+                throw new Error("API Off");
+              const payload = {
+                action: "delete_kategori",
+                admin_id: localStorage.getItem("tenant_admin_id"),
+                id: id,
+              };
+              const res = await fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload),
+              });
+              const r = await res.json();
+
+              if (r.status === "success") {
+                showAlert(
+                  "success",
+                  `Kategori ${nama} berhasil dinonaktifkan.`,
+                );
+                fetchKategori();
+              } else {
+                showAlert("error", "Gagal memproses permintaan.");
+              }
+            } catch (err) {
+              showAlert("success", `Kategori dinonaktifkan (MOCK MODE).`);
+            }
+          }
+        });
+      };
+
+      // --- MOCK DATA FALLBACK ---
+      function getMockData() {
+        return [
+          { id: 1, nama: "Tenda Pendaki" },
+          { id: 2, nama: "Alat Masak Camping" },
+          { id: 3, nama: "Tas Carrier" },
+          { id: 4, nama: "Penerangan / Senter" },
+        ];
+      }
+    </script>
+  </body>
+</html>

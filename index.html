@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SewaTendaku | Platform Manajemen Sewa Tenda Digital</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4F46E5" /* Indigo khas Neokademi */,
+              primaryHover: "#4338CA",
+              secondary: "#F3F4F6",
+            },
+            fontFamily: {
+              sans: [
+                "Inter",
+                "ui-sans-serif",
+                "system-ui",
+                "-apple-system",
+                "BlinkMacSystemFont",
+                "Segoe UI",
+                "Roboto",
+                "Helvetica Neue",
+                "Arial",
+                "sans-serif",
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Import Font Inter untuk Body & Font Outfit khusus untuk Brand Logo */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@800&display=swap");
+
+      html {
+        scroll-behavior: smooth;
+        font-family: "Inter", sans-serif;
+      }
+      body {
+        overflow-x: hidden;
+      }
+
+      /* Font khusus untuk logo text */
+      .brand-font {
+        font-family: "Outfit", sans-serif;
+        letter-spacing: -0.5px;
+      }
+
+      /* Hilangkan Scrollbar untuk elemen lain jika diperlukan */
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      /* Animasi Mengambang */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .wa-float {
+        animation: float 3s infinite ease-in-out;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#FAFAFA] text-gray-800 antialiased min-h-screen flex flex-col"
+  >
+    <nav
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <a
+            href="#"
+            class="flex items-center cursor-pointer"
+            onclick="window.scrollTo(0, 0)"
+          >
+            <span class="brand-font text-xl md:text-2xl text-gray-900"
+              >SewaTendaku</span
+            >
+          </a>
+
+          <div class="flex items-center space-x-2 sm:space-x-3">
+            <a
+              href="login.html"
+              class="px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg text-gray-700 font-semibold border border-gray-300 hover:bg-gray-50 transition-colors"
+            >
+              Masuk
+            </a>
+            <a
+              href="#harga"
+              class="px-4 py-1.5 sm:py-2 text-sm sm:text-base rounded-lg text-white font-semibold bg-primary hover:bg-primaryHover transition-colors shadow-sm"
+            >
+              Beli
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-grow">
+      <section class="relative pt-12 pb-24 md:pt-24 md:pb-32 overflow-hidden">
+        <div
+          class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/5 blur-3xl"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-400/10 blur-3xl"
+        ></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div class="text-center max-w-4xl mx-auto">
+            <div
+              data-aos="fade-down"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-primary font-medium text-sm mb-6 border border-blue-100"
+            >
+              <span class="relative flex h-2.5 w-2.5">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"
+                ></span>
+              </span>
+              Solusi Digital UMKM Sewa Tenda
+            </div>
+
+            <h1
+              data-aos="fade-up"
+              data-aos-delay="100"
+              class="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 leading-[1.15] mb-6"
+            >
+              Digitalisasi Bisnis Sewa Tenda <br class="hidden md:block" />
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-400"
+                >Anda Sekarang!</span
+              >
+            </h1>
+
+            <p
+              data-aos="fade-up"
+              data-aos-delay="200"
+              class="text-lg md:text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed"
+            >
+              Tinggalkan pencatatan manual. Kelola stok barang, pantau shift
+              karyawan, hitung denda otomatis, dan cetak nota PDF dari satu
+              dashboard pintar dengan nama domain Anda sendiri.
+            </p>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="300"
+              class="flex flex-col sm:flex-row justify-center items-center gap-4 w-full sm:w-auto px-2 sm:px-0"
+            >
+              <a
+                href="#harga"
+                class="w-full sm:w-auto text-center px-8 py-4 rounded-full text-white bg-primary hover:bg-primaryHover font-semibold text-lg shadow-xl shadow-primary/30 transition-all hover:-translate-y-1"
+              >
+                Mulai Berlangganan
+              </a>
+              <a
+                href="register.html?paket=trial"
+                class="w-full sm:w-auto text-center px-8 py-4 rounded-full text-gray-700 bg-white hover:bg-gray-50 font-semibold text-lg border border-gray-200 shadow-sm transition-all hover:-translate-y-1"
+              >
+                Coba trial 3 hari
+              </a>
+            </div>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="400"
+              class="mt-16 pt-8 border-t border-gray-200 flex justify-center space-x-4 sm:space-x-12 text-center"
+            >
+              <div class="flex-1 max-w-[120px] sm:max-w-none">
+                <div class="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                  500+
+                </div>
+                <div
+                  class="text-[11px] sm:text-sm font-medium text-gray-500 mt-1"
+                >
+                  Bisnis Aktif
+                </div>
+              </div>
+              <div class="flex-1 max-w-[120px] sm:max-w-none">
+                <div class="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                  98%
+                </div>
+                <div
+                  class="text-[11px] sm:text-sm font-medium text-gray-500 mt-1"
+                >
+                  Kepuasan User
+                </div>
+              </div>
+              <div class="flex-1 max-w-[120px] sm:max-w-none">
+                <div class="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                  50rb+
+                </div>
+                <div
+                  class="text-[11px] sm:text-sm font-medium text-gray-500 mt-1"
+                >
+                  Order Diproses
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="fitur"
+        class="py-24 bg-white border-y border-gray-100 overflow-hidden"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div data-aos="fade-right" class="order-2 lg:order-1 mt-10 lg:mt-0">
+              <h2
+                class="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight"
+              >
+                Kelola Order Sewa <br />
+                <span class="text-primary">dari Satu Tempat</span>
+              </h2>
+              <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                Buat order baru dalam hitungan detik — isi pelanggan, pilih
+                barang, tanggal, dan tarif. Status order otomatis berpindah dari
+                Booking → Aktif → Terlambat → Selesai.
+              </p>
+
+              <ul class="space-y-5">
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Multi-item per order — sewa banyak barang sekaligus</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Tarif fleksibel: per hari, per jam, per minggu, per
+                    bulan</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Kelola DP, pelunasan, dan sisa tagihan dalam satu
+                    layar</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Deteksi otomatis order terlambat beserta hitungan
+                    denda</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Upload dokumen syarat sewa: foto KTP, Selfie+KTP, dll</span
+                  >
+                </li>
+                <li class="flex items-start">
+                  <div
+                    class="bg-green-100 text-green-600 rounded-full p-1 mt-0.5 mr-4 shrink-0"
+                  >
+                    <i class="fa-solid fa-check text-xs px-1"></i>
+                  </div>
+                  <span class="text-gray-700 leading-relaxed font-medium"
+                    >Tombol Selesaikan, Bayar, dan Template Follow-up WA 1
+                    klik</span
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div data-aos="fade-left" class="order-1 lg:order-2 relative">
+              <div
+                class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-blue-300/30 rounded-3xl transform rotate-3 scale-105"
+              ></div>
+              <div
+                class="absolute inset-0 bg-white rounded-3xl transform -rotate-1 scale-105 border border-gray-100"
+              ></div>
+
+              <div
+                class="relative bg-[#F9FAFB] rounded-2xl shadow-xl border border-gray-200 overflow-hidden"
+              >
+                <div
+                  class="bg-white px-5 py-4 border-b border-gray-200 flex justify-between items-center"
+                >
+                  <h3 class="font-bold text-gray-800">Manajemen Order</h3>
+                  <div class="flex space-x-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                </div>
+
+                <div class="p-5">
+                  <div class="mb-4">
+                    <p
+                      class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2"
+                    >
+                      FILTER & PENCARIAN ORDER
+                    </p>
+                    <div
+                      class="flex space-x-2 overflow-x-auto no-scrollbar pb-1 text-xs font-semibold"
+                    >
+                      <span
+                        class="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-gray-600 whitespace-nowrap cursor-pointer hover:bg-gray-50"
+                        >Semua</span
+                      >
+                      <span
+                        class="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-gray-600 whitespace-nowrap cursor-pointer hover:bg-gray-50"
+                        >Aktif</span
+                      >
+                      <span
+                        class="px-4 py-1.5 bg-red-100 text-red-700 border border-red-200 rounded-full whitespace-nowrap shadow-sm"
+                        >Terlambat</span
+                      >
+                      <span
+                        class="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-gray-600 whitespace-nowrap cursor-pointer hover:bg-gray-50"
+                        >Booking</span
+                      >
+                      <span
+                        class="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-gray-600 whitespace-nowrap cursor-pointer hover:bg-gray-50"
+                        >Selesai</span
+                      >
+                      <span
+                        class="px-4 py-1.5 bg-white border border-gray-200 rounded-full text-gray-600 whitespace-nowrap cursor-pointer hover:bg-gray-50"
+                        >Dibatalkan</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="mb-5 relative">
+                    <i
+                      class="fa-solid fa-search absolute left-3 top-3 text-gray-400 text-sm"
+                    ></i>
+                    <input
+                      type="text"
+                      readonly
+                      placeholder="Cari berdasarkan nama pelanggan, nomor order..."
+                      class="w-full bg-white border border-gray-300 text-gray-500 text-xs rounded-xl pl-9 pr-4 py-2.5 outline-none shadow-sm cursor-text"
+                    />
+                  </div>
+
+                  <div
+                    class="bg-white rounded-xl border border-red-200 shadow-sm overflow-hidden transition-all hover:shadow-md"
+                  >
+                    <div
+                      class="bg-red-50 px-4 py-2 flex items-center text-xs font-medium text-red-700 border-b border-red-100"
+                    >
+                      <i
+                        class="fa-solid fa-circle-exclamation mr-2 animate-pulse"
+                      ></i>
+                      Terlambat 2 hari · Denda: Rp 50.000
+                    </div>
+
+                    <div class="p-4">
+                      <div class="flex justify-between items-start mb-4">
+                        <div>
+                          <h4 class="font-extrabold text-gray-900 text-lg">
+                            Budi Santoso
+                          </h4>
+                          <span
+                            class="text-xs text-gray-500 font-mono tracking-wider"
+                            >#ORD-2024-0042</span
+                          >
+                        </div>
+                        <div class="flex flex-col items-end gap-1.5">
+                          <span
+                            class="px-2.5 py-1 bg-red-500 text-white text-[10px] font-bold rounded shadow-sm uppercase tracking-wider"
+                            >Terlambat</span
+                          >
+                          <span
+                            class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-[10px] font-bold rounded border border-yellow-200"
+                            >DP</span
+                          >
+                        </div>
+                      </div>
+
+                      <div
+                        class="space-y-2 mb-4 text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-100"
+                      >
+                        <div class="flex justify-between items-center">
+                          <div class="flex items-center">
+                            <span
+                              class="w-2 h-2 rounded-full bg-gray-300 mr-2"
+                            ></span>
+                            1× Tenda Sarnafil 5×10
+                          </div>
+                          <span class="text-xs text-gray-500"
+                            >Rp 250.000/hari</span
+                          >
+                        </div>
+                        <div class="flex justify-between items-center">
+                          <div class="flex items-center">
+                            <span
+                              class="w-2 h-2 rounded-full bg-gray-300 mr-2"
+                            ></span>
+                            50× Kursi Plastik
+                          </div>
+                          <span class="text-xs text-gray-500"
+                            >Rp 3.000/hari</span
+                          >
+                        </div>
+                      </div>
+
+                      <div
+                        class="border-t border-dashed border-gray-200 pt-3 flex justify-between text-sm mb-5"
+                      >
+                        <div>
+                          <span class="text-gray-500 text-xs block mb-0.5"
+                            >Total Keseluruhan</span
+                          >
+                          <span class="font-bold text-gray-900"
+                            >Rp 450.000</span
+                          >
+                        </div>
+                        <div class="text-right">
+                          <span class="text-gray-500 text-xs block mb-0.5"
+                            >Sisa + Denda</span
+                          >
+                          <span class="font-extrabold text-red-600 text-base"
+                            >Rp 300.000</span
+                          >
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-2 gap-3">
+                        <button
+                          class="w-full bg-[#25D366] text-white font-semibold py-2 rounded-lg text-sm hover:bg-green-500 transition-colors flex items-center justify-center"
+                        >
+                          <i class="fa-brands fa-whatsapp mr-1.5"></i> Follow up
+                        </button>
+                        <button
+                          class="w-full bg-gray-900 text-white font-semibold py-2 rounded-lg text-sm hover:bg-gray-800 transition-colors"
+                        >
+                          Selesaikan
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="harga" class="py-20 bg-white border-y border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="text-center mb-12 md:mb-16" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Pilih Paket Langganan
+            </h2>
+            <p class="text-gray-600">
+              Biaya operasional sangat terjangkau, cocok untuk UMKM.
+            </p>
+          </div>
+
+          <div
+            class="flex flex-wrap justify-center items-stretch gap-6 max-w-6xl mx-auto"
+          >
+            <div
+              data-aos="fade-up"
+              data-aos-delay="50"
+              class="w-full md:w-80 bg-gray-50 rounded-3xl border border-gray-200 p-8 flex flex-col hover:shadow-xl transition-all relative mt-4 md:mt-0"
+            >
+              <div
+                class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Free Trial
+              </div>
+              <div class="flex items-baseline mb-4 text-gray-900">
+                <span class="text-4xl font-extrabold">Rp 0</span>
+                <span class="text-gray-500 ml-2 font-medium">/ 3 hari</span>
+              </div>
+              <p
+                class="text-gray-600 text-sm mb-6 pb-6 border-b border-gray-200"
+              >
+                Coba gratis semua layanan manajemen tanpa dipungut biaya
+                operasional apapun.
+              </p>
+              <ul class="space-y-4 mb-8 flex-grow text-gray-600">
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Trial Dashboard</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Testing Input Transaksi</span>
+                </li>
+              </ul>
+              <a
+                href="register.html?paket=trial"
+                class="mt-auto w-full py-3.5 px-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl text-center hover:border-gray-300 transition-colors"
+                >Coba Gratis</a
+              >
+            </div>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="150"
+              class="w-full md:w-80 bg-gray-50 rounded-3xl border border-gray-200 p-8 flex flex-col hover:shadow-xl transition-all relative mt-4 md:mt-0"
+            >
+              <div
+                class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Basic
+              </div>
+              <div class="flex items-baseline mb-4 text-gray-900">
+                <span class="text-4xl font-extrabold">Rp 50.000</span>
+                <span class="text-gray-500 ml-2 font-medium">/ 1 bln</span>
+              </div>
+              <p
+                class="text-gray-600 text-sm mb-6 pb-6 border-b border-gray-200"
+              >
+                Sempurna untuk memulai digitalisasi pembukuan sewa tenda Anda.
+              </p>
+              <ul class="space-y-4 mb-8 flex-grow text-gray-600">
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Unlimited Transaksi</span>
+                </li>
+                <li class="flex items-start">
+                  <i
+                    class="fa-solid fa-circle-check text-green-500 mt-1 mr-3"
+                  ></i>
+                  <span>Support Custom Link</span>
+                </li>
+              </ul>
+              <a
+                href="register.html?paket_id=1"
+                class="mt-auto w-full py-3.5 px-4 bg-white border-2 border-gray-200 text-gray-900 font-bold rounded-xl text-center hover:border-gray-300 transition-colors"
+                >Pilih Paket</a
+              >
+            </div>
+
+            <div
+              data-aos="fade-up"
+              data-aos-delay="250"
+              class="w-full md:w-80 bg-primary rounded-3xl border-2 border-primary p-8 flex flex-col shadow-2xl shadow-primary/30 transform md:-translate-y-4 relative mt-4 md:mt-0"
+            >
+              <div class="absolute top-0 right-8 transform -translate-y-1/2">
+                <span
+                  class="bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm"
+                  >🔥 Paling Laris</span
+                >
+              </div>
+              <div
+                class="text-blue-100 text-sm font-bold uppercase tracking-wider mb-2"
+              >
+                Pro
+              </div>
+              <div class="flex items-baseline mb-4 text-white">
+                <span class="text-4xl font-extrabold">Rp 135.000</span>
+                <span class="text-blue-200 ml-2 font-medium">/ 3 bln</span>
+              </div>
+              <p
+                class="text-white/90 text-sm mb-6 pb-6 border-b border-primaryHover"
+              >
+                Lebih hemat untuk operasional jangka panjang bisnis sewa tenda.
+              </p>
+              <ul class="space-y-4 mb-8 flex-grow text-white">
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-white mt-1 mr-3"></i>
+                  <span>Akses Semua Fitur</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-white mt-1 mr-3"></i>
+                  <span>Unlimited Transaksi</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fa-solid fa-circle-check text-white mt-1 mr-3"></i>
+                  <span>Prioritas Bantuan CS</span>
+                </li>
+              </ul>
+              <a
+                href="register.html?paket_id=2"
+                class="mt-auto w-full py-3.5 px-4 bg-white text-primary font-bold rounded-xl text-center hover:bg-gray-100 transition-colors shadow-lg"
+                >Pilih Paket</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-white pt-16 pb-8 border-t border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+          <div class="col-span-1 md:col-span-2">
+            <div class="flex items-center mb-4">
+              <span class="brand-font text-2xl text-gray-900">SewaTendaku</span>
+            </div>
+            <p class="text-gray-500 text-sm leading-relaxed max-w-sm mb-6">
+              Platform kasir dan manajemen SaaS terbaik untuk pelaku usaha
+              penyewaan alat camping, tenda, dan kebutuhan outdoor di seluruh
+              Indonesia.
+            </p>
+            <div class="flex space-x-4">
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors"
+                ><i class="fa-brands fa-instagram"></i
+              ></a>
+              <a
+                href="#"
+                class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-primary hover:text-white transition-colors"
+                ><i class="fa-brands fa-facebook-f"></i
+              ></a>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-gray-900 mb-4">Layanan</h4>
+            <ul class="space-y-3 text-sm text-gray-500">
+              <li>
+                <a href="#fitur" class="hover:text-primary transition-colors"
+                  >Fitur Aplikasi</a
+                >
+              </li>
+              <li>
+                <a
+                  href="pricing.html"
+                  class="hover:text-primary transition-colors"
+                  >Harga Paket</a
+                >
+              </li>
+              <li>
+                <a
+                  href="register.html"
+                  class="hover:text-primary transition-colors"
+                  >Daftar Toko Baru</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-gray-900 mb-4">Bantuan</h4>
+            <ul class="space-y-3 text-sm text-gray-500">
+              <li>
+                <a href="#" class="hover:text-primary transition-colors"
+                  >Panduan Penggunaan</a
+                >
+              </li>
+              <li>
+                <a
+                  href="pricing.html"
+                  class="hover:text-primary transition-colors"
+                  >FAQ</a
+                >
+              </li>
+              <li class="flex items-center">
+                <i class="fa-brands fa-whatsapp mr-2"></i> +62 812-3456-7890
+              </li>
+              <li class="flex items-center">
+                <i class="fa-regular fa-envelope mr-2"></i> halo@sewatendaku.com
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          class="border-t border-gray-100 pt-8 text-center md:flex md:justify-between md:items-center"
+        >
+          <p class="text-gray-500 text-sm">
+            &copy; <span id="year"></span> SewaTendaku SaaS. All rights
+            reserved.
+          </p>
+          <p class="text-gray-400 text-xs mt-2 md:mt-0">
+            Built with <i class="fa-solid fa-heart text-red-500 mx-1"></i> for
+            Outdoor Business
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <a
+      href="https://wa.me/6281234567890?text=Halo%20Admin%20SewaTendaku,%20saya%20ingin%20tanya%20seputar%20aplikasi"
+      target="_blank"
+      class="wa-float fixed bottom-6 right-6 z-50 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl hover:bg-[#1ebe57] hover:scale-110 transition-all group"
+    >
+      <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      // Init Animasi Scroll
+      AOS.init({ once: true, offset: 50, duration: 800 });
+
+      // Set Tahun Footer
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Paksa scroll ke titik 0 (paling atas) ketika halaman dimuat
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
+      window.addEventListener("beforeunload", function () {
+        window.scrollTo(0, 0);
+      });
+      window.onload = function () {
+        window.scrollTo(0, 0);
+      };
+    </script>
+  </body>
+</html>

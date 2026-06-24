@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Toko | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css" />
+    <link
+      rel="stylesheet"
+      href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css"
+    />
+
+    <style>
+      /* --- FIX: ICON PROFIL SIDEBAR SAAT DITUTUP (COLLAPSED) --- */
+      body.sidebar-collapse .user-panel {
+        padding: 15px 5px !important;
+        justify-content: center;
+        flex-direction: column;
+      }
+      body.sidebar-collapse .user-panel .image {
+        padding-left: 0 !important;
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+      body.sidebar-collapse .square-avatar {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1.1rem !important;
+        border-radius: 10px !important;
+      }
+
+      /* --- MODERN VARIABLES & RESET --- */
+      :root {
+        --primary-color: #4f46e5;
+        --bg-color: #f3f4f6;
+        --card-bg: #ffffff;
+        --text-dark: #111827;
+        --text-muted: #6b7280;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+        color: var(--text-dark);
+      }
+
+      /* --- ANIMATIONS --- */
+      @keyframes slideUpFade {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-card {
+        animation: slideUpFade 0.5s ease-out forwards;
+        opacity: 0;
+      }
+
+      .delay-1 {
+        animation-delay: 0.1s;
+      }
+      .delay-2 {
+        animation-delay: 0.2s;
+      }
+      .delay-3 {
+        animation-delay: 0.3s;
+      }
+      .delay-4 {
+        animation-delay: 0.4s;
+      }
+      .delay-5 {
+        animation-delay: 0.5s;
+      }
+
+      /* --- HEADER STYLING --- */
+      .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0 5px;
+      }
+
+      .header-title h1 {
+        font-size: 1.6rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin: 0;
+        letter-spacing: -0.5px;
+      }
+
+      .header-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #e0e7ff;
+        color: #4338ca;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-top: 5px;
+      }
+
+      .btn-filter-custom {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        color: #334155;
+        font-weight: 600;
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        transition: all 0.2s;
+      }
+
+      .btn-filter-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border-color: #cbd5e1;
+      }
+
+      /* --- KPI CARDS --- */
+      .kpi-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 1.25rem;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.05),
+          0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-decoration: none !important;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-5px);
+        box-shadow:
+          0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      }
+
+      .kpi-icon-box {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        transition: transform 0.3s;
+      }
+
+      .kpi-card:hover .kpi-icon-box {
+        transform: scale(1.1) rotate(6deg);
+      }
+
+      .theme-green .kpi-icon-box {
+        background: #d1fae5;
+        color: #059669;
+      }
+      .theme-orange .kpi-icon-box {
+        background: #fef3c7;
+        color: #d97706;
+      }
+      .theme-blue .kpi-icon-box {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+      .theme-red .kpi-icon-box {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      .kpi-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+      }
+      .kpi-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        line-height: 1.2;
+      }
+
+      /* --- CHART CONTAINER --- */
+      .chart-box {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+        height: 100%;
+      }
+      .chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+      }
+      .chart-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+
+      /* --- SUMMARY LIST --- */
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed #e5e7eb;
+      }
+      .summary-item:last-child {
+        border-bottom: none;
+      }
+      .s-label {
+        font-size: 0.9rem;
+        color: #6b7280;
+        font-weight: 500;
+      }
+      .s-val {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #111827;
+      }
+
+      /* Animasi Skeleton Loading saat nunggu data GAS */
+      .skeleton-view {
+        background: #e2e8f0;
+        border-radius: 4px;
+        animation: pulse 1.5s infinite;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* --- MOBILE OPTIMIZATION --- */
+      @media (max-width: 576px) {
+        .tight-row {
+          margin-left: -6px;
+          margin-right: -6px;
+        }
+        .tight-col {
+          padding-left: 6px;
+          padding-right: 6px;
+          margin-bottom: 12px;
+        }
+        .kpi-card {
+          padding: 1rem;
+          min-height: 130px;
+        }
+        .kpi-value {
+          font-size: 1.1rem;
+        }
+        .header-title h1 {
+          font-size: 1.4rem;
+        }
+        .chart-col {
+          margin-bottom: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="header-container"></div>
+
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-3">
+            <div class="dashboard-header animate-card">
+              <div>
+                <div class="header-title"><h1>Dashboard</h1></div>
+                <div class="header-badge">
+                  <i class="far fa-calendar-alt mr-2"></i>
+                  <span id="ui-keterangan-tanggal" class="skeleton-view"
+                    >Memuat Periode...</span
+                  >
+                </div>
+              </div>
+              <div>
+                <button
+                  class="btn btn-filter-custom"
+                  data-toggle="modal"
+                  data-target="#modalFilter"
+                >
+                  <i class="fas fa-filter" style="color: #2563eb"></i>
+                  <span class="d-none d-sm-inline ml-2">Filter</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="row tight-row">
+              <div
+                class="col-6 col-md-6 col-xl-3 tight-col animate-card delay-1"
+              >
+                <a
+                  id="ui-link-uang-masuk"
+                  href="#"
+                  class="kpi-card theme-green"
+                >
+                  <div class="kpi-icon-box"><i class="fas fa-wallet"></i></div>
+                  <div>
+                    <div class="kpi-label">Uang Masuk</div>
+                    <div
+                      class="kpi-value"
+                      style="
+                        display: flex;
+                        align-items: baseline;
+                        gap: 4px;
+                        white-space: nowrap;
+                      "
+                    >
+                      <span
+                        style="
+                          font-size: 0.85em;
+                          font-weight: 700;
+                          opacity: 0.9;
+                        "
+                        >Rp</span
+                      >
+                      <span id="ui-total-uang-masuk" class="skeleton-view"
+                        >0</span
+                      >
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div
+                class="col-6 col-md-6 col-xl-3 tight-col animate-card delay-2"
+              >
+                <a
+                  id="ui-link-item-keluar"
+                  href="#"
+                  class="kpi-card theme-orange"
+                >
+                  <div class="kpi-icon-box">
+                    <i class="fas fa-box-open"></i>
+                  </div>
+                  <div>
+                    <div class="kpi-label">Item Keluar</div>
+                    <div
+                      id="ui-total-item-keluar"
+                      class="kpi-value skeleton-view"
+                    >
+                      0 Unit
+                    </div>
+                  </div>
+                </a>
+              </div>
+
+              <div
+                class="col-6 col-md-6 col-xl-3 tight-col animate-card delay-3"
+              >
+                <div class="kpi-card theme-blue">
+                  <div class="kpi-icon-box"><i class="fas fa-receipt"></i></div>
+                  <div>
+                    <div class="kpi-label">Transaksi</div>
+                    <div
+                      id="ui-total-transaksi"
+                      class="kpi-value skeleton-view"
+                    >
+                      0 Trx
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="col-6 col-md-6 col-xl-3 tight-col animate-card delay-4"
+              >
+                <div class="kpi-card theme-red">
+                  <div class="kpi-icon-box">
+                    <i class="fas fa-hand-holding-usd"></i>
+                  </div>
+                  <div>
+                    <div class="kpi-label">Sisa Tagihan</div>
+                    <div
+                      class="kpi-value"
+                      style="
+                        display: flex;
+                        align-items: baseline;
+                        gap: 4px;
+                        white-space: nowrap;
+                      "
+                    >
+                      <span
+                        style="
+                          font-size: 0.85em;
+                          font-weight: 700;
+                          opacity: 0.9;
+                        "
+                        >Rp</span
+                      >
+                      <span id="ui-total-sisa-tagihan" class="skeleton-view"
+                        >0</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-lg-8 chart-col animate-card delay-5">
+                <div class="chart-box">
+                  <div class="chart-header">
+                    <div class="chart-title">Grafik Income (Last 7 Day)</div>
+                  </div>
+                  <div style="height: 300px; width: 100%">
+                    <canvas id="pemasukanChart"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-4 animate-card delay-5">
+                <div class="chart-box">
+                  <div class="chart-header">
+                    <div id="ui-judul-ringkasan" class="chart-title">
+                      Ringkasan Periode Ini
+                    </div>
+                  </div>
+
+                  <div class="summary-item">
+                    <span class="s-label">Sewa Dibayar</span>
+                    <span
+                      id="ui-sewa-dibayar"
+                      class="s-val text-success skeleton-view"
+                      style="white-space: nowrap"
+                      >+ Rp 0</span
+                    >
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Denda Dibayar</span>
+                    <span
+                      id="ui-denda-dibayar"
+                      class="s-val text-danger skeleton-view"
+                      style="white-space: nowrap"
+                      >+ Rp 0</span
+                    >
+                  </div>
+                  <div class="summary-item">
+                    <span class="s-label">Pelanggan Unik</span>
+                    <span
+                      id="ui-pelanggan-unik"
+                      class="s-val text-primary skeleton-view"
+                      >0 User</span
+                    >
+                  </div>
+
+                  <div class="mt-4" style="height: 140px">
+                    <canvas id="countChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalFilter"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div
+          class="modal-content border-0 shadow-lg"
+          style="border-radius: 16px; overflow: hidden"
+        >
+          <div class="modal-header bg-light border-0">
+            <h5 class="modal-title font-weight-bold pl-2">Filter Periode</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="filterForm" method="GET" action="index.html">
+            <div class="modal-body pt-0">
+              <div class="form-group">
+                <label class="small text-muted font-weight-bold ml-1"
+                  >Tipe Filter</label
+                >
+                <select
+                  class="form-control rounded-pill"
+                  id="filterPeriod"
+                  name="filter"
+                  style="height: 45px"
+                >
+                  <option value="harian">Harian</option>
+                  <option value="mingguan">Mingguan</option>
+                  <option value="bulanan">Bulanan</option>
+                  <option value="tahunan">Tahunan</option>
+                </select>
+              </div>
+
+              <div class="bg-light p-3 rounded-lg" style="border-radius: 12px">
+                <div class="form-group mb-0" id="harian_input">
+                  <label class="small text-muted font-weight-bold"
+                    >Tanggal</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control border-0 shadow-sm"
+                    id="inp_date"
+                    name="date"
+                  />
+                </div>
+                <div id="mingguan_input" style="display: none">
+                  <div class="row">
+                    <div class="col-6">
+                      <label class="small text-muted font-weight-bold"
+                        >Dari</label
+                      >
+                      <input
+                        type="date"
+                        class="form-control border-0 shadow-sm"
+                        id="inp_dari_tanggal"
+                        name="dari_tanggal"
+                      />
+                    </div>
+                    <div class="col-6">
+                      <label class="small text-muted font-weight-bold"
+                        >Sampai</label
+                      >
+                      <input
+                        type="date"
+                        class="form-control border-0 shadow-sm"
+                        id="inp_sampai_tanggal"
+                        name="sampai_tanggal"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div id="bulanan_input" style="display: none">
+                  <label class="small text-muted font-weight-bold">Bulan</label>
+                  <select
+                    class="form-control border-0 shadow-sm"
+                    id="inp_bulan_input"
+                    name="bulan_input"
+                  ></select>
+                </div>
+                <div id="tahunan_input" class="mt-2" style="display: none">
+                  <label class="small text-muted font-weight-bold">Tahun</label>
+                  <select
+                    class="form-control border-0 shadow-sm"
+                    id="inp_tahun_input"
+                    name="tahun_input"
+                  ></select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer border-0">
+              <button
+                type="submit"
+                class="btn btn-primary btn-block rounded-pill font-weight-bold py-2"
+                style="background: var(--primary-color); border: none"
+              >
+                Terapkan Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="../plugins/jquery/jquery.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="../assets/js/components.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // --- 1. PROTEKSI SESI KASIR TENANT ---
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "login.html"; // Pintu pengaman jika belum login kasir
+          return;
+        }
+
+        // --- 2. LOGIKA PARSING QUERY PARAMETERS & DRAW FORM VALUES ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const filter = urlParams.get("filter") || "harian";
+        const todayStr = new Date().toISOString().split("T")[0];
+
+        // Set Default input values
+        document.getElementById("filterPeriod").value = filter;
+        document.getElementById("inp_date").value =
+          urlParams.get("date") || todayStr;
+
+        // Generate default untuk filter mingguan (6 hari ke belakang)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+        document.getElementById("inp_dari_tanggal").value =
+          urlParams.get("dari_tanggal") ||
+          sevenDaysAgo.toISOString().split("T")[0];
+        document.getElementById("inp_sampai_tanggal").value =
+          urlParams.get("sampai_tanggal") || todayStr;
+
+        // Loop data opsi Bulan
+        const monthSelect = document.getElementById("inp_bulan_input");
+        const curMonth =
+          urlParams.get("bulan_input") ||
+          String(new Date().getMonth() + 1).padStart(2, "0");
+        const monthNames = [
+          "Januari",
+          "Februari",
+          "Maret",
+          "April",
+          "Mei",
+          "Juni",
+          "Juli",
+          "Agustus",
+          "September",
+          "Oktober",
+          "November",
+          "Desember",
+        ];
+        for (let m = 1; m <= 12; m++) {
+          let val = String(m).padStart(2, "0");
+          monthSelect.innerHTML += `<option value="${val}" ${val === curMonth ? "selected" : ""}>${monthNames[m - 1]}</option>`;
+        }
+
+        // Loop data opsi Tahun
+        const yearSelect = document.getElementById("inp_tahun_input");
+        const curYear = parseInt(
+          urlParams.get("tahun_input") || new Date().getFullYear(),
+        );
+        for (let y = 2023; y <= new Date().getFullYear() + 1; y++) {
+          yearSelect.innerHTML += `<option value="${y}" ${y === curYear ? "selected" : ""}>${y}</option>`;
+        }
+
+        // Toggle tampilan jenis form filter modal
+        const inputs = {
+          harian: document.getElementById("harian_input"),
+          mingguan: document.getElementById("mingguan_input"),
+          bulanan: document.getElementById("bulanan_input"),
+          tahunan: document.getElementById("tahunan_input"),
+        };
+        function updateFilterDisplay() {
+          const val = document.getElementById("filterPeriod").value;
+          Object.values(inputs).forEach((el) => (el.style.display = "none"));
+          if (val === "harian") inputs.harian.style.display = "block";
+          if (val === "mingguan") inputs.mingguan.style.display = "block";
+          if (val === "bulanan") {
+            inputs.bulanan.style.display = "block";
+            inputs.tahunan.style.display = "block";
+          }
+          if (val === "tahunan") inputs.tahunan.style.display = "block";
+        }
+        document
+          .getElementById("filterPeriod")
+          .addEventListener("change", updateFilterDisplay);
+        updateFilterDisplay();
+
+        // --- 3. FETCH DATA DASHBOARD DARI BACKEND GOOGLE APPS SCRIPT ---
+        let lineChartInstance = null;
+        let barChartInstance = null;
+
+        // Satukan objek parameter filter untuk dikirimkan ke server GAS
+        const apiParams = {
+          action: "get_tenant_dashboard",
+          admin_id: adminId,
+          filter: filter,
+          date: document.getElementById("inp_date").value,
+          dari_tanggal: document.getElementById("inp_dari_tanggal").value,
+          sampai_tanggal: document.getElementById("inp_sampai_tanggal").value,
+          bulan_input: monthSelect.value,
+          tahun_input: yearSelect.value,
+        };
+
+        fetchDashboardMetrics(apiParams);
+
+        async function fetchDashboardMetrics(params) {
+          // Ambil URL Endpoint dari komponen dasar global
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            // Preview Mock Data Mode jika GAS belum di-deploy
+            renderMetricsToUI(getMockData());
+            return;
+          }
+
+          try {
+            let queryStr = new URLSearchParams(params).toString();
+            const response = await fetch(`${GAS_API_URL}?${queryStr}`);
+            const result = await response.json();
+
+            if (result.status === "success") {
+              renderMetricsToUI(result.data);
+            } else {
+              console.error("Gagal memproses metrik dashboard dari server.");
+            }
+          } catch (error) {
+            console.error("Koneksi API GAS Terputus:", error);
+          }
+        }
+
+        // --- 4. RENDER DATA KE ELEMEN-ELEMEN UI ---
+        function renderMetricsToUI(data) {
+          // Hapus class skeleton loading satu per satu
+          const removeSkeleton = (id) =>
+            document.getElementById(id).classList.remove("skeleton-view");
+
+          // Terapkan keterangan tanggal & judul ringkasan
+          document.getElementById("ui-keterangan-tanggal").textContent =
+            data.keteranganTanggal;
+          document
+            .getElementById("ui-keterangan-tanggal")
+            .classList.remove("skeleton-view");
+          document.getElementById("ui-judul-ringkasan").textContent =
+            filter === "harian"
+              ? "Ringkasan Hari Ini"
+              : "Ringkasan Periode Ini";
+
+          // Format Rupiah Helper
+          const formatIDR = (num) => new Intl.NumberFormat("id-ID").format(num);
+
+          // Pasang Nilai Utama
+          document.getElementById("ui-total-uang-masuk").textContent =
+            formatIDR(data.totalUangMasuk);
+          removeSkeleton("ui-total-uang-masuk");
+
+          document.getElementById("ui-total-item-keluar").textContent =
+            `${formatIDR(data.totalItemKeluar)} Unit`;
+          removeSkeleton("ui-total-item-keluar");
+
+          document.getElementById("ui-total-transaksi").textContent =
+            `${formatIDR(data.totalTransaksi)} Trx`;
+          removeSkeleton("ui-total-transaksi");
+
+          document.getElementById("ui-total-sisa-tagihan").textContent =
+            formatIDR(data.totalSisaKeseluruhan);
+          removeSkeleton("ui-total-sisa-tagihan");
+
+          // Pasang Nilai Ringkasan Samping
+          document.getElementById("ui-sewa-dibayar").textContent =
+            `+ Rp ${formatIDR(data.totalUangMasukItem)}`;
+          removeSkeleton("ui-sewa-dibayar");
+
+          document.getElementById("ui-denda-dibayar").textContent =
+            `+ Rp ${formatIDR(data.totalDendaMasuk)}`;
+          removeSkeleton("ui-denda-dibayar");
+
+          document.getElementById("ui-pelanggan-unik").textContent =
+            `${formatIDR(data.totalUser)} User`;
+          removeSkeleton("ui-pelanggan-unik");
+
+          // Render URL tautan Laporan
+          document.getElementById("ui-link-uang-masuk").href =
+            `${data.reportUrl}`;
+          document.getElementById("ui-link-item-keluar").href =
+            `${data.itemKeluarUrl}`;
+
+          // Gambar Ulang Diagram Chart.js dengan data baru
+          initLineChart(data.labels, data.nilaiTransaksiData);
+          initBarChart(data.labels, data.notaData, data.itemKeluarData);
+        }
+
+        // --- 5. LOGIKA INITIALIZE DIAGRAM CHART.JS ---
+        function initLineChart(chartLabels, incomeData) {
+          const ctx = document
+            .getElementById("pemasukanChart")
+            .getContext("2d");
+          const grad = ctx.createLinearGradient(0, 0, 0, 400);
+          grad.addColorStop(0, "rgba(16, 185, 129, 0.3)");
+          grad.addColorStop(1, "rgba(16, 185, 129, 0.0)");
+
+          if (lineChartInstance) lineChartInstance.destroy(); // Bersihkan memori chart lama
+
+          lineChartInstance = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: chartLabels,
+              datasets: [
+                {
+                  label: "Pendapatan",
+                  data: incomeData,
+                  borderColor: "#10b981",
+                  backgroundColor: grad,
+                  borderWidth: 3,
+                  pointBackgroundColor: "#fff",
+                  pointBorderColor: "#10b981",
+                  pointBorderWidth: 2,
+                  pointRadius: 4,
+                  fill: true,
+                  tension: 0.4,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: "#111827",
+                  padding: 12,
+                  displayColors: false,
+                  callbacks: {
+                    label: function (context) {
+                      return (
+                        "Rp " +
+                        new Intl.NumberFormat("id-ID").format(context.raw)
+                      );
+                    },
+                  },
+                },
+              },
+              scales: {
+                x: { grid: { display: false } },
+                y: {
+                  border: { display: false },
+                  grid: { color: "#f3f4f6" },
+                  ticks: {
+                    callback: function (value) {
+                      if (value >= 1000000) return value / 1000000 + "jt";
+                      if (value >= 1000) return value / 1000 + "rb";
+                      return value;
+                    },
+                  },
+                },
+              },
+              interaction: { mode: "index", intersect: false },
+            },
+          });
+        }
+
+        function initBarChart(chartLabels, billsData, outputItemData) {
+          const ctx = document.getElementById("countChart").getContext("2d");
+
+          if (barChartInstance) barChartInstance.destroy();
+
+          barChartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: chartLabels,
+              datasets: [
+                {
+                  label: "Nota",
+                  data: billsData,
+                  backgroundColor: "#3b82f6",
+                  borderRadius: 4,
+                  barPercentage: 0.6,
+                },
+                {
+                  label: "Item",
+                  data: outputItemData,
+                  backgroundColor: "#f59e0b",
+                  borderRadius: 4,
+                  barPercentage: 0.6,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: { backgroundColor: "#111827", cornerRadius: 8 },
+              },
+              scales: { x: { display: false }, y: { display: false } },
+            },
+          });
+        }
+
+        // --- MOCK DATA FALLBACK (Untuk keperluan preview UI awal offline) ---
+        function getMockData() {
+          return {
+            keteranganTanggal:
+              "Harian: " +
+              new Date().toLocaleDateString("id-ID", {
+                day: "numeric",
+                month: "short",
+                year: "numeric",
+              }),
+            totalUangMasuk: 3500000,
+            totalItemKeluar: 45,
+            totalTransaksi: 12,
+            totalSisaKeseluruhan: 750000,
+            totalUangMasukItem: 3000000,
+            totalDendaMasuk: 500000,
+            totalUser: 8,
+            reportUrl: "laporan/report.html",
+            itemKeluarUrl: "inventory/item-keluar.html",
+            labels: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+            nilaiTransaksiData: [
+              400000, 700000, 500000, 600000, 1200000, 2300000, 3500000,
+            ],
+            notaData: [2, 3, 1, 4, 6, 8, 12],
+            itemKeluarData: [10, 15, 5, 20, 35, 50, 45],
+          };
+        }
+      });
+    </script>
+  </body>
+</html>

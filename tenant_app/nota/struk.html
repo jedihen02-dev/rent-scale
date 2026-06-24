@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Struk Thermal - Tenda Camp</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+      @page {
+        margin: 0;
+        size: 58mm auto;
+      }
+      html {
+        background-color: #f0f0f0;
+      }
+      body {
+        width: 58mm;
+        margin: 10px auto;
+        padding: 2mm 0;
+        background-color: #fff;
+        font-family: "monospace", "Courier New", Courier;
+        font-size: 11pt;
+        color: #000;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .struk-header {
+        text-align: center;
+        margin-bottom: 5px;
+        padding: 0 4px;
+      }
+      .struk-header img {
+        width: 40%;
+        margin: 0 auto 5px;
+        display: block;
+      }
+      .struk-header p {
+        margin: 1px 0;
+        font-size: 10pt;
+        line-height: 1.3;
+      }
+      .info-block {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1px 0;
+      }
+      .row span:first-child {
+        text-align: left;
+        margin-right: 5px;
+        flex-shrink: 1;
+        overflow-wrap: break-word;
+        word-break: break-all;
+      }
+      .row span:last-child {
+        text-align: right;
+        font-weight: bold;
+        flex-shrink: 0;
+        padding-left: 5px;
+      }
+      .separator {
+        text-align: center;
+        font-size: 10pt;
+        overflow: hidden;
+        margin: 5px 0;
+        line-height: 1;
+      }
+      .item-list {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .item-name {
+        font-weight: bold;
+        margin-top: 3px;
+      }
+      .item-detail {
+        padding-left: 8px;
+        font-size: 10pt;
+      }
+      .summary-block {
+        padding: 0 4px;
+        font-size: 10pt;
+      }
+      .summary-block .row.total {
+        font-weight: bold;
+        font-size: 12pt;
+        margin-top: 2px;
+        border-top: 1px dashed #000;
+        padding-top: 2px;
+      }
+      .summary-block .row.denda span {
+        color: #000;
+        font-weight: bold;
+      }
+      .summary-block .row.diskon span {
+        font-weight: bold;
+      }
+      .split-detail {
+        font-size: 9pt;
+        color: #333;
+        margin-bottom: 1px;
+      }
+      .split-detail span:first-child {
+        padding-left: 10px;
+        font-style: italic;
+      }
+      .split-detail span:last-child {
+        font-weight: normal;
+      }
+      .struk-footer {
+        text-align: center;
+        padding: 5px 4px 0;
+        font-size: 10pt;
+      }
+      .struk-footer p {
+        margin: 2px 0;
+      }
+      .status-badge {
+        border: 1px solid #000;
+        padding: 2px 5px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 5px;
+        font-size: 12pt;
+      }
+      .action-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1000;
+      }
+      .btn {
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-family: sans-serif;
+        transition: transform 0.1s;
+        text-decoration: none;
+      }
+      .btn:active {
+        transform: scale(0.95);
+      }
+      .print-button {
+        background: #007bff;
+      }
+      .print-button:hover {
+        background: #0056b3;
+      }
+      .wa-button {
+        background-color: #25d366;
+      }
+      .wa-button:hover {
+        background-color: #128c7e;
+      }
+      @media print {
+        html,
+        body {
+          background-color: #fff !important;
+          box-shadow: none !important;
+        }
+        body {
+          width: 100%;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        .action-buttons {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="loading-message"
+      style="text-align: center; padding: 20px; font-family: sans-serif"
+    >
+      Memuat data struk...
+    </div>
+
+    <div
+      id="error-message"
+      style="
+        display: none;
+        padding: 20px;
+        text-align: center;
+        color: red;
+        font-family: sans-serif;
+        font-size: 12pt;
+      "
+    ></div>
+
+    <div class="struk-container" id="areaCetak" style="display: none"></div>
+
+    <div class="action-buttons" id="actionButtons" style="display: none">
+      <button class="btn print-button" onclick="window.print()">
+        <i class="fas fa-print"></i> Cetak Thermal
+      </button>
+      <button class="btn wa-button" onclick="shareWAImage()">
+        <i class="fab fa-whatsapp"></i> Kirim JPG ke WA
+      </button>
+    </div>
+
+    <script src="../../assets/js/utils.js"></script>
+    <script src="../../assets/js/auth.js"></script>
+    <script src="../../assets/js/api.js"></script>
+
+    <script>
+      // Variabel global untuk menyimpan data sementara keperluan Share WA
+      let waData = {
+        phone: "",
+        nama: "",
+        trx: "",
+      };
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (!checkAuth()) {
+          window.location.href = "../../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const transaksi_id = urlParams.get("id");
+
+        if (!transaksi_id) {
+          showError("ID Transaksi tidak valid.");
+          return;
+        }
+
+        try {
+          // Panggil endpoint dari Google Apps Script via api.js
+          const response = await api.get("get_nota_detail", {
+            id: transaksi_id,
+          });
+
+          if (response.success && response.data) {
+            renderStruk(response.data);
+          } else {
+            showError(
+              response.message ||
+                `Transaksi dengan ID #${transaksi_id} tidak ditemukan.`,
+            );
+          }
+        } catch (error) {
+          console.error("Error memuat struk:", error);
+          showError("Error jaringan/database saat memuat data struk.");
+        }
+      });
+
+      function showError(msg) {
+        document.getElementById("loading-message").style.display = "none";
+        const errorDiv = document.getElementById("error-message");
+        errorDiv.textContent = msg;
+        errorDiv.style.display = "block";
+      }
+
+      function hitungLamaHariJS(from, to) {
+        if (!from || !to) return 1;
+        const dateFrom = new Date(from);
+        const dateTo = new Date(to);
+        if (dateTo < dateFrom) return 1;
+        const diffTime = Math.abs(dateTo - dateFrom);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return Math.max(1, diffDays);
+      }
+
+      function renderStruk(data) {
+        const t = data.transaksi;
+        const details = data.detail_items || [];
+        const riwayat_raw = data.riwayat_pembayaran || [];
+
+        // --- LOGIKA GROUPING SPLIT BILL ---
+        let grouped_payments = {};
+        let total_dibayar_calc = 0;
+        let hasPelunasanStruk = false;
+
+        riwayat_raw.forEach((p) => {
+          let key = p.tanggal_bayar;
+          total_dibayar_calc += parseFloat(p.jumlah_bayar || 0);
+
+          if (!grouped_payments[key]) {
+            let paymentLabel = p.jenis_pembayaran || "DP";
+            if (paymentLabel.toLowerCase().includes("pelunasan")) {
+              if (hasPelunasanStruk) paymentLabel = "Tambah Item";
+              else hasPelunasanStruk = true;
+            }
+            grouped_payments[key] = {
+              jenis: paymentLabel,
+              tanggal: p.tanggal_bayar,
+              admin: p.nama_shift_penerima,
+              total_batch: 0,
+              items: [],
+            };
+          }
+          grouped_payments[key].items.push(p);
+          grouped_payments[key].total_batch += parseFloat(p.jumlah_bayar || 0);
+        });
+
+        // --- KALKULASI TOTAL & DISKON ---
+        let total_denda = parseFloat(data.total_denda || 0);
+        let total_denda_dibayar = parseFloat(data.total_denda_dibayar || 0);
+
+        let total_raw = 0;
+        details.forEach((item) => {
+          let sub = parseFloat(item.subtotal || 0);
+          total_raw += sub;
+
+          let jenis_asli = item.jenis_item
+            ? item.jenis_item
+            : item.master_jenis || "Sewa";
+          let jenis_lower = jenis_asli.toLowerCase();
+
+          let q = parseFloat(item.qty || 1);
+          if (q === 0) q = 1;
+          let h = parseFloat(
+            item.jumlah_hari && item.jumlah_hari > 0 ? item.jumlah_hari : 1,
+          );
+
+          if (jenis_lower.includes("sewa")) {
+            item.harga_satuan_final = Math.abs(sub / (q * h));
+            item.is_sewa_calc = true;
+          } else {
+            item.harga_satuan_final = Math.abs(sub / q);
+            item.is_sewa_calc = false;
+          }
+        });
+
+        let grand_total_biaya_item = parseFloat(t.total_biaya_item || 0);
+        let diskon_nominal = total_raw - grand_total_biaya_item;
+        let diskon_persen =
+          total_raw > 0 ? Math.round((diskon_nominal / total_raw) * 100) : 0;
+
+        let sisa_bayar_item = Math.max(
+          0,
+          grand_total_biaya_item - total_dibayar_calc,
+        );
+        let total_keseluruhan = grand_total_biaya_item + total_denda;
+        let total_sudah_dibayar = total_dibayar_calc + total_denda_dibayar;
+        let sisa_keseluruhan = Math.max(
+          0,
+          total_keseluruhan - total_sudah_dibayar,
+        );
+
+        let status_pembayaran_text =
+          sisa_bayar_item <= 0
+            ? "LUNAS"
+            : total_dibayar_calc > 0
+              ? "DP"
+              : "BELUM BAYAR";
+        if (t.status_pesanan === "Cancel") {
+          status_pembayaran_text = "DIBATALKAN";
+        }
+
+        // --- DATA UNTUK RENDER ---
+        let kode_nota = "#" + String(t.id).padStart(4, "0");
+        let tanggal_transaksi = formatDateTime(t.created_at || new Date());
+        let tanggal_sewa = formatDate(t.tanggal_from);
+        let tanggal_kembali = formatDate(t.tanggal_to);
+        let jumlah_hari_sewa = hitungLamaHariJS(t.tanggal_from, t.tanggal_to);
+
+        let nama_admin_di_struk = t.nama_shift_pembuat || "N/A";
+        let keysGroup = Object.keys(grouped_payments);
+        if (keysGroup.length > 0) {
+          let lastGroup = grouped_payments[keysGroup[keysGroup.length - 1]];
+          if (lastGroup.admin) nama_admin_di_struk = lastGroup.admin;
+        }
+
+        let nama_user = t.user_nama || "Pelanggan";
+        let user_phone = t.user_phone || "-";
+
+        // Simpan ke variabel global untuk Share WA
+        waData.phone = user_phone;
+        waData.nama = nama_user;
+        waData.trx = kode_nota;
+
+        // --- BUILD HTML ---
+        let html = `
+                <div class="struk-header">
+                    <img src="../../assets/img/kpcamp.png" alt="Logo" onerror="this.style.display='none'">
+                    <div class="separator" style="margin: 3px 0;">--------------------------</div>
+                    <p style="font-size: 15pt; line-height: 1.2;">SEWA ALAT OUTDOOR<br></p>
+                </div>
+                
+                <div class="separator">---------------------------</div>
+                
+                <div class="info-block">
+                    <div class="row"><span>No. Nota:</span><span>${kode_nota}</span></div>
+                    <div class="row"><span>Tanggal:</span><span>${tanggal_transaksi}</span></div>
+                    <div class="row"><span>Kasir:</span><span>${escapeHTML(nama_admin_di_struk)}</span></div>
+                    <div class="row"><span>Pelanggan:</span><span>${escapeHTML(nama_user)}</span></div>
+                    <div class="row"><span>No HP:</span><span>${escapeHTML(user_phone)}</span></div>
+                    <div class="row"><span>Jaminan:</span><span>${escapeHTML(t.jaminan || "-")}</span></div>
+                </div>
+            `;
+
+        if (t.status_pesanan !== "Cancel" && jumlah_hari_sewa > 0) {
+          html += `
+                <div class="separator">---------------------------</div>
+                <div class="info-block">Periode:<br>${tanggal_sewa}-${tanggal_kembali} <strong>(${jumlah_hari_sewa} Hari)</strong></div>
+                `;
+        }
+
+        html += `<div class="separator">================================</div><div class="item-list">`;
+
+        details.forEach((item) => {
+          let j_lower = (item.jenis_item || "").toLowerCase();
+          let k_lower = (item.keterangan || "").toLowerCase();
+          let s_lower = (item.status || "").toLowerCase();
+          let n_lower = (item.nama || "").toLowerCase();
+
+          let q = parseFloat(item.qty || 0);
+          let sub = parseFloat(item.subtotal || 0);
+
+          let isMinus =
+            q < 0 ||
+            sub < 0 ||
+            j_lower.includes("kurang") ||
+            j_lower.includes("cancel") ||
+            j_lower.includes("batal") ||
+            j_lower.includes("ganti");
+
+          let namaItemDisplay = escapeHTML(item.nama);
+
+          if (isMinus) {
+            if (
+              j_lower.includes("ganti") ||
+              j_lower.includes("tukar") ||
+              k_lower.includes("ganti") ||
+              k_lower.includes("tukar") ||
+              s_lower.includes("ganti") ||
+              s_lower.includes("tukar") ||
+              n_lower.includes("ganti") ||
+              n_lower.includes("tukar")
+            ) {
+              if (!n_lower.includes("ganti") && !n_lower.includes("tukar")) {
+                namaItemDisplay += " (Ganti Item)";
+              }
+            } else {
+              if (!n_lower.includes("cancel") && !n_lower.includes("batal")) {
+                namaItemDisplay += " (Cancel)";
+              }
+            }
+          }
+
+          let subtotalDisplay =
+            (isMinus ? "- " : "") + formatRupiah(Math.abs(sub));
+
+          html += `<div class="item"><div class="item-name">${namaItemDisplay}</div>`;
+
+          if (item.is_sewa_calc) {
+            html += `<div class="row item-detail">
+                                <span>(${Math.abs(q)}x ${item.jumlah_hari}hr @${formatRupiah(item.harga_satuan_final)})</span>
+                                <span>${subtotalDisplay}</span>
+                             </div>`;
+          } else {
+            html += `<div class="row item-detail">
+                                <span>(${Math.abs(q)}x @${formatRupiah(item.harga_satuan_final)})</span>
+                                <span>${subtotalDisplay}</span>
+                             </div>`;
+          }
+          html += `</div>`;
+        });
+
+        html += `</div><div class="separator">================================</div><div class="summary-block">`;
+
+        if (diskon_nominal > 0) {
+          html += `
+                    <div class="row"><span>Subtotal:</span><span>${formatRupiah(total_raw)}</span></div>
+                    <div class="row diskon"><span>Diskon (${diskon_persen}%):</span><span>-${formatRupiah(diskon_nominal)}</span></div>
+                    <div class="row" style="border-top: 1px dashed #000; margin-top: 2px; padding-top: 2px;"><span>Total Tagihan:</span><span>${formatRupiah(grand_total_biaya_item)}</span></div>
+                `;
+        } else {
+          html += `<div class="row"><span>Total Tagihan:</span><span>${formatRupiah(grand_total_biaya_item)}</span></div>`;
+        }
+
+        if (keysGroup.length > 0) {
+          keysGroup.forEach((key) => {
+            let group = grouped_payments[key];
+            let is_split = group.items.length > 1;
+            let label_utama = is_split
+              ? group.jenis + " (Split)"
+              : group.jenis +
+                " (" +
+                (group.items[0].metode_pembayaran || "") +
+                ")";
+
+            html += `<div class="row"><span>${escapeHTML(label_utama)}</span><span>${formatRupiah(group.total_batch)}</span></div>`;
+            if (is_split) {
+              group.items.forEach((detail) => {
+                html += `<div class="row split-detail"><span>- ${escapeHTML(detail.metode_pembayaran)}</span><span>${formatRupiah(detail.jumlah_bayar)}</span></div>`;
+              });
+            }
+          });
+        } else {
+          html += `<div class="row"><span>Total Dibayar:</span><span>${formatRupiah(total_dibayar_calc)}</span></div>`;
+        }
+
+        let sisa_akhir = total_denda > 0 ? sisa_keseluruhan : sisa_bayar_item;
+        html += `<div class="row total"><span>Sisa Bayar:</span><span>${formatRupiah(sisa_akhir)}</span></div></div>`;
+
+        html += `
+                <div class="separator">---------------------------</div>
+                <div class="struk-footer">
+                    <div class="status-badge">${status_pembayaran_text}</div>
+                    <div style="margin-top: 8px; font-size: 9pt; line-height: 1.3;">
+                        <p style="font-weight: bold; margin-bottom: 3px; font-size: 10pt;">Catatan Penting:</p>
+                        <p>Menyewa sama dengan menyetujui syarat dan ketentuan sewa</p>
+                    </div>
+                    <p style="margin-top: 15px;">Terima Kasih!</p>
+                </div>
+            `;
+
+        // Tampilkan ke DOM
+        document.getElementById("loading-message").style.display = "none";
+        const areaCetak = document.getElementById("areaCetak");
+        areaCetak.innerHTML = html;
+        areaCetak.style.display = "block";
+        document.getElementById("actionButtons").style.display = "flex";
+
+        // Ubah Title
+        document.title = `Struk ${kode_nota} - Tenda Camp`;
+      }
+
+      function shareWAImage() {
+        const element = document.getElementById("areaCetak");
+        const actionButtons = document.getElementById("actionButtons");
+
+        // Sembunyikan tombol sebelum dicapture
+        if (actionButtons) actionButtons.style.display = "none";
+
+        html2canvas(element, {
+          scale: 3,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+        })
+          .then((canvas) => {
+            if (actionButtons) actionButtons.style.display = "flex";
+
+            // Buat link download otomatis
+            const imgData = canvas.toDataURL("image/jpeg", 0.9);
+            const link = document.createElement("a");
+            link.href = imgData;
+            link.download = `Struk-${waData.trx}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Format nomor WA
+            let phone = waData.phone.replace(/\D/g, "");
+            if (phone.length < 5) {
+              alert("Nomor HP tidak valid.");
+              return;
+            }
+            if (phone.startsWith("0")) {
+              phone = "62" + phone.slice(1);
+            } else if (phone.startsWith("8")) {
+              phone = "62" + phone;
+            }
+
+            // Redirect ke WA Web / App
+            setTimeout(() => {
+              const message = `Halo Kak *${waData.nama}*, berikut terlampir struk transaksi *${waData.trx}*. \n\nMohon Dicek ya. Terima kasih!`;
+              window.open(
+                `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+                "_blank",
+              );
+            }, 1500);
+          })
+          .catch((err) => {
+            if (actionButtons) actionButtons.style.display = "flex";
+            alert("Gagal membuat gambar: " + err);
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1610 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Status Item & Denda | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+      }
+      body {
+        background-color: #f0f2f5;
+        font-family: "Poppins", sans-serif;
+      }
+
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      .report-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .report-title h1 {
+        font-weight: 800;
+        color: var(--text-dark);
+        font-size: 1.75rem;
+        margin: 0;
+      }
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 0;
+      }
+      .action-buttons .btn {
+        border-radius: 50px;
+        padding: 0.5rem 1.25rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Modern Cards */
+      .modern-stat-card {
+        border: none;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        color: white;
+        min-height: 80px;
+        cursor: pointer;
+      }
+      .modern-stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      }
+      .modern-stat-card.active-menu {
+        box-shadow:
+          0 0 0 2px #ffffff,
+          0 5px 15px rgba(0, 0, 0, 0.2) !important;
+        transform: scale(1.02);
+        z-index: 10;
+      }
+      .modern-stat-card:not(.active-menu) {
+        opacity: 0.8;
+        transform: scale(0.98);
+        filter: grayscale(30%);
+      }
+      .bg-gradient-modern-warning {
+        background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+      }
+      .bg-gradient-modern-success {
+        background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+      }
+      .bg-gradient-modern-danger {
+        background: linear-gradient(135deg, #e55353 0%, #d93737 100%);
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.9;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.1;
+        display: block;
+      }
+      .stat-icon-bg {
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        font-size: 3rem;
+        opacity: 0.2;
+        transform: rotate(-15deg);
+        color: rgba(255, 255, 255, 0.8);
+      }
+
+      .modern-card {
+        background: #fff;
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        margin-bottom: 20px;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+        overflow: hidden;
+        position: relative;
+        border-left: 6px solid transparent;
+        cursor: pointer;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .modern-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
+      .modern-card.border-danger-soft {
+        border-left-color: #ff4757;
+      }
+      .modern-card.border-warning-soft {
+        border-left-color: #ffa502;
+      }
+      .modern-card.border-success-soft {
+        border-left-color: #2ed573;
+      }
+      .highlight-blue {
+        background-color: #e3f2fd !important;
+        border: 2px solid #2196f3 !important;
+        animation: highlightPulse 2s ease-out;
+      }
+      @keyframes highlightPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(33, 150, 243, 0.7);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(33, 150, 243, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(33, 150, 243, 0);
+        }
+      }
+
+      .card-header-modern {
+        padding: 15px 15px 5px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .customer-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2f3542;
+        margin-bottom: 2px;
+        line-height: 1.2;
+      }
+      .receipt-id {
+        font-size: 0.8rem;
+        color: #a4b0be;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+      .card-body-modern {
+        padding: 10px 15px;
+        flex-grow: 1;
+      }
+      .info-box-sewa {
+        background-color: #f1f2f6;
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+      .info-item {
+        display: flex;
+        flex-direction: column;
+      }
+      .info-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: #747d8c;
+        font-weight: 600;
+      }
+      .info-value {
+        font-size: 0.9rem;
+        font-weight: 700;
+        color: #2f3542;
+      }
+
+      .fine-box {
+        background-color: #fff0f1;
+        border: 1px dashed #ff4757;
+        border-radius: 10px;
+        padding: 10px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .fine-label {
+        color: #ff4757;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .fine-amount {
+        color: #ff4757;
+        font-weight: 800;
+        font-size: 1.1rem;
+      }
+
+      .item-status-pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: #eee;
+        color: #555;
+      }
+      .item-status-pill.belum {
+        background: #fff7d6;
+        color: #ffa502;
+      }
+      .item-status-pill.kembali {
+        background: #dff9fb;
+        color: #2ed573;
+      }
+      .sewa-pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .sewa-pill.tepat {
+        background: #d1e7dd;
+        color: #0f5132;
+      }
+      .sewa-pill.denda {
+        background: #f8d7da;
+        color: #842029;
+      }
+      .sewa-pill.dispensasi {
+        background: #cff4fc;
+        color: #055160;
+      }
+
+      .card-footer-modern {
+        padding: 12px 15px;
+        border-top: 1px solid #f1f2f6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+      }
+      .action-buttons-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-icon-circle {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+        border: 1px solid transparent;
+        text-decoration: none;
+      }
+      .btn-icon-circle:hover {
+        transform: scale(1.1);
+      }
+      .btn-wa-custom {
+        background-color: #25d366;
+        color: white !important;
+        box-shadow: 0 2px 5px rgba(37, 211, 102, 0.3);
+      }
+      .btn-print-custom {
+        background-color: #f1f2f6;
+        color: #57606f !important;
+      }
+      .btn-action-main {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+      }
+
+      /* iOS Theme Modal Styles */
+      .ios-modal-content {
+        border-radius: 14px;
+        background-color: #f2f2f7;
+        border: none;
+        overflow: hidden;
+      }
+      .ios-header {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid #c6c6c8;
+        padding: 15px;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ios-title {
+        font-weight: 700;
+        font-size: 17px;
+        color: #000;
+        text-align: left;
+      }
+      .ios-close-btn {
+        color: #8e8e93;
+        font-size: 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        text-align: right;
+      }
+      .ios-body {
+        padding: 20px 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+      }
+      .ios-card-group {
+        background: white;
+        border-radius: 10px;
+        overflow: visible;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      }
+      .ios-list-row {
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        color: #000;
+      }
+      .ios-list-row:last-child {
+        border-bottom: none;
+      }
+      .ios-label {
+        font-size: 16px;
+        color: #000;
+        flex-shrink: 0;
+        margin-right: 10px;
+      }
+      .ios-value {
+        font-size: 16px;
+        color: #8e8e93;
+        text-align: right;
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ios-value.highlight {
+        color: #000;
+        font-weight: 600;
+      }
+      .ios-section-header {
+        text-transform: uppercase;
+        color: #8e8e93;
+        font-size: 12px;
+        margin-bottom: 8px;
+        margin-left: 5px;
+        margin-top: 15px;
+        font-weight: 600;
+      }
+
+      .ios-item-row {
+        display: flex;
+        align-items: flex-start;
+        padding: 12px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+        position: relative;
+      }
+      .item-thumb-modal {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 10px;
+        border: 1px solid #ddd;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ios-item-info {
+        flex-grow: 1;
+        text-align: left;
+      }
+      .ios-item-name {
+        font-weight: 500;
+        font-size: 16px;
+        color: #000;
+        margin-bottom: 4px;
+      }
+      .ios-history-row {
+        padding: 15px 16px;
+        border-bottom: 0.5px solid #c6c6c8;
+      }
+      .item-card-modern {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: #fff;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #e5e5ea;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      }
+      .item-img-modern {
+        width: 48px;
+        height: 48px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      @media (max-width: 767.98px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .stat-icon-bg {
+          display: none;
+        }
+        .stat-label {
+          font-size: 0.65rem;
+        }
+        .stat-value {
+          font-size: 1.25rem;
+        }
+        .report-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+        .action-buttons {
+          width: 100%;
+          justify-content: flex-start;
+        }
+        .action-buttons .btn {
+          flex: 1;
+          text-align: center;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          transition: transform 0.3s ease-out;
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Data Denda...</h5>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header">
+          <div class="container-fluid pt-2">
+            <div class="report-header pb-3 pt-2">
+              <div class="report-title">
+                <h1>Status Item & Denda</h1>
+              </div>
+              <div class="action-buttons">
+                <button
+                  class="btn btn-default"
+                  data-toggle="modal"
+                  data-target="#filterModal"
+                >
+                  <i class="fas fa-filter text-primary mr-1"></i> Filter
+                </button>
+                <button
+                  class="btn btn-default"
+                  data-toggle="modal"
+                  data-target="#searchModal"
+                >
+                  <i class="fas fa-search text-info mr-1"></i> Cari
+                </button>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-4 mb-2">
+                <div
+                  class="modern-stat-card bg-gradient-modern-warning active-menu"
+                  id="tabBelum"
+                  onclick="switchTab('belum_kembali')"
+                >
+                  <div
+                    class="card-body d-flex flex-column justify-content-center align-items-center text-center h-100"
+                  >
+                    <span class="stat-label">Belum Kembali</span>
+                    <span class="stat-value" id="valTotalBelum">0</span>
+                    <i class="fas fa-box-open stat-icon-bg"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <div
+                  class="modern-stat-card bg-gradient-modern-danger"
+                  id="tabDenda"
+                  onclick="switchTab('nota_denda')"
+                >
+                  <div
+                    class="card-body d-flex flex-column justify-content-center align-items-center text-center h-100"
+                  >
+                    <span class="stat-label">Nota Denda</span>
+                    <span class="stat-value" id="valTotalDenda">0</span>
+                    <i class="fas fa-file-invoice-dollar stat-icon-bg"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4 mb-2">
+                <div
+                  class="modern-stat-card bg-gradient-modern-success"
+                  id="tabSelesai"
+                  onclick="switchTab('sudah_kembali')"
+                >
+                  <div
+                    class="card-body d-flex flex-column justify-content-center align-items-center text-center h-100"
+                  >
+                    <span style="font-size: 1.8rem"
+                      ><i class="fas fa-check-circle"></i
+                    ></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="filterAlert"
+              class="d-flex align-items-center mb-3 mt-4"
+              style="display: none !important"
+            >
+              <h5
+                class="m-0 font-weight-bold text-dark"
+                style="font-size: 1.1rem; flex-grow: 1"
+              >
+                <i class="fas fa-info-circle mr-2 text-secondary"></i>
+                <span id="filterAlertText">Item (On Schedule)</span>
+              </h5>
+              <button
+                onclick="resetFilters()"
+                id="btnResetFilter"
+                class="btn btn-sm btn-danger px-3 rounded-pill ml-auto"
+                style="
+                  display: none;
+                  font-weight: 600;
+                  box-shadow: 0 2px 4px rgba(220, 53, 69, 0.3);
+                "
+              >
+                <i class="fas fa-times mr-1"></i> Reset
+              </button>
+            </div>
+
+            <div id="alert-container"></div>
+
+            <div class="row" id="transactionList">
+              <div class="col-12">
+                <div class="skeleton h-32 w-full rounded-2xl"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div class="modal fade" id="returnModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content"
+          style="border-radius: 14px; overflow: hidden"
+        >
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-box-open mr-2"></i> Checklist Item
+              <span id="return-modal-nama" class="text-blue-100"></span>
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <form id="returnForm">
+            <div class="modal-body p-0">
+              <input type="hidden" id="return_transaksi_id" />
+              <div
+                id="return-alert"
+                style="
+                  display: none;
+                  padding: 15px;
+                  font-weight: 600;
+                  text-align: center;
+                "
+              ></div>
+              <div
+                class="d-flex justify-content-between align-items-center mb-0 p-3 bg-light"
+                style="border-bottom: 1px solid #e5e5ea"
+              >
+                <h6 class="mb-0 text-danger font-weight-bold">
+                  <i class="fas fa-exclamation-triangle mr-1"></i> Denda:
+                  <span id="sisa-denda-display">Rp 0</span>
+                </h6>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-info px-3 font-bold rounded-full"
+                  id="btnSelectAllReturn"
+                >
+                  All
+                </button>
+              </div>
+              <div
+                id="return-item-list"
+                class="bg-white"
+                style="max-height: 40vh; overflow-y: auto; padding: 15px"
+              ></div>
+            </div>
+            <div class="modal-footer bg-light border-t border-gray-200">
+              <button
+                type="submit"
+                class="btn btn-primary w-100 font-bold rounded-xl py-2"
+                id="btnSubmitReturn"
+              >
+                Proses Pengembalian
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="paymentModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div
+          class="modal-content shadow-2xl rounded-2xl overflow-hidden border-0"
+        >
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title font-bold">
+              <i class="fas fa-wallet mr-2"></i> Pembayaran Denda
+              <span id="payment-modal-nama" class="text-red-100"></span>
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              <span>&times;</span>
+            </button>
+          </div>
+          <form id="paymentForm">
+            <div class="modal-body p-4 bg-gray-50">
+              <input type="hidden" id="payment_transaksi_id" />
+              <input type="hidden" id="hidden_sisa_bayar" value="0" />
+
+              <div
+                class="form-group mb-4 bg-white p-3 rounded-xl border border-red-100 shadow-sm text-center"
+              >
+                <label
+                  class="text-sm font-bold text-gray-500 uppercase tracking-wide"
+                  >Sisa Denda Belum Lunas</label
+                >
+                <h3
+                  class="text-danger font-black m-0 mt-1"
+                  id="sisa-bayar-display"
+                >
+                  Rp 0
+                </h3>
+              </div>
+
+              <div class="form-group" id="potongan-group">
+                <label class="text-sm font-bold text-gray-700"
+                  >Potongan Denda / Dispensasi</label
+                >
+                <select
+                  id="potongan_persen"
+                  class="form-control rounded-xl bg-white border-gray-200"
+                >
+                  <option value="0">0% (Tidak Ada Potongan)</option>
+                  <option value="10">10%</option>
+                  <option value="20">20%</option>
+                  <option value="30">30%</option>
+                  <option value="40">40%</option>
+                  <option value="50">50%</option>
+                </select>
+                <small
+                  class="form-text text-danger font-semibold mt-1"
+                  id="potongan-info"
+                ></small>
+                <input
+                  type="hidden"
+                  id="hidden_sisa_setelah_potongan"
+                  value="0"
+                />
+              </div>
+
+              <div
+                class="custom-control custom-switch mb-3 bg-white p-2 rounded-lg border border-gray-200 flex justify-center items-center"
+                id="split-bill-toggle-container"
+              >
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  id="toggleSplitPayment"
+                />
+                <label
+                  class="custom-control-label font-bold text-indigo-700 ml-2 mt-1 cursor-pointer"
+                  for="toggleSplitPayment"
+                  >Split Bill (Bayar Terpisah)</label
+                >
+              </div>
+
+              <div id="payment-standard-view">
+                <div class="form-group">
+                  <label class="text-sm font-bold text-gray-700"
+                    >Metode Pembayaran</label
+                  >
+                  <select
+                    id="metode_pembayaran"
+                    class="form-control rounded-xl bg-white border-gray-200"
+                    required
+                  >
+                    <option value="Cash">Cash</option>
+                    <option value="Transfer">Transfer</option>
+                    <option value="Qris">Qris</option>
+                    <option
+                      value="Dispensasi_100"
+                      class="text-red-500 font-bold"
+                    >
+                      Dispensasi Penuh (100% Bebas Denda)
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group m-0" id="nominal-group">
+                  <label class="text-sm font-bold text-gray-700"
+                    >Nominal Pembayaran (Rp)</label
+                  >
+                  <input
+                    type="text"
+                    id="payment-nominal"
+                    class="form-control font-bold text-blue-700 rounded-xl"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div
+                id="payment-split-view"
+                style="display: none"
+                class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm"
+              >
+                <div class="flex items-center mb-2">
+                  <div class="w-24 text-sm font-bold text-gray-600">
+                    <i class="fas fa-money-bill-wave text-green-500 mr-1"></i>
+                    Cash
+                  </div>
+                  <input
+                    type="text"
+                    id="split_cash"
+                    class="form-control form-control-sm text-right font-bold split-input rupiah"
+                  />
+                </div>
+                <div class="flex items-center mb-2">
+                  <div class="w-24 text-sm font-bold text-gray-600">
+                    <i class="fas fa-university text-blue-500 mr-1"></i>
+                    Transfer
+                  </div>
+                  <input
+                    type="text"
+                    id="split_transfer"
+                    class="form-control form-control-sm text-right font-bold split-input rupiah"
+                  />
+                </div>
+                <div class="flex items-center">
+                  <div class="w-24 text-sm font-bold text-gray-600">
+                    <i class="fas fa-qrcode text-purple-500 mr-1"></i> Qris
+                  </div>
+                  <input
+                    type="text"
+                    id="split_qris"
+                    class="form-control form-control-sm text-right font-bold split-input rupiah"
+                  />
+                </div>
+                <div
+                  class="text-right mt-3 pt-2 border-t border-gray-100 text-sm"
+                >
+                  Total Split:
+                  <strong id="total-split-display" class="text-danger text-lg"
+                    >Rp 0</strong
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer bg-white border-0 p-3">
+              <button
+                type="button"
+                class="btn btn-light rounded-xl font-bold px-4"
+                data-dismiss="modal"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                class="btn btn-danger rounded-xl font-bold px-4 shadow-sm"
+                id="btnSubmitPayment"
+              >
+                Proses Bayar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      // --- VARIABEL GLOBAL ---
+      let activeTab = "belum_kembali";
+      let currentSearch = "";
+      let highlightId = null;
+
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        currentSearch = urlParams.get("search") || "";
+
+        // Tentukan Tab Aktif
+        if (urlParams.get("filter_denda") === "belum") activeTab = "nota_denda";
+        else if (urlParams.get("filter_pengembalian") === "sudah")
+          activeTab = "sudah_kembali";
+        else activeTab = "belum_kembali"; // default
+
+        highlightId = localStorage.getItem("highlight_id") || null;
+        if (highlightId) localStorage.removeItem("highlight_id");
+
+        switchTab(activeTab, true);
+        fetchDendaData();
+        setupListeners();
+      });
+
+      // === 1. FETCH API UTAMA ===
+      async function fetchDendaData() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            document.getElementById("loader-overlay").style.display = "none";
+            renderCards(getMockData());
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const payload = new URLSearchParams({
+            action: "get_denda_data",
+            admin_id: adminId,
+            tab: activeTab,
+            search: currentSearch,
+          });
+
+          const res = await fetch(`${GAS_API_URL}?${payload.toString()}`);
+          const result = await res.json();
+
+          if (result.status === "success") {
+            document.getElementById("valTotalBelum").textContent =
+              result.data.counters.belum_kembali || 0;
+            document.getElementById("valTotalDenda").textContent =
+              result.data.counters.nota_denda || 0;
+            renderCards(result.data.transactions);
+          } else {
+            console.error(result.message);
+            renderCards([]);
+          }
+        } catch (err) {
+          console.error(err);
+          renderCards([]);
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. UI HELPERS & TABS ===
+      function switchTab(tab, silent = false) {
+        activeTab = tab;
+        document
+          .querySelectorAll(".modern-stat-card")
+          .forEach((el) => el.classList.remove("active-menu"));
+
+        const filterAlert = document.getElementById("filterAlert");
+        const filterText = document.getElementById("filterAlertText");
+        const btnReset = document.getElementById("btnResetFilter");
+
+        if (tab === "belum_kembali") {
+          document.getElementById("tabBelum").classList.add("active-menu");
+          filterText.textContent = "Item (On Schedule)";
+        } else if (tab === "nota_denda") {
+          document.getElementById("tabDenda").classList.add("active-menu");
+          filterText.textContent = "Nota Denda";
+        } else if (tab === "sudah_kembali") {
+          document.getElementById("tabSelesai").classList.add("active-menu");
+          filterText.textContent = "Selesai (Finish)";
+        }
+
+        if (currentSearch) {
+          filterAlert.style.setProperty("display", "flex", "important");
+          filterText.textContent = `Pencarian: ${currentSearch}`;
+          btnReset.style.display = "block";
+        } else {
+          filterAlert.style.setProperty("display", "flex", "important");
+          btnReset.style.display = "none";
+        }
+
+        if (!silent) {
+          const url = new URL(window.location);
+          url.searchParams.delete("filter_denda");
+          url.searchParams.delete("filter_pengembalian");
+          if (tab === "nota_denda")
+            url.searchParams.set("filter_denda", "belum");
+          else if (tab === "sudah_kembali")
+            url.searchParams.set("filter_pengembalian", "sudah");
+          else url.searchParams.set("filter_pengembalian", "belum");
+
+          window.history.pushState({}, "", url);
+          document.getElementById("transactionList").innerHTML =
+            `<div class="col-12"><div class="skeleton h-32 w-full rounded-2xl"></div></div>`;
+          fetchDendaData();
+        }
+      }
+
+      function resetFilters() {
+        window.location.href = `denda.html`;
+      }
+      function showImage(src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      }
+
+      // === 3. RENDER CARDS ===
+      function renderCards(transactions) {
+        const container = document.getElementById("transactionList");
+        container.innerHTML = "";
+
+        if (transactions.length === 0) {
+          container.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-box-open fa-5x text-gray-300 mb-3"></i>
+                <p class="text-gray-500 font-medium">Tidak ada data ditemukan sesuai filter.</p>
+            </div>`;
+          return;
+        }
+
+        transactions.forEach((row) => {
+          let borderClass = "border-success-soft";
+          let badgeHtml =
+            '<span class="badge badge-success rounded-pill px-2 py-1">SELESAI</span>';
+
+          if (row.sisa_denda > 0) {
+            borderClass = "border-danger-soft";
+            badgeHtml =
+              '<span class="badge badge-danger rounded-pill px-2 py-1">BELUM LUNAS</span>';
+          } else if (row.is_overdue) {
+            borderClass = "border-danger-soft";
+            badgeHtml =
+              '<span class="badge badge-danger rounded-pill px-2 py-1">LEWAT BATAS</span>';
+          } else if (row.status_pengembalian !== "Sudah Dikembalikan") {
+            borderClass = "border-warning-soft";
+            badgeHtml =
+              '<span class="badge badge-warning text-white rounded-pill px-2 py-1">BELUM KEMBALI</span>';
+          }
+
+          let highlightClass =
+            highlightId && String(row.id) === String(highlightId)
+              ? "highlight-blue"
+              : "";
+
+          let statusSewaText = "Tepat Waktu";
+          let statusSewaClass = "sewa-pill tepat";
+          if (row.denda > 0 || row.hari_lewat_display > 0) {
+            if (row.metode_dispensasi) {
+              statusSewaText = "Dispensasi";
+              statusSewaClass = "sewa-pill dispensasi";
+            } else {
+              statusSewaText = "Denda Lunas";
+              statusSewaClass = "sewa-pill denda";
+            }
+          }
+
+          let infoBox = "";
+          if (row.is_jual_only) {
+            infoBox = `<div class="info-item w-100 text-center py-1"><span class="info-label text-xs"><i class="fas fa-shopping-cart"></i> Nota Penjualan</span></div>`;
+          } else {
+            if (row.denda > 0 && row.periode_denda_card !== "-") {
+              infoBox = `<div class="info-item"><span class="info-label text-danger font-black">Periode Denda</span><span class="info-value text-danger font-bold">${row.periode_denda_card}</span></div>`;
+            } else {
+              infoBox = `<div class="info-item"><span class="info-label">Periode Sewa</span><span class="info-value text-sm">${row.periode_sewa_card}</span></div>`;
+            }
+            if (
+              row.sisa_denda > 0 ||
+              row.is_overdue ||
+              row.status_pengembalian === "Sudah Dikembalikan"
+            ) {
+              const tc =
+                row.hari_lewat_display > 0 ? "text-red-500" : "text-green-500";
+              infoBox += `<div class="info-item text-right"><span class="info-label">Keterlambatan</span><span class="info-value text-sm font-bold ${tc}">${row.hari_lewat_display > 0 ? row.hari_lewat_display + " Hari" : "-"}</span></div>`;
+            }
+          }
+
+          let dendaBox = "";
+          if (row.sisa_denda > 0) {
+            dendaBox = `<div class="fine-box"><div class="fine-label"><i class="fas fa-exclamation-circle mr-1"></i> Sisa Denda</div><div class="fine-amount">${FORMATTER.format(row.sisa_denda)}</div></div>`;
+          }
+
+          let statusPill =
+            row.status_pengembalian === "Sudah Dikembalikan"
+              ? `<span class="item-status-pill kembali"><i class="fas fa-check mr-1"></i> Dikembalikan</span>`
+              : `<span class="item-status-pill belum"><i class="fas fa-box-open mr-1"></i> Belum Kembali</span>`;
+
+          let bottomSewaStatus = "";
+          if (
+            row.status_pengembalian === "Sudah Dikembalikan" &&
+            row.sisa_denda <= 0
+          ) {
+            bottomSewaStatus = `
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-gray-500 text-xs font-bold">${row.is_jual_only ? "Jenis Transaksi:" : "Status Sewa:"}</span>
+                ${row.is_jual_only ? `<span class="badge badge-warning text-dark px-2 py-1"><i class="fas fa-shopping-bag mr-1"></i> Jual</span>` : `<span class="${statusSewaClass}">${statusSewaText}</span>`}
+            </div>`;
+          }
+
+          // Action Buttons
+          let actionBtns = `
+            <a href="preview-struk-denda.html?transaksi_id=${row.id}" target="_blank" class="btn btn-icon-circle btn-print-custom" onclick="event.stopPropagation();"><i class="fas fa-print"></i></a>
+            <a href="#" class="btn btn-icon-circle btn-wa-custom" onclick="event.stopPropagation(); window.open('https://api.whatsapp.com/send?phone=${row.wa_phone}&text=Halo%20Kak%20${encodeURIComponent(row.nama)}...');"><i class="fab fa-whatsapp font-bold text-lg"></i></a>
+        `;
+
+          if (row.status_pengembalian !== "Sudah Dikembalikan") {
+            actionBtns += `<button type="button" class="btn btn-primary btn-action-main ml-2" onclick="event.stopPropagation(); openReturnModal(${row.id}, '${row.nama}')"><i class="fas fa-boxes mr-1"></i> Kembali</button>`;
+          } else if (row.sisa_denda > 0) {
+            actionBtns += `<button type="button" class="btn btn-danger btn-action-main ml-2" onclick="event.stopPropagation(); openPaymentModal(${row.id}, '${row.nama}', ${row.sisa_denda})"><i class="fas fa-wallet mr-1"></i> Bayar</button>`;
+          }
+
+          container.innerHTML += `
+            <div class="col-12 col-md-6 col-lg-4 mb-4" id="card-${row.id}">
+                <div class="modern-card ${borderClass} ${highlightClass}" onclick="openDetailModal(${row.id})">
+                    <div class="card-header-modern">
+                        <div>
+                            <div class="customer-name">${row.nama}</div>
+                            <div class="receipt-id"><i class="fas fa-receipt mr-1"></i> ${row.kode_nota_card_display}</div>
+                        </div>
+                        <div>${badgeHtml}</div>
+                    </div>
+                    <div class="card-body-modern">
+                        <div class="info-box-sewa">${infoBox}</div>
+                        ${dendaBox}
+                        <div class="flex justify-between items-center mb-1"><span class="text-gray-500 text-xs font-bold">Status Item:</span>${statusPill}</div>
+                        ${bottomSewaStatus}
+                    </div>
+                    <div class="card-footer-modern">
+                        <div class="updated-text"><i class="fas fa-clock mr-1"></i> ${new Date(row.updated_at).toLocaleString("id-ID", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}</div>
+                        <div class="action-buttons-group">${actionBtns}</div>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        if (highlightId) {
+          const target = document.getElementById(`card-${highlightId}`);
+          if (target)
+            setTimeout(
+              () =>
+                target.scrollIntoView({ behavior: "smooth", block: "center" }),
+              500,
+            );
+        }
+      }
+
+      // === 4. MODAL KEMBALI (CHECKLIST RETURN) ===
+      async function openReturnModal(id, nama) {
+        document.getElementById("return_transaksi_id").value = id;
+        document.getElementById("return-modal-nama").textContent = nama;
+        const list = document.getElementById("return-item-list");
+        const btnSubmit = document.getElementById("btnSubmitReturn");
+
+        list.innerHTML =
+          '<div class="text-center py-4"><i class="fas fa-spinner fa-spin text-blue-500 fa-2x"></i></div>';
+        btnSubmit.disabled = true;
+        $("#return-alert").hide();
+        $("#returnModal").modal("show");
+
+        try {
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_return_items&id=${id}`,
+          );
+          const result = await res.json();
+
+          if (result.success) {
+            document.getElementById("sisa-denda-display").textContent =
+              FORMATTER.format(result.sisa_denda);
+
+            let itemsToReturn = result.items.filter(
+              (it) =>
+                !(
+                  parseFloat(it.qty) < 0 ||
+                  (it.jenis_item &&
+                    it.jenis_item.toLowerCase().includes("kurang"))
+                ),
+            );
+
+            if (itemsToReturn.length === 0) {
+              list.innerHTML =
+                '<div class="alert alert-info border-0 shadow-sm"><i class="fas fa-info-circle mr-1"></i> Semua item sewa telah ditukar/dihapus.</div>';
+              btnSubmit.disabled = false;
+              btnSubmit.textContent = "Selesaikan Transaksi";
+              document.getElementById("btnSelectAllReturn").style.display =
+                "none";
+              return;
+            }
+
+            let html =
+              '<ul class="list-group rounded-xl overflow-hidden shadow-sm">';
+            let allRet = true;
+
+            itemsToReturn.forEach((item) => {
+              let isRet =
+                item.status_pengembalian_item === "Sudah Dikembalikan";
+              if (!isRet) allRet = false;
+
+              let disabledStyle = isRet
+                ? "opacity: 0.6; background-color: #f8f9fa;"
+                : "";
+              let checkAttr = isRet ? "checked disabled" : "";
+              let textClass = isRet ? "text-green-600" : "text-gray-800";
+              let badgeClass = isRet ? "badge-success" : "badge-light border";
+              let badgeText = isRet ? "Sudah Kembali" : "Belum Kembali";
+              const img = item.foto
+                ? `<img src="${item.foto}" class="w-11 h-11 object-cover rounded-lg border mr-3" onclick="event.stopPropagation(); showImage('${item.foto}')">`
+                : `<div class="w-11 h-11 bg-gray-100 flex items-center justify-center rounded-lg border mr-3"><i class="fas fa-box text-gray-400"></i></div>`;
+
+              html += `
+                <li class="list-group-item flex items-center p-3 border-gray-200" style="${disabledStyle}">
+                    <div class="custom-control custom-checkbox w-full flex items-center">
+                        <input type="checkbox" id="chk-${item.id}" class="custom-control-input return-item-checkbox mr-3 h-5 w-5 rounded text-blue-600 focus:ring-blue-500" name="returned_items" value="${item.id}" ${checkAttr}>
+                        <label class="custom-control-label w-full flex items-center cursor-pointer m-0" for="chk-${item.id}">
+                            ${img}
+                            <div class="flex-grow flex flex-col">
+                                <span class="font-bold text-sm ${textClass}">${item.item_nama}</span>
+                                <span class="text-xs text-gray-500">Qty: ${item.qty}</span>
+                            </div>
+                            <span class="badge ${badgeClass} px-2 py-1">${badgeText}</span>
+                        </label>
+                    </div>
+                </li>`;
+            });
+            html += "</ul>";
+            list.innerHTML = html;
+
+            const alertBox = $("#return-alert");
+            document.getElementById("btnSelectAllReturn").style.display =
+              "block";
+
+            if (allRet) {
+              alertBox
+                .html(
+                  '<i class="fas fa-check-circle mr-1"></i> Semua item sudah kembali.',
+                )
+                .removeClass("alert-info")
+                .addClass("text-yellow-900 bg-yellow-400 border-0 shadow-sm")
+                .show();
+              btnSubmit.disabled = false;
+              btnSubmit.textContent = "Selesaikan Transaksi";
+              document.getElementById("btnSelectAllReturn").style.display =
+                "none";
+            } else {
+              if (result.sisa_denda > 0)
+                alertBox
+                  .html(
+                    '<i class="fas fa-exclamation-triangle mr-1"></i> Selesaikan pengembalian, lalu lunasi denda.',
+                  )
+                  .removeClass("bg-yellow-400 text-yellow-900")
+                  .addClass("bg-blue-100 text-blue-800 border-0 shadow-sm")
+                  .show();
+              else alertBox.hide();
+              btnSubmit.disabled = false;
+              btnSubmit.textContent = "Konfirmasi Kembali";
+            }
+          }
+        } catch (e) {
+          list.innerHTML = `<div class="text-red-500 text-center py-3">Error memuat data.</div>`;
+        }
+      }
+
+      document
+        .getElementById("btnSelectAllReturn")
+        .addEventListener("click", () => {
+          let checks = document.querySelectorAll(
+            ".return-item-checkbox:not(:disabled)",
+          );
+          if (checks.length === 0) return;
+          let isAllChecked = Array.from(checks).every((cb) => cb.checked);
+          checks.forEach((cb) => (cb.checked = !isAllChecked));
+        });
+
+      document
+        .getElementById("returnForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = document.getElementById("btnSubmitReturn");
+          const txt = btn.textContent;
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...';
+          btn.disabled = true;
+
+          // Collect checked items
+          const checkedIds = Array.from(
+            document.querySelectorAll(
+              ".return-item-checkbox:checked:not(:disabled)",
+            ),
+          ).map((cb) => cb.value);
+
+          const payload = {
+            action: "submit_return",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            transaksi_id: document.getElementById("return_transaksi_id").value,
+            returned_items: checkedIds,
+          };
+
+          try {
+            if (
+              typeof GAS_API_URL === "undefined" ||
+              GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            )
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+            if (result.success) {
+              $("#returnModal").modal("hide");
+              showAlert("success", result.message);
+              fetchDendaData();
+            } else {
+              alert(result.message);
+              btn.textContent = txt;
+              btn.disabled = false;
+            }
+          } catch (err) {
+            alert("Simulasi kembali berhasil (Mock)");
+            $("#returnModal").modal("hide");
+            fetchDendaData();
+          }
+        });
+
+      // === 5. MODAL BAYAR DENDA ===
+      function openPaymentModal(id, nama, sisa) {
+        document.getElementById("payment_transaksi_id").value = id;
+        document.getElementById("payment-modal-nama").textContent = nama;
+        document.getElementById("hidden_sisa_bayar").value = sisa;
+        document.getElementById("sisa-bayar-display").textContent =
+          FORMATTER.format(sisa);
+
+        // Reset Form
+        document.getElementById("potongan_persen").value = "0";
+        document.getElementById("metode_pembayaran").value = "Cash";
+        document.getElementById("toggleSplitPayment").checked = false;
+        document.getElementById("payment-standard-view").style.display =
+          "block";
+        document.getElementById("payment-split-view").style.display = "none";
+        document.getElementById("potongan-group").style.display = "block";
+        document.getElementById("split-bill-toggle-container").style.display =
+          "flex";
+        document
+          .querySelectorAll(".split-input")
+          .forEach((e) => (e.value = ""));
+        document.getElementById("total-split-display").textContent = "Rp 0";
+
+        calcPaymentNominal();
+        $("#paymentModal").modal("show");
+      }
+
+      function calcPaymentNominal() {
+        const sisa =
+          parseInt(document.getElementById("hidden_sisa_bayar").value) || 0;
+        const potPct =
+          parseInt(document.getElementById("potongan_persen").value) || 0;
+        const potAmt = Math.floor(sisa * (potPct / 100));
+        const sisaAfter = sisa - potAmt;
+
+        document.getElementById("potongan-info").textContent =
+          `Potongan: ${potPct}% = ${FORMATTER.format(potAmt)}`;
+        document.getElementById("hidden_sisa_setelah_potongan").value =
+          sisaAfter;
+        document.getElementById("payment-nominal").value = FORMATTER.format(
+          sisaAfter,
+        ).replace("Rp ", "");
+
+        if (document.getElementById("toggleSplitPayment").checked)
+          calcPaySplit();
+      }
+
+      document
+        .getElementById("potongan_persen")
+        .addEventListener("change", calcPaymentNominal);
+      document
+        .getElementById("toggleSplitPayment")
+        .addEventListener("change", function () {
+          const isSplit = this.checked;
+          document.getElementById("payment-standard-view").style.display =
+            isSplit ? "none" : "block";
+          document.getElementById("payment-split-view").style.display = isSplit
+            ? "block"
+            : "none";
+          document.getElementById("payment-nominal").required = !isSplit;
+          if (isSplit) calcPaySplit();
+        });
+
+      document
+        .getElementById("metode_pembayaran")
+        .addEventListener("change", function () {
+          const isFullDispensasi = this.value === "Dispensasi_100";
+          document.getElementById("potongan-group").style.display =
+            isFullDispensasi ? "none" : "block";
+          document.getElementById("split-bill-toggle-container").style.display =
+            isFullDispensasi ? "none" : "flex";
+          document.getElementById("nominal-group").style.display =
+            isFullDispensasi ? "none" : "block";
+          if (isFullDispensasi) {
+            document.getElementById("toggleSplitPayment").checked = false;
+            document.getElementById("payment-split-view").style.display =
+              "none";
+            document.getElementById("payment-nominal").value = "0";
+          } else {
+            calcPaymentNominal();
+          }
+        });
+
+      function calcPaySplit(activeEl = null) {
+        const max =
+          parseInt(
+            document.getElementById("hidden_sisa_setelah_potongan").value,
+          ) || 0;
+        const getV = (id) =>
+          parseInt(document.getElementById(id).value.replace(/\D/g, "")) || 0;
+        let c = getV("split_cash");
+        let t = getV("split_transfer");
+        let q = getV("split_qris");
+
+        if (activeEl) {
+          if (activeEl.id === "split_cash")
+            c = Math.min(c, Math.max(0, max - t - q));
+          else if (activeEl.id === "split_transfer")
+            t = Math.min(t, Math.max(0, max - c - q));
+          else if (activeEl.id === "split_qris")
+            q = Math.min(q, Math.max(0, max - c - t));
+        }
+
+        document.getElementById("split_cash").value =
+          c > 0 ? FORMATTER.format(c).replace("Rp ", "") : "";
+        document.getElementById("split_transfer").value =
+          t > 0 ? FORMATTER.format(t).replace("Rp ", "") : "";
+        document.getElementById("split_qris").value =
+          q > 0 ? FORMATTER.format(q).replace("Rp ", "") : "";
+        document.getElementById("total-split-display").textContent =
+          FORMATTER.format(c + t + q);
+      }
+
+      document.querySelectorAll(".split-input").forEach((el) => {
+        el.addEventListener("input", function () {
+          let clean = parseInt(this.value.replace(/\D/g, "")) || 0;
+          this.value =
+            clean > 0 ? FORMATTER.format(clean).replace("Rp ", "") : "";
+          calcPaySplit(this);
+        });
+      });
+      document
+        .getElementById("payment-nominal")
+        .addEventListener("input", function () {
+          let clean = parseInt(this.value.replace(/\D/g, "")) || 0;
+          const max =
+            parseInt(
+              document.getElementById("hidden_sisa_setelah_potongan").value,
+            ) || 0;
+          if (clean > max) clean = max;
+          this.value =
+            clean > 0 ? FORMATTER.format(clean).replace("Rp ", "") : "";
+        });
+
+      document
+        .getElementById("paymentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (!confirm("Proses pembayaran denda?")) return;
+
+          const btn = document.getElementById("btnSubmitPayment");
+          btn.innerHTML =
+            '<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...';
+          btn.disabled = true;
+
+          const payload = {
+            action: "submit_denda",
+            admin_id: localStorage.getItem("tenant_admin_id"),
+            transaksi_id: document.getElementById("payment_transaksi_id").value,
+            potongan_persen: document.getElementById("potongan_persen").value,
+            metode_pembayaran:
+              document.getElementById("metode_pembayaran").value,
+            is_split_bill:
+              document.getElementById("toggleSplitPayment").checked,
+            nominal:
+              parseInt(
+                document
+                  .getElementById("payment-nominal")
+                  .value.replace(/\D/g, ""),
+              ) || 0,
+            split_cash:
+              parseInt(
+                document.getElementById("split_cash").value.replace(/\D/g, ""),
+              ) || 0,
+            split_transfer:
+              parseInt(
+                document
+                  .getElementById("split_transfer")
+                  .value.replace(/\D/g, ""),
+              ) || 0,
+            split_qris:
+              parseInt(
+                document.getElementById("split_qris").value.replace(/\D/g, ""),
+              ) || 0,
+          };
+
+          try {
+            if (
+              typeof GAS_API_URL === "undefined" ||
+              GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            )
+              throw new Error("API Off");
+            const res = await fetch(GAS_API_URL, {
+              method: "POST",
+              body: JSON.stringify(payload),
+            });
+            const result = await res.json();
+            if (result.success) {
+              $("#paymentModal").modal("hide");
+              showAlert("success", "Pembayaran denda berhasil.");
+              fetchDendaData();
+            } else {
+              alert(result.message);
+              btn.textContent = "Proses Bayar";
+              btn.disabled = false;
+            }
+          } catch (err) {
+            alert("Simulasi bayar berhasil (Mock)");
+            $("#paymentModal").modal("hide");
+            fetchDendaData();
+          }
+        });
+
+      // === 6. MOCK DATA ===
+      function getMockData() {
+        return [
+          {
+            id: 1,
+            kode_nota_card_display: "#0001 - Shift Pagi",
+            nama: "Budi Santoso",
+            status_pengembalian: "Belum Dikembalikan",
+            is_overdue: true,
+            sisa_denda: 50000,
+            periode_sewa_card: "10/10/26 - 12/10/26",
+            periode_denda_card: "13/10/26 - 14/10/26",
+            hari_lewat_display: 2,
+            wa_phone: "628123456789",
+            updated_at: new Date().toISOString(),
+          },
+        ];
+      }
+
+      function setupListeners() {}
+    </script>
+  </body>
+</html>

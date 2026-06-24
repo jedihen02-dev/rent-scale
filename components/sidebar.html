@@ -1,0 +1,273 @@
+<!-- components/sidebar.html -->
+<style>
+  /* Sidebar Base */
+  .main-sidebar {
+    background-color: #ffffff !important;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.03) !important;
+    border-right: 1px solid #f1f5f9;
+  }
+  .brand-link {
+    display: none !important;
+  }
+  /* User Panel (Profile Section) */
+  .user-panel {
+    padding: 25px 15px !important;
+    margin: 0;
+    border-bottom: 1px dashed #e2e8f0;
+    align-items: center;
+  }
+  .user-panel .info {
+    padding-left: 15px;
+  }
+  .user-panel .info a {
+    color: #1e293b !important;
+    text-decoration: none;
+  }
+  .user-panel .info small {
+    color: #64748b !important;
+    font-weight: 500;
+  }
+  /* Modern Squircle Avatar */
+  .square-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+    letter-spacing: 1px;
+  }
+  /* Sidebar Menu Items */
+  .nav-sidebar .nav-item {
+    margin-bottom: 6px;
+  }
+  .nav-sidebar .nav-item > .nav-link {
+    padding: 10px 16px;
+    color: #475569 !important;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+  }
+  .nav-sidebar .nav-item > .nav-link i.nav-icon {
+    color: #64748b;
+    font-size: 1.1rem;
+    transition: all 0.25s ease;
+  }
+  /* Active Menu State */
+  .nav-sidebar .nav-item > .nav-link.active,
+  .nav-sidebar .nav-item.menu-open > .nav-link {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+    font-weight: 600;
+  }
+  .nav-sidebar .nav-item > .nav-link.active i.nav-icon,
+  .nav-sidebar .nav-item.menu-open > .nav-link i.nav-icon {
+    color: #1d4ed8 !important;
+  }
+  .nav-sidebar .nav-item > .nav-link:hover:not(.active) {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    transform: translateX(3px);
+  }
+  /* Sub-menu (Treeview) */
+  .nav-treeview {
+    padding-left: 12px;
+    background-color: transparent !important;
+    margin-top: 4px;
+  }
+  .nav-treeview .nav-link {
+    color: #64748b !important;
+    padding: 8px 12px !important;
+    font-size: 0.95rem;
+  }
+  .nav-treeview .nav-link.active {
+    color: #1d4ed8 !important;
+    background-color: transparent !important;
+    font-weight: 600;
+  }
+  .nav-treeview .nav-link.active i.nav-icon::before {
+    content: "\f192";
+  }
+  .nav-treeview .nav-link.active i.nav-icon {
+    color: #2563eb !important;
+    font-weight: 900;
+  }
+  .nav-treeview .nav-link:hover {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+  /* Badges & Footer */
+  .badge {
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 4px 8px;
+  }
+  .sidebar-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-top: 1px dashed #e2e8f0;
+    padding: 12px 15px;
+    text-align: center;
+  }
+  .sidebar-footer p {
+    margin-bottom: 0;
+    font-size: 0.8em;
+    color: #94a3b8;
+    font-weight: 500;
+  }
+  .sidebar {
+    padding-bottom: 60px !important;
+    height: 100%;
+  }
+</style>
+
+<aside class="main-sidebar elevation-4">
+  <div class="sidebar">
+    <!-- User Panel (Diisi via JS) -->
+    <div class="user-panel mt-2 pb-3 mb-3 d-flex">
+      <div class="image">
+        <div id="sidebar-initials" class="square-avatar">AD</div>
+      </div>
+      <div class="info">
+        <a href="#" class="d-block" style="line-height: 1.3">
+          <strong id="sidebar-name" style="font-size: 1.05em">Admin</strong
+          ><br />
+          <small style="font-size: 0.85em"
+            ><i class="far fa-clock mr-1"></i>
+            <span id="sidebar-shift-time">00:00 - 00:00</span></small
+          >
+        </a>
+      </div>
+    </div>
+
+    <nav class="mt-2">
+      <!-- Tambahkan class 'sidebar-menu-container' untuk target JS -->
+      <ul
+        class="nav nav-pills nav-sidebar flex-column sidebar-menu-container"
+        data-widget="treeview"
+        role="menu"
+        data-accordion="false"
+      >
+        <li class="nav-item">
+          <a href="index.html" class="nav-link"
+            ><i class="nav-icon fas fa-home"></i>
+            <p>Home</p></a
+          >
+        </li>
+        <li class="nav-item">
+          <a href="input-nota.html" class="nav-link"
+            ><i class="nav-icon fas fa-file-invoice"></i>
+            <p>Input Nota</p></a
+          >
+        </li>
+
+        <li class="nav-item">
+          <a href="progress.html" class="nav-link">
+            <i class="nav-icon fas fa-envelope-open-text"></i>
+            <p>
+              Booked
+              <span
+                id="badge-booked"
+                class="badge badge-warning right shadow-sm"
+                style="display: none"
+                >0</span
+              >
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="denda.html" class="nav-link">
+            <i class="nav-icon fas fa-bell"></i>
+            <p>
+              Out
+              <span
+                id="badge-out"
+                class="badge badge-danger right shadow-sm"
+                style="display: none"
+                >0</span
+              >
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link"
+            ><i class="nav-icon fas fa-chart-pie"></i>
+            <p>Report <i class="right fas fa-angle-left"></i></p
+          ></a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="shift-report.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Laporan Shift</p></a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="report.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Transaksi</p></a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="item-keluar.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Item Keluar</p></a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item has-treeview">
+          <a href="#" class="nav-link"
+            ><i class="nav-icon fas fa-box-open"></i>
+            <p>Inventori <i class="right fas fa-angle-left"></i></p
+          ></a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="input-item.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Item List</p></a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="kategori.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Kategori</p></a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="input-rusak.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Input Item Rusak</p></a
+              >
+            </li>
+            <li class="nav-item">
+              <a href="clone_data.html" class="nav-link"
+                ><i class="far fa-circle nav-icon"></i>
+                <p>Import Data</p></a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a href="user.html" class="nav-link"
+            ><i class="nav-icon fas fa-users"></i>
+            <p>Customer</p></a
+          >
+        </li>
+      </ul>
+    </nav>
+  </div>
+  <div class="sidebar-footer">
+    <p>&copy; <span id="sidebar-year"></span> Powered by SewaTendaku</p>
+  </div>
+</aside>

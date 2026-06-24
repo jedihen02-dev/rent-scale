@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KP CAMP Invoice</title>
+    <link rel="stylesheet" href="../assets/css/nota-style.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* CSS Shims untuk menjamin kompabilitas style jika file CSS lokal belum termuat sempurna */
+      .skeleton {
+        background: #e2e8f0;
+        animation: pulse 1.5s infinite;
+        border-radius: 4px;
+        color: transparent !important;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .hidden-print {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page" role="main">
+      <header>
+        <div class="header-left">
+          <div class="logo" aria-label="KP CAMP logo">
+            <svg
+              viewBox="0 0 54 54"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <g fill="#333">
+                <path
+                  d="M27 0c-6.7 0-11 5.67-11 10.7 0 5.45 7.924 9.3 11 43.3 3.076-34 11-38.7 11-43.3C38 5.67 33.7 0 27 0z"
+                />
+                <rect x="22.5" y="22" width="3" height="10" rx="1" />
+                <rect x="28.5" y="22" width="3" height="10" rx="1" />
+              </g>
+            </svg>
+            <div class="logo-text-small">Plan · Journey · Story</div>
+          </div>
+        </div>
+
+        <div class="header-center">
+          <h1 class="title">KP CAMP</h1>
+          <div class="subtitle">www.sewatendacamping.site</div>
+          <div class="contacts">
+            Depok : 0882-1941-2342 || Tangsel : 0851-7503-3459 || Pamulang :
+            0831-5273-3198<br />
+            Ciputat : 0857-7606-0347 || Bekasi : 0851-7303-7260 || Bogor :
+            0859-5941-4191
+          </div>
+        </div>
+
+        <div class="header-right">
+          No.
+          <span id="ui-nota-id"
+            ><span class="skeleton w-8 h-4 inline-block"></span
+          ></span>
+        </div>
+      </header>
+
+      <hr class="to-line" />
+
+      <div class="info-row">
+        <div class="info-left">
+          <strong>Nama:</strong>
+          <span id="ui-nama"
+            ><span class="skeleton w-24 h-4 inline-block"></span
+          ></span>
+        </div>
+        <div class="info-center">
+          <strong>From:</strong>
+          <span id="ui-from"
+            ><span class="skeleton w-16 h-4 inline-block"></span
+          ></span>
+        </div>
+        <div class="info-center">
+          <strong>To:</strong>
+          <span id="ui-to"
+            ><span class="skeleton w-16 h-4 inline-block"></span
+          ></span>
+        </div>
+        <div class="info-right">
+          <strong>Phone:</strong>
+          <span id="ui-phone"
+            ><span class="skeleton w-20 h-4 inline-block"></span
+          ></span>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Kategori</th>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Harga</th>
+            <th>Hari</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="items-table-body">
+          <tr>
+            <td colspan="7" class="text-center py-4 text-gray-400">
+              Memuat rincian item nota...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="notes-totals">
+        <div class="notes">
+          <p><strong>Catatan :</strong></p>
+          <p>
+            1. Jika pengembalian alat melebihi batas waktu yang ditentukan maka
+            dianggap memperpanjang sewa
+          </p>
+          <p>2. Menyewa berarti menyetujui syarat &amp; ketentuan</p>
+        </div>
+        <table class="totals">
+          <tbody>
+            <tr>
+              <td>Grand Total</td>
+              <td id="ui-grand-total">Rp 0</td>
+            </tr>
+            <tr>
+              <td>DP</td>
+              <td id="ui-dp">Rp 0</td>
+            </tr>
+            <tr>
+              <td>Sisa</td>
+              <td id="ui-sisa">Rp 0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="footer">
+        <div class="signature-block">KP CAMP</div>
+        <div class="signature-block">PENYEWA</div>
+        <div class="social-block">
+          <div class="social-links">
+            <div class="social-item"><span>@sewatendacampingdepok</span></div>
+            <div class="social-item"><span>@sewatendacampingtangsel</span></div>
+            <div class="social-item">
+              <span>@sewatendacampingpamulang.id</span>
+            </div>
+            <div class="social-item">
+              <span>@sewatendacampingciputat_id</span>
+            </div>
+            <div class="social-item"><span>@sewatendacampingbekasi</span></div>
+            <div class="social-item">
+              <span>@sewatendacampingcibinong_</span>
+            </div>
+            <div class="social-item"><span>TikTok: kpcampofficial</span></div>
+            <div class="social-item"><span>YouTube: KPCAMP</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idNota = urlParams.get("id");
+
+        if (!idNota) {
+          alert("ID Nota tidak valid atau tidak ditemukan di URL.");
+          return;
+        }
+
+        document.getElementById("ui-nota-id").textContent = idNota;
+        fetchInvoiceData(idNota);
+      });
+
+      // === 1. FETCH DATA DARI GOOGLE APPS SCRIPT API ===
+      async function fetchInvoiceData(id) {
+        try {
+          // Ambil base API URL dari config/localStorage yang telah di-define sebelumnya
+          const gasApiUrl = localStorage.getItem("gas_api_url") || "";
+          if (!gasApiUrl || gasApiUrl === "") {
+            // Fallback preview data palsu jika API URL belum terpasang
+            renderInvoice(getMockInvoiceData(id));
+            triggerPdfDownload(id);
+            return;
+          }
+
+          const response = await fetch(
+            `${gasApiUrl}?action=get_invoice_nota&id=${id}`,
+          );
+          const result = await response.json();
+
+          if (result.status === "success") {
+            renderInvoice(result.data);
+            triggerPdfDownload(id);
+          } else {
+            alert(result.message || "Gagal mengambil data nota dari server.");
+          }
+        } catch (error) {
+          console.error("Gagal melakukan penarikan data invoice:", error);
+          renderInvoice(getMockInvoiceData(id));
+          triggerPdfDownload(id);
+        }
+      }
+
+      // === 2. RENDERING DATA KE ELEMENT HTML ===
+      function renderInvoice(data) {
+        if (!data) return;
+
+        // Rincian Pelanggan & Transaksi
+        document.getElementById("ui-nama").textContent = data.transaksi.nama;
+        document.getElementById("ui-from").textContent =
+          data.transaksi.tanggal_from;
+        document.getElementById("ui-to").textContent =
+          data.transaksi.tanggal_to;
+        document.getElementById("ui-phone").textContent = data.transaksi.phone;
+
+        // Rincian Pembayaran
+        document.getElementById("ui-grand-total").textContent =
+          FORMATTER.format(data.transaksi.grand_total);
+        document.getElementById("ui-dp").textContent = FORMATTER.format(
+          data.transaksi.dp,
+        );
+        document.getElementById("ui-sisa").textContent = FORMATTER.format(
+          data.transaksi.sisa,
+        );
+
+        // Rincian Item Tabel
+        const tableBody = document.getElementById("items-table-body");
+        tableBody.innerHTML = "";
+
+        if (data.items && data.items.length > 0) {
+          data.items.forEach((item, index) => {
+            const rowTotal = item.qty * item.harga * item.hari;
+            tableBody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.kategori || "-"}</td>
+                            <td>${item.item}</td>
+                            <td>${item.qty}</td>
+                            <td>${FORMATTER.format(item.harga).replace("Rp", "").trim()}</td>
+                            <td>${item.hari}</td>
+                            <td>${FORMATTER.format(rowTotal).replace("Rp", "").trim()}</td>
+                        </tr>
+                    `;
+          });
+        } else {
+          tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-gray-400">Tidak ada rincian item dalam nota ini.</td></tr>`;
+        }
+      }
+
+      // === 3. LOGIKA PEMBUATAN OTOMATIS PDF ===
+      function triggerPdfDownload(id) {
+        // Berikan jeda 1 detik agar proses rendering text selesai sempurna sebelum ditangkap html2pdf
+        setTimeout(() => {
+          const element = document.querySelector(".page");
+          const options = {
+            margin: 0.5,
+            filename: `nota-${id}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+          };
+          html2pdf().set(options).from(element).save();
+        }, 1000);
+      }
+
+      // === 4. FALLBACK DATA TIRUAN (MOCK DATA) ===
+      function getMockInvoiceData(id) {
+        return {
+          transaksi: {
+            nama: "Budi Santoso (Tiruan)",
+            tanggal_from: "2026-06-24",
+            tanggal_to: "2026-06-26",
+            phone: "08123456789",
+            grand_total: 150000,
+            dp: 50000,
+            sisa: 100000,
+          },
+          items: [
+            {
+              kategori: "Tenda",
+              item: "Tenda Dome 4P",
+              qty: 1,
+              harga: 50000,
+              hari: 2,
+            },
+            {
+              kategori: "Alat Masuk",
+              item: "Kompor Portable",
+              qty: 1,
+              harga: 25000,
+              hari: 2,
+            },
+          ],
+        };
+      }
+    </script>
+  </body>
+</html>

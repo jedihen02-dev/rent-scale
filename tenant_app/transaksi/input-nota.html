@@ -1,0 +1,1897 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Input Nota Sewa | SewaTendaku</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/fontawesome-free/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../plugins/bootstrap/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      :root {
+        --text-dark: #1f2937;
+        --text-muted: #6b7280;
+        --bg-color: #f3f4f6;
+      }
+      body {
+        background-color: var(--bg-color);
+        font-family: "Inter", sans-serif;
+      }
+
+      /* Loader Overlay */
+      #loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(255, 255, 255, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Form Controls Override */
+      .form-control,
+      .btn {
+        border-radius: 8px;
+        height: 48px;
+        font-size: 1rem;
+      }
+      .form-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #4b5563;
+        font-size: 0.9rem;
+      }
+
+      .total-bayar-section {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+      .dp-group,
+      .sisa-group {
+        flex: 1 1 45%;
+      }
+      @media (min-width: 576px) {
+        .total-bayar-section {
+          flex-wrap: nowrap;
+          justify-content: space-between;
+          align-items: center;
+        }
+      }
+
+      /* Table Items */
+      .table-items th,
+      .table-items td {
+        vertical-align: middle;
+        padding: 12px 10px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+      .badge-jenis {
+        min-width: 58px;
+        font-size: 0.75rem;
+        padding: 0.4em 0.6em;
+        border-radius: 6px;
+        font-weight: 600;
+        text-align: center;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 28px;
+      }
+
+      /* Diskon & Split Bill */
+      .diskon-group select {
+        font-weight: bold;
+        color: #dc2626;
+        height: 48px;
+        background-color: #fef2f2;
+        border-color: #fecaca;
+      }
+      .custom-switch {
+        padding-left: 2.5rem;
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+      }
+      .split-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .split-label {
+        flex: 0 0 100px;
+        font-weight: 600;
+        color: #4b5563;
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+      }
+      .split-input-wrapper {
+        flex-grow: 1;
+      }
+
+      /* Modal Item Card */
+      .item-card {
+        cursor: pointer;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s ease;
+        background-color: #fff;
+      }
+      .item-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+        border-color: #cbd5e1;
+      }
+      .item-info-modal h6 {
+        font-size: 1rem;
+        margin-bottom: 2px;
+        font-weight: 700;
+        color: #1f2937;
+      }
+
+      /* Qty Box */
+      .qty-input-box {
+        width: 45px;
+        height: 35px;
+        text-align: center;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-weight: bold;
+        font-size: 1rem;
+        color: #374151;
+        padding: 0;
+        background-color: #f9fafb;
+      }
+      .qty-input-box:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      }
+      .qty-input-box::-webkit-inner-spin-button,
+      .qty-input-box::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      /* Badge Hapus di Modal */
+      .badge-remove-item {
+        position: absolute;
+        top: -6px;
+        right: 2px;
+        background-color: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+      }
+
+      /* Dropdown Search */
+      .dropdown-search-container {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        z-index: 1050;
+        border: 1px solid #e5e7eb;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-height: 400px;
+        overflow-y: auto;
+        display: none;
+        padding: 10px;
+      }
+
+      @media (max-width: 767px) {
+        .content-header .container-fluid {
+          padding: 0.5rem;
+        }
+        .btn.mt-auto {
+          margin-top: 0 !important;
+        }
+        .modal.fade .modal-dialog {
+          transform: translate(0, 100vh);
+          margin: 0;
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+        }
+        .modal.show .modal-dialog {
+          transform: translate(0, 0);
+        }
+        .modal-content {
+          height: 100%;
+          border-radius: 0;
+          border: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+      <div id="loader-overlay">
+        <div
+          class="spinner-border text-primary mb-3"
+          role="status"
+          style="width: 3rem; height: 3rem"
+        ></div>
+        <h5 class="font-bold text-gray-700">Memuat Data Master...</h5>
+        <p class="text-sm text-gray-500">Menyiapkan form nota sewa</p>
+      </div>
+
+      <div id="header-container"></div>
+      <div id="sidebar-container"></div>
+
+      <div class="content-wrapper">
+        <div class="content-header pt-3">
+          <div class="container-fluid py-2">
+            <div id="alert-container"></div>
+
+            <div class="card shadow-lg border-0 rounded-2xl overflow-hidden">
+              <div class="card-header bg-primary text-white py-3">
+                <h3 class="card-title font-bold mb-0 text-lg">
+                  <i class="fas fa-file-invoice mr-2"></i> Input Nota Sewa
+                </h3>
+              </div>
+
+              <div class="card-body bg-white p-4">
+                <form id="notaForm">
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label>Nama Penyewa</label>
+                      <input
+                        type="text"
+                        id="namaPenyewa"
+                        class="form-control bg-gray-50"
+                        list="userSuggestions"
+                        placeholder="Ketik lalu pilih..."
+                        required
+                      />
+                      <datalist id="userSuggestions"></datalist>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label>No. Whatsapp</label>
+                      <input
+                        type="text"
+                        id="phone"
+                        class="form-control bg-gray-50"
+                        list="phoneSuggestions"
+                        placeholder="08xxx"
+                        required
+                        inputmode="numeric"
+                      />
+                      <datalist id="phoneSuggestions"></datalist>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label>Nama Akun Gmail</label>
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          id="emailUser"
+                          class="form-control bg-gray-50"
+                          placeholder="Username email"
+                          oninput="updateFullEmail()"
+                          onchange="autofillUser(event, 'email')"
+                          list="emailSuggestions"
+                        />
+                        <div class="input-group-append">
+                          <span
+                            class="input-group-text bg-gray-200 text-gray-600 font-semibold border-gray-300"
+                            >@gmail.com</span
+                          >
+                        </div>
+                      </div>
+                      <input type="hidden" id="emailValue" />
+                      <datalist id="emailSuggestions"></datalist>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label>Alamat</label>
+                      <input
+                        type="text"
+                        id="alamat"
+                        class="form-control bg-gray-50"
+                        placeholder="Alamat lengkap / Domisili"
+                      />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label class="d-block mb-1">Jenis Pesanan</label>
+                      <input
+                        type="hidden"
+                        id="statusPesananValue"
+                        value="Saat Ini"
+                      />
+                      <div class="custom-control custom-switch mt-2">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="bookingToggle"
+                        />
+                        <label
+                          class="custom-control-label font-bold text-gray-700"
+                          for="bookingToggle"
+                          id="bookingToggleLabel"
+                          >Status:
+                          <span class="text-green-600">Saat Ini</span></label
+                        >
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label>Data Jaminan</label>
+                      <input
+                        type="text"
+                        id="jaminan"
+                        class="form-control bg-gray-50"
+                        placeholder="Contoh: KTP, SIM, STNK"
+                        required
+                      />
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                      <label>Tanggal Dari</label>
+                      <input
+                        type="date"
+                        id="tanggal_from"
+                        class="form-control bg-gray-50"
+                        required
+                      />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label>Tanggal Sampai</label>
+                      <input
+                        type="date"
+                        id="tanggal_to"
+                        class="form-control bg-gray-50"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div
+                    class="d-flex justify-content-between align-items-end mb-4 border-b border-gray-100 pb-4"
+                  >
+                    <div class="form-group mb-0 w-25">
+                      <label
+                        class="text-xs text-gray-500 uppercase tracking-wide"
+                        >Jumlah Hari</label
+                      >
+                      <input
+                        type="number"
+                        id="inputHari"
+                        class="form-control font-bold text-center bg-gray-100 border-0"
+                        value="1"
+                        readonly
+                      />
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        class="btn btn-success font-bold shadow-sm"
+                        data-toggle="modal"
+                        data-target="#modalItem"
+                      >
+                        <i class="fas fa-cart-plus mr-1"></i> Tambah Item
+                      </button>
+                    </div>
+                  </div>
+
+                  <div
+                    class="table-responsive rounded-xl border border-gray-200"
+                  >
+                    <table
+                      class="table table-hover table-items mb-0"
+                      id="tabelItem"
+                    >
+                      <thead class="bg-gray-50 text-gray-600">
+                        <tr>
+                          <th>Nama Item</th>
+                          <th>Jenis</th>
+                          <th style="width: 70px">Qty</th>
+                          <th style="width: 70px">Hari</th>
+                          <th>Harga</th>
+                          <th>Subtotal</th>
+                          <th style="width: 60px" class="text-center">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody class="bg-white">
+                        <tr id="emptyCartRow">
+                          <td
+                            colspan="7"
+                            class="text-center py-4 text-gray-400"
+                          >
+                            Keranjang masih kosong.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="row mt-4 pt-3 border-t border-gray-100">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <div class="col-12 mb-3">
+                          <label>Diskon / Potongan</label>
+                          <div class="diskon-group">
+                            <select
+                              id="diskon_persen_select"
+                              class="form-control"
+                              onchange="updateTotal()"
+                            >
+                              <option value="0">0% (Tanpa Diskon)</option>
+                              <option value="5">5%</option>
+                              <option value="10">10%</option>
+                              <option value="15">15%</option>
+                              <option value="20">20%</option>
+                              <option value="25">25%</option>
+                              <option value="30">30%</option>
+                              <option value="40">40%</option>
+                              <option value="50">50%</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-12 mb-3">
+                          <div class="custom-control custom-switch mb-2">
+                            <input
+                              type="checkbox"
+                              class="custom-control-input"
+                              id="splitBillToggle"
+                              onchange="toggleSplitBill()"
+                            />
+                            <label
+                              class="custom-control-label font-bold text-indigo-600"
+                              for="splitBillToggle"
+                              >Gunakan Split Bill</label
+                            >
+                          </div>
+
+                          <div id="payment-standard">
+                            <select
+                              id="metode_pembayaran_dp"
+                              class="form-control bg-gray-50"
+                            >
+                              <option value="Cash">Cash / Tunai</option>
+                              <option value="Transfer">Transfer Bank</option>
+                              <option value="Qris">QRIS</option>
+                            </select>
+                          </div>
+
+                          <div
+                            id="payment-split-row"
+                            class="bg-indigo-50 p-3 rounded-xl border border-indigo-100"
+                            style="display: none"
+                          >
+                            <h6 class="text-indigo-800 font-bold mb-3 text-sm">
+                              Rincian Split Bill
+                            </h6>
+                            <div class="split-row">
+                              <div class="split-label">
+                                <i
+                                  class="fas fa-money-bill-wave mr-2 text-green-600"
+                                ></i>
+                                Cash
+                              </div>
+                              <div class="split-input-wrapper">
+                                <input
+                                  type="text"
+                                  id="split_cash"
+                                  class="form-control text-right"
+                                  placeholder="Rp 0"
+                                  inputmode="numeric"
+                                  oninput="limitAndCalcSplit(this)"
+                                />
+                              </div>
+                            </div>
+                            <div class="split-row">
+                              <div class="split-label">
+                                <i
+                                  class="fas fa-university mr-2 text-blue-600"
+                                ></i>
+                                Transfer
+                              </div>
+                              <div class="split-input-wrapper">
+                                <input
+                                  type="text"
+                                  id="split_transfer"
+                                  class="form-control text-right"
+                                  placeholder="Rp 0"
+                                  inputmode="numeric"
+                                  oninput="limitAndCalcSplit(this)"
+                                />
+                              </div>
+                            </div>
+                            <div class="split-row">
+                              <div class="split-label">
+                                <i
+                                  class="fas fa-qrcode mr-2 text-purple-600"
+                                ></i>
+                                Qris
+                              </div>
+                              <div class="split-input-wrapper">
+                                <input
+                                  type="text"
+                                  id="split_qris"
+                                  class="form-control text-right"
+                                  placeholder="Rp 0"
+                                  inputmode="numeric"
+                                  oninput="limitAndCalcSplit(this)"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div
+                        class="bg-gray-50 p-4 rounded-2xl border border-gray-200 h-100 flex flex-col justify-content-end"
+                      >
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-1"
+                        >
+                          <span class="text-gray-500 font-medium"
+                            >Total Awal:</span
+                          >
+                          <span
+                            class="text-gray-500 line-through"
+                            id="totalRawText"
+                            >Rp 0</span
+                          >
+                        </div>
+                        <div
+                          class="d-flex justify-content-between align-items-center mb-3"
+                        >
+                          <span
+                            id="diskonKeterangan"
+                            class="text-red-500 font-medium"
+                            >Diskon: 0%</span
+                          >
+                          <span
+                            id="diskonNominalText"
+                            class="text-red-600 font-bold"
+                            >- Rp 0</span
+                          >
+                        </div>
+
+                        <div
+                          class="d-flex justify-content-between align-items-center border-t border-gray-300 pt-3 mb-4"
+                        >
+                          <h4 class="font-bold text-gray-800 m-0">
+                            Total Akhir:
+                          </h4>
+                          <h3
+                            class="font-black text-indigo-600 m-0"
+                            id="totalText"
+                          >
+                            Rp 0
+                          </h3>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-6 pr-2">
+                            <label
+                              class="text-xs text-gray-500 uppercase font-bold"
+                              >Dibayar (Rp)</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control border-blue-300 bg-white font-bold text-blue-700 focus:ring-blue-500"
+                              id="dpFormatted"
+                              placeholder="0"
+                              inputmode="numeric"
+                              autocomplete="off"
+                              required
+                            />
+                          </div>
+                          <div class="col-6 pl-2">
+                            <label
+                              class="text-xs text-gray-500 uppercase font-bold"
+                              >Sisa Tagihan</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control bg-gray-200 border-0 font-bold text-red-600"
+                              id="sisa"
+                              readonly
+                              placeholder="Rp 0"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="hidden" id="totalValue" value="0" />
+                  <input type="hidden" id="dpValue" value="0" />
+
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-block mt-4 py-3 text-lg font-bold shadow-lg"
+                    id="submitBtn"
+                  >
+                    <i class="fas fa-save mr-2"></i> Simpan Transaksi
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer-container"></div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalItem"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div
+          class="modal-content shadow-2xl rounded-2xl border-0 overflow-hidden flex flex-col"
+        >
+          <div class="modal-header bg-primary text-white py-3">
+            <h5 class="modal-title font-bold" id="modalItemLabel">
+              <i class="fas fa-boxes mr-2"></i>Pilih Item
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal">
+              &times;
+            </button>
+          </div>
+
+          <div class="modal-body bg-gray-50 p-4 flex-grow-1 overflow-y-auto">
+            <div id="normalItemView">
+              <div
+                class="bg-white p-3 rounded-xl border border-gray-200 mb-4 shadow-sm relative"
+              >
+                <div class="row">
+                  <div class="col-md-7 mb-3 mb-md-0">
+                    <label class="text-xs text-gray-500 uppercase font-bold"
+                      >Cari Nama Item</label
+                    >
+                    <div class="input-group">
+                      <div class="input-group-prepend">
+                        <span
+                          class="input-group-text bg-gray-100 border-gray-200"
+                          ><i class="fas fa-search"></i
+                        ></span>
+                      </div>
+                      <input
+                        type="text"
+                        id="modalItemSearch"
+                        class="form-control border-gray-200 bg-gray-50"
+                        placeholder="Ketik disini..."
+                        autocomplete="off"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <label class="text-xs text-gray-500 uppercase font-bold"
+                      >Filter Kategori</label
+                    >
+                    <select
+                      id="modalKategori"
+                      class="form-control border-gray-200 bg-gray-50"
+                    >
+                      <option value="">Semua Kategori</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div
+                  id="dropdownSearchResults"
+                  class="dropdown-search-container"
+                >
+                  <div class="row" id="itemCardContainer"></div>
+                </div>
+              </div>
+
+              <div
+                id="selectedTempContainer"
+                style="display: none"
+                class="mb-3"
+              >
+                <h6 class="font-bold text-emerald-600 mb-3">
+                  <i class="fas fa-check-circle mr-1"></i> Item yang akan
+                  ditambahkan:
+                </h6>
+                <div class="row" id="selectedTempItemsRow"></div>
+              </div>
+            </div>
+
+            <div id="customItemView" style="display: none">
+              <button
+                type="button"
+                class="btn btn-light btn-sm mb-4 font-bold w-100 border-gray-300 text-gray-600 shadow-sm"
+                id="btnBackToNormal"
+              >
+                <i class="fas fa-arrow-left mr-1"></i> Batal Kustom (Kembali ke
+                Katalog)
+              </button>
+
+              <div
+                class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm"
+              >
+                <div class="form-group">
+                  <label class="text-sm font-bold text-gray-700"
+                    >Nama Item / Keterangan
+                    <span class="text-red-500">*</span></label
+                  >
+                  <input
+                    type="text"
+                    id="customNama"
+                    class="form-control bg-gray-50 border-gray-200"
+                    placeholder="Contoh: Denda Keterlambatan Tenda"
+                  />
+                </div>
+                <div class="row">
+                  <div class="col-md-4 form-group">
+                    <label class="text-sm font-bold text-gray-700"
+                      >Harga <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="customHargaInputView"
+                      class="form-control bg-gray-50 border-gray-200 font-bold text-indigo-700"
+                      placeholder="Rp 0"
+                      inputmode="numeric"
+                    />
+                    <input type="hidden" id="customHargaValView" />
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <label class="text-sm font-bold text-gray-700"
+                      >Jenis <span class="text-red-500">*</span></label
+                    >
+                    <select
+                      id="customJenisView"
+                      class="form-control bg-gray-50 border-gray-200"
+                    >
+                      <option value="sewa">Sewa</option>
+                      <option value="jual">Jual</option>
+                      <option value="extend">Extend / Denda Waktu</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4 form-group">
+                    <label class="text-sm font-bold text-gray-700"
+                      >Kuantitas <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      type="number"
+                      id="customQtyInputView"
+                      class="form-control bg-gray-50 border-gray-200 text-center font-bold"
+                      value="1"
+                      min="1"
+                      inputmode="numeric"
+                    />
+                  </div>
+                </div>
+                <div class="form-group m-0" id="customFotoContainer">
+                  <label class="text-sm font-bold text-gray-700"
+                    >Foto Bukti
+                    <small class="text-gray-400 normal-case"
+                      >(Otomatis dikompres jika diisi)</small
+                    ></label
+                  >
+                  <input
+                    type="file"
+                    id="customFoto"
+                    class="form-control-file p-2 border border-gray-200 rounded-lg bg-gray-50"
+                    accept="image/*"
+                  />
+                  <img
+                    src=""
+                    id="previewCustomFotoImg"
+                    class="img-thumbnail mt-3 shadow-sm rounded-lg"
+                    style="max-height: 150px; display: none; cursor: pointer"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="modal-footer bg-white border-t border-gray-200 p-3 flex justify-between"
+          >
+            <button
+              type="button"
+              class="btn btn-warning font-bold text-white shadow-sm"
+              id="btnToggleCustomItem"
+            >
+              <i class="fas fa-pencil-alt mr-1"></i> Item Kustom
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary font-bold shadow-sm px-4"
+              onclick="submitItemFromModal()"
+              id="submitItemModalBtn"
+            >
+              <i class="fas fa-plus mr-1"></i> Tambahkan ke Nota
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="modalPreviewGambar"
+      tabindex="-1"
+      style="z-index: 9999"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-transparent border-0 text-center">
+          <img
+            id="gambarPreviewFull"
+            src=""
+            class="img-fluid rounded-xl shadow-2xl"
+            style="cursor: pointer; max-height: 85vh; margin: 0 auto"
+            data-dismiss="modal"
+          />
+        </div>
+      </div>
+    </div>
+
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../assets/js/components.js"></script>
+
+    <script>
+      // --- VARIABEL STATE GLOBAL ---
+      let itemData = [];
+      let userData = [];
+      let kategoriMap = {};
+      let itemDataMap = {};
+
+      let cart = {};
+      let tempCart = {};
+      let customCartItems = [];
+      let isCustomViewActive = false;
+      let base64CustomImage = "";
+
+      const FORMATTER = new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+      });
+      const EMAIL_DOMAIN = "@gmail.com";
+      const STORAGE_KEY = "notaDraft";
+
+      // --- ELEMEN UI ---
+      const tableBody = document.querySelector("#tabelItem tbody");
+      const totalText = document.getElementById("totalText");
+      const totalValue = document.getElementById("totalValue");
+      const totalRawText = document.getElementById("totalRawText");
+      const diskonNominalText = document.getElementById("diskonNominalText");
+      const diskonKeterangan = document.getElementById("diskonKeterangan");
+      const diskonPersenSelect = document.getElementById(
+        "diskon_persen_select",
+      );
+      const dpInput = document.getElementById("dpFormatted");
+      const sisaInput = document.getElementById("sisa");
+
+      const splitBillToggle = document.getElementById("splitBillToggle");
+      const paymentStandard = document.getElementById("payment-standard");
+      const paymentSplitRow = document.getElementById("payment-split-row");
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const adminId = localStorage.getItem("tenant_admin_id");
+        if (!adminId) {
+          window.location.href = "../login.html";
+          return;
+        }
+
+        // Set default tanggal hari ini
+        const today = new Date().toISOString().split("T")[0];
+        document.getElementById("tanggal_from").value = today;
+        document.getElementById("tanggal_to").value = today;
+
+        // Fetch Data Master dari API
+        await fetchMasterData();
+
+        // Setup Listeners
+        setupEventListeners();
+
+        // Pulihkan Draf jika ada
+        loadDraft();
+        updateStatusPesanan();
+      });
+
+      // UI Alert
+      function showAlert(type, message) {
+        const container = document.getElementById("alert-container");
+        const bg =
+          type === "success"
+            ? "bg-green-50 border-green-200 text-green-700"
+            : "bg-red-50 border-red-200 text-red-600";
+        const icon =
+          type === "success" ? "fa-circle-check" : "fa-circle-exclamation";
+        container.innerHTML = `<div class='${bg} border px-4 py-3 rounded-xl mb-4 flex items-start text-sm font-medium shadow-sm transition-all'><i class='fa-solid ${icon} mt-0.5 mr-2'></i><span>${message}</span></div>`;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      // === 1. FETCH DATA MASTER DARI GAS ===
+      async function fetchMasterData() {
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          ) {
+            loadMockData();
+            document.getElementById("loader-overlay").style.display = "none";
+            return;
+          }
+
+          const adminId = localStorage.getItem("tenant_admin_id");
+          const res = await fetch(
+            `${GAS_API_URL}?action=get_input_nota_data&admin_id=${adminId}`,
+          );
+          const result = await res.json();
+
+          if (result.status === "success") {
+            itemData = result.data.items;
+            userData = result.data.users;
+
+            // Reconstruct Kategori Map & Populate Datalist
+            const katSelect = document.getElementById("modalKategori");
+            result.data.kategori.forEach((k) => {
+              kategoriMap[k.id] = k.nama;
+              katSelect.innerHTML += `<option value="${k.nama.toLowerCase()}">${k.nama}</option>`;
+            });
+
+            itemData.forEach((item) => {
+              itemDataMap[item.id] = item;
+            });
+
+            populateUserDatalist();
+            populateEmailDatalist();
+          } else {
+            showAlert("error", "Gagal memuat data master toko.");
+          }
+        } catch (error) {
+          console.error("API Error", error);
+          loadMockData(); // Fallback
+        } finally {
+          document.getElementById("loader-overlay").style.display = "none";
+        }
+      }
+
+      // === 2. EVENT LISTENERS SETUP ===
+      function setupEventListeners() {
+        document
+          .getElementById("tanggal_from")
+          .addEventListener("change", function () {
+            document.getElementById("tanggal_to").value = this.value;
+            document.getElementById("inputHari").value = getLamaHari();
+            renderCartTable();
+          });
+
+        document
+          .getElementById("tanggal_to")
+          .addEventListener("change", function () {
+            document.getElementById("inputHari").value = getLamaHari();
+            renderCartTable();
+          });
+
+        document
+          .getElementById("bookingToggle")
+          .addEventListener("change", updateStatusPesanan);
+
+        // Kustom Item View Toggle
+        document
+          .getElementById("btnToggleCustomItem")
+          .addEventListener("click", () => toggleCustomView(true));
+        document
+          .getElementById("btnBackToNormal")
+          .addEventListener("click", () => toggleCustomView(false));
+
+        // Kustom Item Inputs
+        document
+          .getElementById("customHargaInputView")
+          .addEventListener("input", function () {
+            let numericValue = parseInt(this.value.replace(/\D/g, "")) || 0;
+            this.value = numericValue.toLocaleString("id-ID");
+            document.getElementById("customHargaValView").value = numericValue;
+          });
+
+        document
+          .getElementById("customFoto")
+          .addEventListener("change", handleCustomFotoKanvas);
+
+        // Pencarian Modal Item
+        let searchTimeout;
+        document
+          .getElementById("modalItemSearch")
+          .addEventListener("keyup", function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(renderItemCards, 250);
+          });
+        document
+          .getElementById("modalItemSearch")
+          .addEventListener("click", function () {
+            if (
+              this.value.trim() !== "" ||
+              document.getElementById("modalKategori").value !== ""
+            )
+              renderItemCards();
+          });
+        document
+          .getElementById("modalKategori")
+          .addEventListener("change", renderItemCards);
+
+        // Tutup Dropdown Search
+        document.addEventListener("click", function (e) {
+          if (!e.target.closest(".search-section"))
+            document.getElementById("dropdownSearchResults").style.display =
+              "none";
+        });
+
+        // Form Submit
+        document
+          .getElementById("notaForm")
+          .addEventListener("submit", submitNota);
+
+        // Modal Reset
+        $("#modalItem").on("shown.bs.modal", function () {
+          document.getElementById("modalItemSearch").value = "";
+          document.getElementById("modalKategori").value = "";
+          document.getElementById("dropdownSearchResults").style.display =
+            "none";
+          tempCart = {};
+          toggleCustomView(false);
+          renderSelectedTempItems();
+        });
+      }
+
+      // === 3. LOGIKA HARI & AUTOFILL FORM ===
+      function getLamaHari() {
+        const from = document.getElementById("tanggal_from").value;
+        const to = document.getElementById("tanggal_to").value;
+        if (!from || !to) return 1;
+        const f = new Date(from);
+        const t = new Date(to);
+        if (t < f) return 1;
+        return Math.max(1, Math.round((t - f) / 86400000));
+      }
+
+      function getLamaHariExtend() {
+        const from = document.getElementById("tanggal_from").value;
+        const to = document.getElementById("tanggal_to").value;
+        if (!from || !to) return 1;
+        const f = new Date(from);
+        const t = new Date(to);
+        if (t < f) return 1;
+        return Math.round((t - f) / 86400000) + 1; // +1 Untuk extend (hitung per tanggal aktif)
+      }
+
+      function updateStatusPesanan() {
+        const isBooking = document.getElementById("bookingToggle").checked;
+        document.getElementById("statusPesananValue").value = isBooking
+          ? "Booking"
+          : "Saat Ini";
+        document.getElementById("bookingToggleLabel").innerHTML = isBooking
+          ? 'Status: <span class="text-blue-600 font-bold">Booking</span>'
+          : 'Status: <span class="text-green-600 font-bold">Saat Ini</span>';
+        saveDraft();
+      }
+
+      document
+        .getElementById("namaPenyewa")
+        .addEventListener("input", function () {
+          this.value = this.value
+            .toLowerCase()
+            .split(" ")
+            .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1) : ""))
+            .join(" ");
+        });
+
+      function updateFullEmail() {
+        const input = document.getElementById("emailUser").value.trim();
+        document.getElementById("emailValue").value =
+          input.includes("@") || input.includes(".")
+            ? input
+            : input
+              ? input + EMAIL_DOMAIN
+              : "";
+        saveDraft();
+      }
+
+      function autofillUser(event, type) {
+        const val = event.target.value.trim().toLowerCase();
+        let user = null;
+
+        if (type === "name")
+          user = userData.find((u) => u.nama.toLowerCase() === val);
+        else if (type === "phone") user = userData.find((u) => u.phone === val);
+        else if (type === "email")
+          user = userData.find(
+            (u) => u.email === document.getElementById("emailValue").value,
+          );
+
+        if (user) {
+          document.getElementById("namaPenyewa").value = user.nama || "";
+          document.getElementById("phone").value = user.phone || "";
+          document.getElementById("alamat").value = user.alamat || "";
+          document.getElementById("emailUser").value = (
+            user.email || ""
+          ).replace(EMAIL_DOMAIN, "");
+          document.getElementById("emailValue").value = user.email || "";
+          saveDraft();
+        }
+      }
+
+      function populateUserDatalist() {
+        const listNama = document.getElementById("userSuggestions");
+        const listPhone = document.getElementById("phoneSuggestions");
+        userData.forEach((u) => {
+          listNama.innerHTML += `<option value="${u.nama}">`;
+          listPhone.innerHTML += `<option value="${u.phone}">`;
+        });
+        document
+          .getElementById("namaPenyewa")
+          .addEventListener("change", (e) => autofillUser(e, "name"));
+        document
+          .getElementById("phone")
+          .addEventListener("change", (e) => autofillUser(e, "phone"));
+      }
+
+      function populateEmailDatalist() {
+        const list = document.getElementById("emailSuggestions");
+        const uniqueEmails = new Set(
+          userData
+            .map((u) => u.email || "")
+            .filter((e) => e.endsWith(EMAIL_DOMAIN)),
+        );
+        uniqueEmails.forEach(
+          (e) =>
+            (list.innerHTML += `<option value="${e.replace(EMAIL_DOMAIN, "")}">`),
+        );
+      }
+
+      // === 4. LOGIKA MODAL ITEM (NORMAL & KUSTOM) ===
+      function toggleCustomView(showCustom) {
+        isCustomViewActive = showCustom;
+        document.getElementById("normalItemView").style.display = showCustom
+          ? "none"
+          : "block";
+        document.getElementById("customItemView").style.display = showCustom
+          ? "block"
+          : "none";
+        document.getElementById("btnToggleCustomItem").style.display =
+          showCustom ? "none" : "block";
+        document.getElementById("modalItemLabel").innerHTML = showCustom
+          ? '<i class="fas fa-pencil-ruler mr-2"></i>Buat Item Kustom'
+          : '<i class="fas fa-boxes mr-2"></i>Pilih Katalog Item';
+
+        if (!showCustom) {
+          document.getElementById("customNama").value = "";
+          document.getElementById("customHargaInputView").value = "";
+          document.getElementById("customHargaValView").value = "";
+          document.getElementById("customJenisView").value = "sewa";
+          document.getElementById("customQtyInputView").value = 1;
+          document.getElementById("customFoto").value = "";
+          document.getElementById("previewCustomFotoImg").style.display =
+            "none";
+          base64CustomImage = "";
+        }
+      }
+
+      function handleCustomFotoKanvas(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (event) {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            const MAX_WIDTH = 800;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+
+            base64CustomImage = canvas.toDataURL("image/jpeg", 0.7);
+
+            const preview = document.getElementById("previewCustomFotoImg");
+            preview.src = base64CustomImage;
+            preview.style.display = "block";
+          };
+        };
+      }
+
+      // Pencarian Item Katalog
+      function renderItemCards() {
+        const search = document
+          .getElementById("modalItemSearch")
+          .value.toLowerCase()
+          .trim();
+        const katSel = document.getElementById("modalKategori").value.trim();
+        const container = document.getElementById("itemCardContainer");
+        const dropdown = document.getElementById("dropdownSearchResults");
+
+        if (!search && !katSel) {
+          dropdown.style.display = "none";
+          container.innerHTML = "";
+          return;
+        }
+        dropdown.style.display = "block";
+
+        let filtered = itemData.filter((item) => {
+          if (tempCart[item.id]) return false;
+          const matchSearch = item.nama.toLowerCase().includes(search);
+          const matchKat =
+            !katSel ||
+            (kategoriMap[item.kategori_id] || "").toLowerCase() === katSel;
+          return matchSearch && matchKat;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML =
+            '<div class="col-12 text-center text-muted py-3">Item tidak ditemukan.</div>';
+          return;
+        }
+
+        const isTruncated = filtered.length > 40;
+        filtered = filtered.slice(0, 40);
+
+        let html = "";
+        filtered.forEach((item) => {
+          const badgeJenis =
+            item.jenis_item === "jual"
+              ? `<span class="badge bg-yellow-100 text-yellow-800 badge-jenis">Jual</span>`
+              : `<span class="badge bg-blue-100 text-blue-800 badge-jenis">Sewa</span>`;
+          const img = item.foto
+            ? `<img src="${item.foto}" class="rounded shadow-sm" style="width:50px; height:50px; object-fit:cover; margin-right:15px; flex-shrink:0;">`
+            : `<div class="bg-gray-100 d-flex justify-content-center align-items-center rounded border border-gray-200" style="width:50px; height:50px; margin-right:15px; flex-shrink:0;"><i class="fas fa-box text-gray-400"></i></div>`;
+
+          html += `
+            <div class="col-12 mb-2">
+                <div class="item-card m-0" onclick="selectTempItem(event, ${item.id})">
+                    <div class="d-flex align-items-center flex-grow-1 min-w-0">
+                        ${img}
+                        <div class="item-info-modal min-w-0">
+                            <h6 class="text-truncate mb-1">${item.nama}</h6>
+                            <p class="price mb-0 text-emerald-600 font-bold">${FORMATTER.format(item.harga)}</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center pl-2">${badgeJenis}</div>
+                </div>
+            </div>`;
+        });
+
+        if (isTruncated)
+          html += `<div class="col-12 text-center text-gray-400 py-2 text-xs"><i class="fas fa-info-circle"></i> Menampilkan 40 item teratas.</div>`;
+        container.innerHTML = html;
+      }
+
+      function selectTempItem(e, id) {
+        e.stopPropagation();
+        if (!tempCart[id]) {
+          const item = itemDataMap[id];
+          tempCart[id] = {
+            id: id,
+            nama: item.nama,
+            harga: parseInt(item.harga),
+            qty: 1,
+            jenis: item.jenis_item,
+            foto: item.foto,
+          };
+        }
+        document.getElementById("dropdownSearchResults").style.display = "none";
+        renderSelectedTempItems();
+      }
+
+      function updateTempQty(id, val) {
+        val = parseInt(val);
+        if (isNaN(val) || val <= 0) delete tempCart[id];
+        else tempCart[id].qty = val;
+        renderSelectedTempItems();
+      }
+
+      function renderSelectedTempItems() {
+        const container = document.getElementById("selectedTempContainer");
+        const row = document.getElementById("selectedTempItemsRow");
+        row.innerHTML = "";
+
+        const keys = Object.keys(tempCart);
+        if (keys.length === 0) {
+          container.style.display = "none";
+          return;
+        }
+
+        container.style.display = "block";
+        keys.forEach((id) => {
+          const item = tempCart[id];
+          const badgeJenis =
+            item.jenis === "jual"
+              ? `<span class="badge bg-yellow-100 text-yellow-800 badge-jenis">Jual</span>`
+              : `<span class="badge bg-blue-100 text-blue-800 badge-jenis">Sewa</span>`;
+          const img = item.foto
+            ? `<img src="${item.foto}" class="rounded" style="width:40px; height:40px; object-fit:cover; margin-right:15px; cursor:pointer;" onclick="event.stopPropagation(); showImage('${item.foto}')">`
+            : `<div class="bg-gray-100 d-flex justify-content-center align-items-center rounded border border-gray-200" style="width:40px; height:40px; margin-right:15px;"><i class="fas fa-box text-gray-400"></i></div>`;
+
+          row.innerHTML += `
+            <div class="col-12 mb-2 position-relative">
+                <span class="badge-remove-item" onclick="event.stopPropagation(); updateTempQty(${id}, 0)"><i class="fas fa-times"></i></span>
+                <div class="item-card m-0">
+                    <div class="d-flex align-items-center flex-grow-1 min-w-0">
+                        ${img}
+                        <div class="item-info-modal min-w-0">
+                            <h6 class="text-truncate mb-0">${item.nama}</h6>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center pl-2" onclick="event.stopPropagation()">
+                       ${badgeJenis}
+                       <input type="number" inputmode="numeric" class="qty-input-box ml-2" value="${item.qty}" onclick="this.select()" onchange="updateTempQty(${id}, this.value)">
+                    </div>
+                </div>
+            </div>`;
+        });
+      }
+
+      function submitItemFromModal() {
+        if (isCustomViewActive) {
+          const nama = document.getElementById("customNama").value.trim();
+          const harga =
+            parseInt(document.getElementById("customHargaValView").value) || 0;
+          const jenis = document.getElementById("customJenisView").value;
+          const qty =
+            parseInt(document.getElementById("customQtyInputView").value) || 1;
+
+          if (!nama || harga <= 0) {
+            alert("Nama dan Harga Item Kustom harus diisi valid!");
+            return;
+          }
+
+          customCartItems.push({
+            temp_id: "custom_" + Date.now(),
+            nama: nama,
+            harga: harga,
+            qty: qty,
+            jenis: jenis,
+            foto_base64: base64CustomImage,
+            preview_img: base64CustomImage, // Untuk UI Modal
+          });
+        } else {
+          Object.keys(tempCart).forEach((id) => {
+            if (cart[id]) cart[id].qty += tempCart[id].qty;
+            else cart[id] = { ...tempCart[id] };
+          });
+        }
+
+        $("#modalItem").modal("hide");
+        renderCartTable();
+      }
+
+      // === 5. RENDER KERANJANG UTAMA & KALKULASI TOTAL ===
+      function renderCartTable() {
+        tableBody.innerHTML = "";
+        let totalRaw = 0;
+        const lamaHari = getLamaHari();
+        const lamaHariExtend = getLamaHariExtend();
+
+        const emptyRow = document.getElementById("emptyCartRow");
+
+        if (Object.keys(cart).length === 0 && customCartItems.length === 0) {
+          if (emptyRow) emptyRow.style.display = "table-row";
+        } else {
+          if (emptyRow) emptyRow.style.display = "none";
+
+          // 1. Normal Cart
+          Object.keys(cart).forEach((id) => {
+            const item = cart[id];
+            item.jumlah_hari = item.jenis === "sewa" ? lamaHari : 1;
+            item.subtotal = item.harga * item.qty * item.jumlah_hari;
+            totalRaw += item.subtotal;
+
+            const badge =
+              item.jenis === "jual"
+                ? `<span class="badge bg-yellow-100 text-yellow-800 badge-jenis">Jual</span>`
+                : `<span class="badge bg-blue-100 text-blue-800 badge-jenis">Sewa</span>`;
+            const img = item.foto
+              ? `<img src="${item.foto}" class="rounded shadow-sm" style="width:36px; height:36px; object-fit:cover; cursor:pointer;" onclick="showImage('${item.foto}')">`
+              : `<div class="bg-gray-100 d-inline-flex justify-content-center align-items-center rounded border"><i class="fas fa-box text-gray-400 p-2"></i></div>`;
+
+            tableBody.innerHTML += `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3">${img}</div>
+                            <span class="font-bold text-gray-800 text-truncate" style="max-width:200px" title="${item.nama}">${item.nama}</span>
+                        </div>
+                    </td>
+                    <td>${badge}</td>
+                    <td><input type="number" class="form-control form-control-sm text-center font-bold text-indigo-700 bg-indigo-50 border-indigo-200" value="${item.qty}" min="1" onchange="updateCartQty('${id}', this.value)" style="width:65px"></td>
+                    <td class="text-center font-bold text-gray-600">${item.jumlah_hari}</td>
+                    <td class="text-gray-600">${FORMATTER.format(item.harga)}</td>
+                    <td class="font-bold text-gray-800">${FORMATTER.format(item.subtotal)}</td>
+                    <td class="text-center"><button type="button" class="btn btn-sm bg-red-100 text-red-600 hover:bg-red-200 border-0" onclick="removeFromCart('${id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+          });
+
+          // 2. Custom Cart
+          customCartItems.forEach((cItem, idx) => {
+            if (cItem.jenis === "extend") cItem.jumlah_hari = lamaHariExtend;
+            else if (cItem.jenis === "sewa") cItem.jumlah_hari = lamaHari;
+            else cItem.jumlah_hari = 1;
+            cItem.subtotal = cItem.harga * cItem.qty * cItem.jumlah_hari;
+            totalRaw += cItem.subtotal;
+
+            let badge = "";
+            if (cItem.jenis === "extend")
+              badge = `<span class="badge bg-red-100 text-red-800 badge-jenis">Extend</span>`;
+            else if (cItem.jenis === "jual")
+              badge = `<span class="badge bg-yellow-100 text-yellow-800 badge-jenis">Jual</span>`;
+            else
+              badge = `<span class="badge bg-blue-100 text-blue-800 badge-jenis">Sewa</span>`;
+
+            const img = cItem.preview_img
+              ? `<img src="${cItem.preview_img}" class="rounded shadow-sm" style="width:36px; height:36px; object-fit:cover; cursor:pointer;" onclick="showImage('${cItem.preview_img}')">`
+              : `<div class="bg-gray-100 d-inline-flex justify-content-center align-items-center rounded border"><i class="fas fa-box text-gray-400 p-2"></i></div>`;
+
+            tableBody.innerHTML += `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="mr-3">${img}</div>
+                            <span class="font-bold text-gray-800 text-truncate" style="max-width:200px" title="${cItem.nama}">${cItem.nama}</span>
+                        </div>
+                    </td>
+                    <td>${badge}</td>
+                    <td><input type="number" class="form-control form-control-sm text-center font-bold text-indigo-700 bg-indigo-50 border-indigo-200" value="${cItem.qty}" min="1" onchange="updateCustomCartQty(${idx}, this.value)" style="width:65px"></td>
+                    <td class="text-center font-bold text-gray-600">${cItem.jumlah_hari}</td>
+                    <td class="text-gray-600">${FORMATTER.format(cItem.harga)}</td>
+                    <td class="font-bold text-gray-800">${FORMATTER.format(cItem.subtotal)}</td>
+                    <td class="text-center"><button type="button" class="btn btn-sm bg-red-100 text-red-600 hover:bg-red-200 border-0" onclick="removeCustomFromCart(${idx})"><i class="fas fa-trash"></i></button></td>
+                </tr>`;
+          });
+        }
+
+        updateTotal(totalRaw);
+        saveDraft();
+      }
+
+      function updateCartQty(id, val) {
+        val = parseInt(val);
+        if (val > 0) cart[id].qty = val;
+        else delete cart[id];
+        renderCartTable();
+      }
+      function removeFromCart(id) {
+        delete cart[id];
+        renderCartTable();
+      }
+      function updateCustomCartQty(idx, val) {
+        val = parseInt(val);
+        if (val > 0) customCartItems[idx].qty = val;
+        else customCartItems.splice(idx, 1);
+        renderCartTable();
+      }
+      function removeCustomFromCart(idx) {
+        customCartItems.splice(idx, 1);
+        renderCartTable();
+      }
+
+      function updateTotal(totalRawVal = null) {
+        let totalRaw = totalRawVal;
+        if (totalRaw === null) {
+          totalRaw =
+            Object.values(cart).reduce((sum, item) => sum + item.subtotal, 0) +
+            customCartItems.reduce((sum, item) => sum + item.subtotal, 0);
+        }
+
+        const diskonPersen = parseInt(diskonPersenSelect.value) || 0;
+        const diskonNominal = Math.round(totalRaw * (diskonPersen / 100));
+        const totalFinal = Math.max(0, totalRaw - diskonNominal);
+
+        let dp = 0;
+        if (splitBillToggle.checked) {
+          const c =
+            parseInt(
+              document.getElementById("split_cash").value.replace(/\D/g, ""),
+            ) || 0;
+          const t =
+            parseInt(
+              document
+                .getElementById("split_transfer")
+                .value.replace(/\D/g, ""),
+            ) || 0;
+          const q =
+            parseInt(
+              document.getElementById("split_qris").value.replace(/\D/g, ""),
+            ) || 0;
+          dp = c + t + q;
+          dpInput.value = dp.toLocaleString("id-ID"); // Update visual field readOnly
+        } else {
+          dp = parseInt(dpInput.value.replace(/\D/g, "")) || 0;
+          dp = Math.min(dp, totalFinal);
+        }
+
+        const sisa = totalFinal - dp;
+
+        totalRawText.textContent = FORMATTER.format(totalRaw);
+        diskonNominalText.textContent = `- ${FORMATTER.format(diskonNominal)}`;
+        diskonKeterangan.textContent = `Diskon: ${diskonPersen}%`;
+        totalText.textContent = FORMATTER.format(totalFinal);
+        sisaInput.value = FORMATTER.format(sisa);
+
+        document.getElementById("totalValue").value = totalFinal;
+        document.getElementById("dpValue").value = dp;
+
+        // Listener interaktif DP khusus non-split
+        if (!splitBillToggle.checked) {
+          dpInput.oninput = function () {
+            let val = parseInt(this.value.replace(/\D/g, "")) || 0;
+            val = Math.min(val, totalFinal);
+            this.value = val === 0 ? "" : val.toLocaleString("id-ID");
+            document.getElementById("dpValue").value = val;
+            sisaInput.value = FORMATTER.format(totalFinal - val);
+            saveDraft();
+          };
+          if (dp > 0 && !splitBillToggle.checked)
+            dpInput.value = dp.toLocaleString("id-ID");
+        }
+      }
+
+      // === 6. SPLIT BILL LOGIC ===
+      function toggleSplitBill() {
+        if (splitBillToggle.checked) {
+          paymentStandard.style.display = "none";
+          paymentSplitRow.style.display = "block";
+          dpInput.readOnly = true;
+          dpInput.classList.add("bg-gray-200");
+          dpInput.classList.remove("bg-white");
+          limitAndCalcSplit();
+        } else {
+          paymentStandard.style.display = "block";
+          paymentSplitRow.style.display = "none";
+          dpInput.readOnly = false;
+          dpInput.classList.remove("bg-gray-200");
+          dpInput.classList.add("bg-white");
+          ["split_cash", "split_transfer", "split_qris"].forEach(
+            (id) => (document.getElementById(id).value = ""),
+          );
+          dpInput.value = "";
+          document.getElementById("dpValue").value = 0;
+          updateTotal();
+        }
+        saveDraft();
+      }
+
+      function limitAndCalcSplit(activeEl) {
+        const totalBill =
+          parseInt(document.getElementById("totalValue").value) || 0;
+        const elCash = document.getElementById("split_cash");
+        const elTransfer = document.getElementById("split_transfer");
+        const elQris = document.getElementById("split_qris");
+        const getVal = (el) => parseInt(el.value.replace(/\D/g, "")) || 0;
+
+        let valCash = getVal(elCash);
+        let valTransfer = getVal(elTransfer);
+        let valQris = getVal(elQris);
+
+        if (activeEl) {
+          if (activeEl.id === "split_cash")
+            valCash = Math.min(
+              valCash,
+              Math.max(0, totalBill - valTransfer - valQris),
+            );
+          else if (activeEl.id === "split_transfer")
+            valTransfer = Math.min(
+              valTransfer,
+              Math.max(0, totalBill - valCash - valQris),
+            );
+          else if (activeEl.id === "split_qris")
+            valQris = Math.min(
+              valQris,
+              Math.max(0, totalBill - valCash - valTransfer),
+            );
+        }
+
+        elCash.value = valCash > 0 ? valCash.toLocaleString("id-ID") : "";
+        elTransfer.value =
+          valTransfer > 0 ? valTransfer.toLocaleString("id-ID") : "";
+        elQris.value = valQris > 0 ? valQris.toLocaleString("id-ID") : "";
+
+        const totalSplit = valCash + valTransfer + valQris;
+        dpInput.value = totalSplit.toLocaleString("id-ID");
+        document.getElementById("dpValue").value = totalSplit;
+        updateTotal();
+        saveDraft();
+      }
+
+      // === 7. SUBMIT TO GAS API ===
+      async function submitNota(e) {
+        e.preventDefault();
+        if (Object.keys(cart).length === 0 && customCartItems.length === 0) {
+          showAlert("error", "Harap tambahkan minimal 1 item ke nota.");
+          return;
+        }
+        const total =
+          parseInt(document.getElementById("totalValue").value) || 0;
+        if (total <= 0) {
+          showAlert("error", "Total biaya tidak valid.");
+          return;
+        }
+
+        const btn = document.getElementById("submitBtn");
+        btn.innerHTML =
+          '<i class="fas fa-circle-notch fa-spin mr-2"></i> Menyimpan...';
+        btn.disabled = true;
+
+        // Siapkan array pembayaran
+        let payments = [];
+        if (splitBillToggle.checked) {
+          const c =
+            parseInt(
+              document.getElementById("split_cash").value.replace(/\D/g, ""),
+            ) || 0;
+          const t =
+            parseInt(
+              document
+                .getElementById("split_transfer")
+                .value.replace(/\D/g, ""),
+            ) || 0;
+          const q =
+            parseInt(
+              document.getElementById("split_qris").value.replace(/\D/g, ""),
+            ) || 0;
+          if (c > 0) payments.push({ metode: "Cash", jumlah: c });
+          if (t > 0) payments.push({ metode: "Transfer", jumlah: t });
+          if (q > 0) payments.push({ metode: "Qris", jumlah: q });
+        } else {
+          const dp = parseInt(document.getElementById("dpValue").value) || 0;
+          if (dp > 0)
+            payments.push({
+              metode: document.getElementById("metode_pembayaran_dp").value,
+              jumlah: dp,
+            });
+        }
+
+        const payload = {
+          action: "save_nota",
+          admin_id: localStorage.getItem("tenant_admin_id"),
+          admin_shift: "Shift 1", // Bisa diambil dari localstorage jika ada fungsi perhitungan shift global
+          nama: document.getElementById("namaPenyewa").value,
+          phone: document.getElementById("phone").value,
+          email: document.getElementById("emailValue").value,
+          alamat: document.getElementById("alamat").value,
+          jaminan: document.getElementById("jaminan").value,
+          status_pesanan: document.getElementById("statusPesananValue").value,
+          tanggal_from: document.getElementById("tanggal_from").value,
+          tanggal_to: document.getElementById("tanggal_to").value,
+          diskon_persen: document.getElementById("diskon_persen_select").value,
+          total_biaya_final: total,
+          cart_normal: Object.values(cart),
+          cart_custom: customCartItems, // berisi foto_base64
+          payments: payments,
+        };
+
+        try {
+          if (
+            typeof GAS_API_URL === "undefined" ||
+            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+          )
+            throw new Error("API Off");
+          const res = await fetch(GAS_API_URL, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          const result = await res.json();
+
+          if (result.status === "success") {
+            localStorage.removeItem(STORAGE_KEY); // Hapus draf
+
+            // Redirect logic (seperti PHP aslinya)
+            const hasExtend = customCartItems.some((i) => i.jenis === "extend");
+            window.location.href = hasExtend
+              ? "../denda/denda.html"
+              : "progress.html";
+          } else {
+            showAlert("error", result.message || "Gagal menyimpan transaksi.");
+          }
+        } catch (err) {
+          showAlert(
+            "success",
+            "Transaksi Disimulasikan Sukses (MOCK MODE). Draf dihapus.",
+          );
+          localStorage.removeItem(STORAGE_KEY);
+          setTimeout(() => {
+            window.location.href = "progress.html";
+          }, 2000);
+        } finally {
+          btn.innerHTML = '<i class="fas fa-save mr-2"></i> Simpan Transaksi';
+          btn.disabled = false;
+        }
+      }
+
+      // === 8. DRAFT LOCALSTORAGE ===
+      function saveDraft() {
+        // Dipanggil tiap ada perubahan input/cart
+        const draft = {
+          cart: cart,
+          customCartItems: customCartItems,
+          form: {
+            nama: document.getElementById("namaPenyewa").value,
+            phone: document.getElementById("phone").value,
+            emailUser: document.getElementById("emailUser").value,
+            alamat: document.getElementById("alamat").value,
+            jaminan: document.getElementById("jaminan").value,
+            tanggal_from: document.getElementById("tanggal_from").value,
+            tanggal_to: document.getElementById("tanggal_to").value,
+            diskon_persen: diskonPersenSelect.value,
+            is_split_bill: splitBillToggle.checked,
+            split_cash: document.getElementById("split_cash").value,
+            split_transfer: document.getElementById("split_transfer").value,
+            split_qris: document.getElementById("split_qris").value,
+            dp: dpInput.value,
+            metode_dp: document.getElementById("metode_pembayaran_dp").value,
+            status_pesanan: document.getElementById("bookingToggle").checked,
+          },
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
+      }
+
+      function loadDraft() {
+        const draftStr = localStorage.getItem(STORAGE_KEY);
+        if (!draftStr) return;
+        try {
+          const draft = JSON.parse(draftStr);
+          cart = draft.cart || {};
+          customCartItems = draft.customCartItems || [];
+          if (draft.form) {
+            document.getElementById("namaPenyewa").value =
+              draft.form.nama || "";
+            document.getElementById("phone").value = draft.form.phone || "";
+            document.getElementById("emailUser").value =
+              draft.form.emailUser || "";
+            document.getElementById("alamat").value = draft.form.alamat || "";
+            document.getElementById("jaminan").value = draft.form.jaminan || "";
+            document.getElementById("tanggal_from").value =
+              draft.form.tanggal_from ||
+              document.getElementById("tanggal_from").value;
+            document.getElementById("tanggal_to").value =
+              draft.form.tanggal_to ||
+              document.getElementById("tanggal_to").value;
+            diskonPersenSelect.value = draft.form.diskon_persen || "0";
+
+            if (draft.form.status_pesanan !== undefined)
+              document.getElementById("bookingToggle").checked =
+                draft.form.status_pesanan;
+
+            if (draft.form.is_split_bill) {
+              splitBillToggle.checked = true;
+              toggleSplitBill();
+              document.getElementById("split_cash").value =
+                draft.form.split_cash || "";
+              document.getElementById("split_transfer").value =
+                draft.form.split_transfer || "";
+              document.getElementById("split_qris").value =
+                draft.form.split_qris || "";
+              limitAndCalcSplit(null);
+            } else {
+              dpInput.value = draft.form.dp || "";
+              document.getElementById("metode_pembayaran_dp").value =
+                draft.form.metode_dp || "Cash";
+            }
+            updateFullEmail();
+          }
+          document.getElementById("inputHari").value = getLamaHari();
+          renderCartTable();
+        } catch (e) {
+          console.error(e);
+        }
+
+        // Pasang listener autosave
+        const inputs = [
+          "namaPenyewa",
+          "phone",
+          "emailUser",
+          "alamat",
+          "jaminan",
+          "tanggal_from",
+          "tanggal_to",
+          "diskon_persen_select",
+          "dpFormatted",
+          "split_cash",
+          "split_transfer",
+          "split_qris",
+          "metode_pembayaran_dp",
+          "splitBillToggle",
+          "bookingToggle",
+        ];
+        inputs.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.addEventListener("change", saveDraft);
+            el.addEventListener("keyup", saveDraft);
+          }
+        });
+      }
+
+      window.showImage = function (src) {
+        document.getElementById("gambarPreviewFull").src = src;
+        $("#modalPreviewGambar").modal("show");
+      };
+
+      function loadMockData() {
+        itemData = [
+          {
+            id: 1,
+            nama: "Tenda Dome",
+            harga: 25000,
+            kategori_id: 1,
+            foto: "",
+            jenis_item: "sewa",
+          },
+        ];
+        userData = [
+          {
+            nama: "Andi",
+            phone: "0812",
+            email: "andi@gmail.com",
+            alamat: "Bintaro",
+          },
+        ];
+        kategoriMap[1] = "Tenda";
+        document.getElementById("modalKategori").innerHTML +=
+          `<option value="tenda">Tenda</option>`;
+        itemData.forEach((item) => {
+          itemDataMap[item.id] = item;
+        });
+        populateUserDatalist();
+        populateEmailDatalist();
+      }
+    </script>
+  </body>
+</html>

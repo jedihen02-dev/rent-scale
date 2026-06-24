@@ -1,0 +1,111 @@
+KELOMPOK SAAS CORE (Manajemen Aplikasi & Langganan)
+1. Nama Sheet: paket_langganan
+
+Digunakan untuk menyimpan daftar paket langganan aplikasi yang Anda tawarkan ke tenant.
+
+Header Kolom:
+id | nama_paket | harga | durasi_hari | fitur_deskripsi | status_aktif | created_at
+
+2. Nama Sheet: saas_transaksi
+
+Log pembayaran langganan dari toko/tenant ke Anda (Super Admin).
+
+Header Kolom:
+id | tenant_id | paket_id | order_id_gateway | jumlah_tagihan | status_pembayaran | metode_pembayaran | waktu_transaksi | waktu_sukses
+
+3. Nama Sheet: tenant
+
+Data profil utama toko-toko (tenant) yang mendaftar.
+
+Header Kolom:
+id | paket_id | nama_toko | domain_slug | logo_toko | no_wa_toko | alamat_toko | status_berlangganan | tanggal_berakhir_langganan | created_at
+
+🏪 KELOMPOK TENANT MANAGEMENT (Autentikasi & Pelanggan)
+4. Nama Sheet: admin
+
+Akun login untuk pengguna internal toko (Owner / Kasir).
+
+Header Kolom:
+id | tenant_id | nama | email | password | role_admin | created_at
+
+5. Nama Sheet: user
+
+Data pelanggan/penyewa tenda yang didaftarkan oleh kasir atau registrasi sendiri.
+
+Header Kolom:
+id | tenant_id | admin_id | nama | phone | alamat | email | password | created_at
+
+📦 KELOMPOK INVENTARIS (Katalog Produk)
+6. Nama Sheet: kategori
+
+Kategori alat kemping (misal: Tenda, Carrier, Sleeping Bag).
+
+Header Kolom:
+id | tenant_id | admin_id | nama | status_aktif | created_at
+
+7. Nama Sheet: item
+
+Detail barang yang disewakan atau dijual. Kolom gambar akan diisi URL file dari Google Drive.
+
+Header Kolom:
+id | tenant_id | kategori_id | admin_id | nama | jenis_item | harga | deskripsi | gambar | status_aktif | created_at
+
+🛒 KELOMPOK TRANSAKSI & OPERASIONAL (Alur Utama Aplikasi)
+8. Nama Sheet: transaksi
+
+Nota utama (Header Nota) untuk merekam pesanan/booking.
+
+Header Kolom:
+id | tenant_id | kode_nota | user_id | admin_id_pembuat | nama_shift_pembuat | tanggal_from | tanggal_to | total_biaya_item | status_pengembalian | status_pesanan | jaminan | admin_id_pengupdate | nama_shift_pengupdate | created_at | updated_at
+
+9. Nama Sheet: transaksi_detail
+
+Rincian item apa saja yang disewa di dalam satu nota (terhubung lewat transaksi_id).
+
+Header Kolom:
+id | transaksi_id | item_id | jumlah_hari | qty | harga | subtotal | jenis_item | status_pengembalian_item | status_item
+
+10. Nama Sheet: riwayat_pembayaran
+
+Pencatatan uang masuk untuk transaksi (Bisa DP, Pelunasan, Cash, Transfer, maupun QRIS).
+
+Header Kolom:
+id | transaksi_id | admin_id_penerima | nama_shift_penerima | jumlah_bayar | metode_pembayaran | jenis_pembayaran | tanggal_bayar | shift_log_id
+
+⚠️ KELOMPOK LOG, DENDA, & KERUSAKAN
+11. Nama Sheet: denda
+
+Data denda keterlambatan atau denda kerusakan barang yang dibebankan ke penyewa.
+
+Header Kolom:
+id | transaksi_id | transaksi_detail_id | jumlah_denda | keterangan_denda | tanggal_denda_from | tanggal_denda_to | tanggal_denda_ditetapkan | status_denda | nama_shift_penetap | created_at | updated_at
+
+12. Nama Sheet: pembayaran_denda_detail
+
+Log pembayaran uang denda yang diterima oleh kasir.
+
+Header Kolom:
+id | denda_id | admin_id_penerima | nama_shift_penerima | jumlah_pembayaran | metode_pembayaran | waktu_pembayaran
+
+13. Nama Sheet: item_rusak
+
+Laporan khusus jika ada barang rusak/hilang (kolom foto berisi link Google Drive).
+
+Header Kolom:
+id | tenant_id | admin_id | nama_penyewa | nama_item | nominal_ganti_rugi | metode_pembayaran | foto_kerusakan | deskripsi_kerusakan | tanggal_laporan
+
+14. Nama Sheet: shift_log
+
+Rekam jejak waktu kerja kasir (untuk pelaporan harian/rekap uang laci).
+
+Header Kolom:
+id | tenant_id | admin_id | nama_shift | shift_type | shift_start | shift_end | created_at
+
+💡 Tips Pengisian di Excel / Google Sheets:
+Sediakan 1 File Google Spreadsheet khusus untuk database ini.
+
+Buat 14 Tab (Sheet) di dalam file tersebut dan namai persis seperti daftar di atas (menggunakan huruf kecil, tanpa spasi).
+
+Salis baris Header Kolom di atas ke Baris Pertama (Row 1) pada masing-masing sheet.
+
+Biarkan data di bawahnya kosong terlebih dahulu. Di bagian Backend GAS nanti, kita yang akan menangani penulisan baris baru (ID otomatis +1, created_at menggunakan ISO String format tanggal, dll).

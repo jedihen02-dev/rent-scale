@@ -1,0 +1,41 @@
+<!-- components/header.html -->
+<nav
+  class="main-header navbar navbar-expand navbar-white navbar-light"
+  style="
+    border-bottom: none !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    background-color: #ffffff;
+  "
+>
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <!-- Tombol Hamburger bawaan AdminLTE -->
+      <a class="nav-link" data-widget="pushmenu" href="#" role="button"
+        ><i class="fas fa-bars"></i
+      ></a>
+    </li>
+  </ul>
+
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item d-sm-inline-block">
+      <!-- Teks Shift (Diisi via JS) -->
+      <span
+        id="nav-shift-display"
+        class="nav-link font-weight-bold text-secondary"
+        >Shift ...</span
+      >
+    </li>
+    <li class="nav-item">
+      <!-- Tombol Logout memanggil fungsi handleLogout di komponen.js -->
+      <a
+        class="nav-link text-danger"
+        href="#"
+        onclick="handleLogout(event)"
+        title="Logout"
+        id="logout-link"
+      >
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </li>
+  </ul>
+</nav>
