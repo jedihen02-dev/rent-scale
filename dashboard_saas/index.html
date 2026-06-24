@@ -430,12 +430,14 @@
       }
 
       // === 3. INTEGRASI GOOGLE APPS SCRIPT ===
-      const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+";
 
       // FETCH DATA DASHBOARD
       async function fetchDashboardData(tenantId) {
         try {
-          if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+          if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+") {
             // MOCK DATA JIKA GAS BELUM DI-SETUP (Hanya untuk preview UI)
             renderDashboard({
               status_berlangganan:
@@ -553,7 +555,8 @@
           document.getElementById("alert-container").innerHTML = ""; // Clear alert
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+") {
               throw new Error("Sistem backend (GAS) belum terhubung.");
             }
 
