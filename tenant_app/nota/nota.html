@@ -196,7 +196,8 @@
       async function fetchInvoiceData(id) {
         try {
           // Ambil base API URL dari config/localStorage yang telah di-define sebelumnya
-          const gasApiUrl = localStorage.getItem("gas_api_url") || "";
+          const gasApiUrl = localStorage.getItem("https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+") || "";
           if (!gasApiUrl || gasApiUrl === "") {
             // Fallback preview data palsu jika API URL belum terpasang
             renderInvoice(getMockInvoiceData(id));
