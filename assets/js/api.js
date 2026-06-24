@@ -1,6 +1,6 @@
 // assets/js/api.js
 
-const GAS_API_URL = "URL_GAS_WEB_APP_ANDA_DISINI";
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec";
 
 async function postData(action, payload) {
   // Tambahkan action ke payload
