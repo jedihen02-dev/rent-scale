@@ -445,15 +445,15 @@
               throw new Error("Sistem belum terhubung ke database. Harap setel URL Google Apps Script.");
             }
 
-           const payload = {
-  action: "register_tenant", // SUDAH DISAMAKAN DENGAN BACKEND
+          const payload = {
+  action: "register_tenant",
   paket_id: isTrial ? "trial" : paketId,
-  nama: document.getElementById("reg-nama").value,
-              email: document.getElementById("reg-email").value,
-              nama_toko: document.getElementById("reg-toko").value,
-              subdomain: document.getElementById("reg-subdomain").value,
-              password: pass,
-            };
+  nama_owner: document.getElementById("reg-nama").value, // Ubah 'nama' menjadi 'nama_owner'
+  email: document.getElementById("reg-email").value,
+  nama_toko: document.getElementById("reg-toko").value,
+  domain_slug: document.getElementById("reg-subdomain").value, // Ubah 'subdomain' menjadi 'domain_slug'
+  password: pass,
+};
 
             // Perbaikan Fetch dengan header text/plain bypass CORS & redirect: follow
             const response = await fetch(GAS_API_URL, {
