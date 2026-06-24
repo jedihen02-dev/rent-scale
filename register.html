@@ -39,7 +39,6 @@
   <body
     class="text-gray-800 antialiased min-h-screen flex flex-col relative overflow-x-hidden"
   >
-    <!-- Background Elements -->
     <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
       <div
         class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-primary/10 blur-3xl"
@@ -49,7 +48,6 @@
       ></div>
     </div>
 
-    <!-- Navbar -->
     <nav
       class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-gray-100"
     >
@@ -63,16 +61,14 @@
           <div
             class="text-xs sm:text-sm text-gray-500 flex items-center gap-1.5 font-medium"
           >
-            <i class="fa-solid fa-shield-halved text-primary"></i> Aman &
+            <i class="fa-solid fa-shield-halved text-primary"></i> Aman &amp;
             Terenkripsi
           </div>
         </div>
       </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="flex-grow flex flex-col items-center px-4 pt-8 pb-12 w-full">
-      <!-- Progress Bar -->
       <div
         class="flex items-center justify-center gap-2 sm:gap-4 mb-8 text-xs sm:text-base w-full max-w-xl"
       >
@@ -82,7 +78,7 @@
           >
             1
           </div>
-          Data & Akun
+          Data &amp; Akun
         </div>
         <div class="w-6 sm:w-12 h-px bg-gray-300 shrink-0"></div>
         <div class="flex items-center text-gray-500 font-medium shrink-0">
@@ -107,7 +103,6 @@
       <div
         class="bg-white w-full max-w-2xl rounded-2xl shadow-xl shadow-primary/5 border border-gray-100 overflow-hidden relative"
       >
-        <!-- Banner Paket Dinamis -->
         <div
           class="bg-primary text-white px-6 sm:px-8 py-7 relative overflow-hidden"
         >
@@ -123,7 +118,7 @@
               <div
                 class="text-[10px] font-bold text-yellow-300 tracking-wider mb-2 uppercase flex items-center gap-1.5"
               >
-                <i class="fa-solid fa-bolt"></i>
+                <i class="fa-solid fa-bold"></i>
                 <span id="ui-label-promo">Memuat...</span>
               </div>
               <h2 id="ui-nama-paket" class="text-2xl font-bold mb-1">
@@ -166,11 +161,10 @@
               Isi data kamu untuk melanjutkan
             </h3>
             <p class="text-sm text-gray-500 mt-1">
-              Email & password ini akan dipakai untuk login ke SewaTendaku.
+              Email &amp; password ini akan dipakai untuk login ke SewaTendaku.
             </p>
           </div>
 
-          <!-- Alert Error -->
           <div
             id="errorMessage"
             class="hidden bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-start text-sm font-medium"
@@ -361,7 +355,6 @@
       }
 
       // === 2. CEK SESI (LOCAL STORAGE) ===
-      // Jika sudah login, lempar ke dashboard
       if (
         localStorage.getItem("saas_admin_id") &&
         localStorage.getItem("saas_tenant_id")
@@ -376,7 +369,6 @@
       let isPaidMode = false;
 
       document.addEventListener("DOMContentLoaded", () => {
-        // Default UI untuk Trial
         let namaPaket = "Free Trial 3 Hari";
         let hargaTampil = "Rp 0";
         let hargaCoret = "Rp 50.000";
@@ -385,7 +377,6 @@
           '<div class="text-[11px] text-green-300 font-bold mt-1">Tanpa Kartu Kredit</div>';
         let teksTombol = "Daftar & Masuk Dashboard";
 
-        // Jika Paket 1 (Basic)
         if (!isTrial && paketId === "1") {
           namaPaket = "Paket Basic";
           hargaTampil = "Rp 50.000";
@@ -396,7 +387,6 @@
           teksTombol = "Daftar & Bayar Sekarang";
           isPaidMode = true;
         }
-        // Jika Paket 2 (Pro)
         else if (!isTrial && paketId === "2") {
           namaPaket = "Paket Pro";
           hargaTampil = "Rp 135.000";
@@ -408,7 +398,6 @@
           isPaidMode = true;
         }
 
-        // Terapkan ke DOM
         document.getElementById("ui-nama-paket").textContent = namaPaket;
         document.getElementById("ui-harga-tampil").textContent = hargaTampil;
         document.getElementById("ui-harga-coret").textContent = hargaCoret;
@@ -417,7 +406,6 @@
         document.getElementById("btnText").textContent = teksTombol;
       });
 
-      // Formating otomatis slug subdomain (Hanya huruf kecil dan angka)
       document
         .getElementById("reg-subdomain")
         .addEventListener("input", function (e) {
@@ -425,8 +413,8 @@
         });
 
       // === 4. LOGIKA FETCH SUBMIT GOOGLE APPS SCRIPT ===
-      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
-";
+      // Perbaikan Baris Putus (Line Break)
+      const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec";
 
       document
         .getElementById("registerForm")
@@ -439,32 +427,24 @@
           const errorText = document.getElementById("errorText");
           const submitBtn = document.getElementById("submitBtn");
 
-          // Reset error
           errorBox.classList.add("hidden");
           errorText.textContent = "";
 
-          // 1. Validasi Password
           if (pass !== passConf) {
-            errorText.textContent =
-              "Password dan Konfirmasi Password tidak cocok!";
+            errorText.textContent = "Password dan Konfirmasi Password tidak cocok!";
             errorBox.classList.remove("hidden");
             return;
           }
 
-          // Loading state
           const originalBtnText = submitBtn.innerHTML;
-          submitBtn.innerHTML =
-            '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memproses...';
+          submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Memproses...';
           submitBtn.disabled = true;
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI") {
-              throw new Error(
-                "Sistem belum terhubung ke database. Harap setel URL Google Apps Script.",
-              );
+            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI" || GAS_API_URL === "") {
+              throw new Error("Sistem belum terhubung ke database. Harap setel URL Google Apps Script.");
             }
 
-            // 2. Siapkan Payload
             const payload = {
               action: "register",
               paket_id: isTrial ? "trial" : paketId,
@@ -475,42 +455,43 @@
               password: pass,
             };
 
-            // 3. Tembak ke API
+            // Perbaikan Fetch dengan header text/plain bypass CORS & redirect: follow
             const response = await fetch(GAS_API_URL, {
               method: "POST",
+              mode: "cors",
+              headers: {
+                "Content-Type": "text/plain;charset=utf-8",
+              },
               body: JSON.stringify(payload),
+              redirect: "follow"
             });
+
+            if (!response.ok) {
+              throw new Error("Koneksi ke server gagal. Status: " + response.status);
+            }
 
             const result = await response.json();
 
             if (result.status === "success") {
-              // Simpan data login otomatis ke Local Storage
               localStorage.setItem("saas_admin_id", result.data.admin_id);
               localStorage.setItem("saas_tenant_id", result.data.tenant_id);
               localStorage.setItem("saas_nama", result.data.nama);
               localStorage.setItem("saas_nama_toko", result.data.nama_toko);
               localStorage.setItem("saas_domain_slug", result.data.domain_slug);
-              localStorage.setItem(
-                "saas_status_berlangganan",
-                result.data.status_berlangganan,
-              );
+              localStorage.setItem("saas_status_berlangganan", result.data.status_berlangganan);
 
-              // Arahkan berdasarkan mode pembayaran
               if (isPaidMode) {
                 window.location.href = "dashboard_saas/checkout.html";
               } else {
                 window.location.href = "dashboard_saas/index.html";
               }
             } else {
-              throw new Error(
-                result.message || "Gagal mendaftar. Silakan coba lagi.",
-              );
+              throw new Error(result.message || "Gagal mendaftar. Silakan coba lagi.");
             }
           } catch (error) {
             errorText.textContent = error.message;
             errorBox.classList.remove("hidden");
           } finally {
-            // Kembalikan tombol
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
           }
