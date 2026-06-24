@@ -236,7 +236,8 @@
       // === 1. FETCH DATA API ===
       async function fetchPrintShiftData(date) {
         try {
-          const gasApiUrl = localStorage.getItem("gas_api_url");
+          const gasApiUrl = localStorage.getItem("https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+");
           if (!gasApiUrl) {
             document.getElementById("loader-overlay").style.display = "none";
             renderStruk(getMockData(date));
