@@ -391,7 +391,8 @@
         try {
           if (
             typeof GAS_API_URL === "undefined" ||
-            GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI"
+            GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+"
           ) {
             renderKategoriUI(getMockData());
             return;
@@ -493,7 +494,8 @@
           };
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
               throw new Error("API Off");
             const res = await fetch(GAS_API_URL, {
               method: "POST",
@@ -541,7 +543,8 @@
           };
 
           try {
-            if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+            if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
               throw new Error("API Off");
             const res = await fetch(GAS_API_URL, {
               method: "POST",
@@ -579,7 +582,8 @@
         }).then(async (result) => {
           if (result.isConfirmed) {
             try {
-              if (GAS_API_URL === "URL_GAS_WEB_APP_ANDA_DISINI")
+              if (GAS_API_URL === "https://script.google.com/macros/s/AKfycbzflPmqZeF-s2F60zuUcP5GiSrQbGFvWqV4HzT9nnCh53m1wymGkDqC2alQp0icpJWgCg/exec
+")
                 throw new Error("API Off");
               const payload = {
                 action: "delete_kategori",
